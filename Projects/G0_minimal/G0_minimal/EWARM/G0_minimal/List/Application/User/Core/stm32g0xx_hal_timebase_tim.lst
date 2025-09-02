@@ -1,0 +1,225 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  11:20:05
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_timebase_tim.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_timebase_tim.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_timebase_tim.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_clustering --no_scheduling --debug --endian=little
+#        --cpu=Cortex-M0+ -e --fpu=None --dlib_config "C:\Program Files\IAR
+#        Systems\Embedded Workbench 9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -On) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_timebase_tim.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core\stm32g0xx_hal_timebase_tim.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_timebase_tim.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_timebase_tim.c
+      1          /* USER CODE BEGIN Header */
+      2          /**
+      3            ******************************************************************************
+      4            * @file    stm32g0xx_hal_timebase_tim.c
+      5            * @brief   HAL time base based on the hardware TIM.
+      6            ******************************************************************************
+      7            * @attention
+      8            *
+      9            * Copyright (c) 2025 STMicroelectronics.
+     10            * All rights reserved.
+     11            *
+     12            * This software is licensed under terms that can be found in the LICENSE file
+     13            * in the root directory of this software component.
+     14            * If no LICENSE file comes with this software, it is provided AS-IS.
+     15            *
+     16            ******************************************************************************
+     17            */
+     18          /* USER CODE END Header */
+     19          
+     20          /* Includes ------------------------------------------------------------------*/
+     21          #include "stm32g0xx_hal.h"
+     22          #include "stm32g0xx_hal_tim.h"
+     23          
+     24          /* Private typedef -----------------------------------------------------------*/
+     25          /* Private define ------------------------------------------------------------*/
+     26          /* Private macro -------------------------------------------------------------*/
+     27          /* Private variables ---------------------------------------------------------*/
+     28          TIM_HandleTypeDef        htim1;
+     29          /* Private function prototypes -----------------------------------------------*/
+     30          /* Private functions ---------------------------------------------------------*/
+     31          
+     32          /**
+     33            * @brief  This function configures the TIM1 as a time base source.
+     34            *         The time source is configured  to have 1ms time base with a dedicated
+     35            *         Tick interrupt priority.
+     36            * @note   This function is called  automatically at the beginning of program after
+     37            *         reset by HAL_Init() or at any time when clock is configured, by HAL_RCC_ClockConfig().
+     38            * @param  TickPriority: Tick interrupt priority.
+     39            * @retval HAL status
+     40            */
+     41          HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
+     42          {
+     43            RCC_ClkInitTypeDef    clkconfig;
+     44            uint32_t              uwTimclock, uwAPB1Prescaler;
+     45            uint32_t              uwPrescalerValue;
+     46            uint32_t              pFLatency;
+     47          
+     48            HAL_StatusTypeDef     status = HAL_OK;
+     49          
+     50            /* Enable TIM1 clock */
+     51            __HAL_RCC_TIM1_CLK_ENABLE();
+     52          
+     53            /* Get clock configuration */
+     54            HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+     55          
+     56            /* Get APB1 prescaler */
+     57            uwAPB1Prescaler = clkconfig.APB1CLKDivider;
+     58            /* Compute TIM1 clock */
+     59            if (uwAPB1Prescaler == RCC_HCLK_DIV1)
+     60            {
+     61              uwTimclock = HAL_RCC_GetPCLK1Freq();
+     62            }
+     63            else
+     64            {
+     65              uwTimclock = 2UL * HAL_RCC_GetPCLK1Freq();
+     66            }
+     67          
+     68            /* Compute the prescaler value to have TIM1 counter clock equal to 1MHz */
+     69            uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
+     70          
+     71            /* Initialize TIM1 */
+     72            htim1.Instance = TIM1;
+     73          
+     74            /* Initialize TIMx peripheral as follow:
+     75             * Period = [(TIM1CLK/1000) - 1]. to have a (1/1000) s time base.
+     76             * Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
+     77             * ClockDivision = 0
+     78             * Counter direction = Up
+     79             */
+     80            htim1.Init.Period = (1000000U / 1000U) - 1U;
+     81            htim1.Init.Prescaler = uwPrescalerValue;
+     82            htim1.Init.ClockDivision = 0;
+     83            htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+     84            htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+     85          
+     86            status = HAL_TIM_Base_Init(&htim1);
+     87            if (status == HAL_OK)
+     88            {
+     89              /* Start the TIM time Base generation in interrupt mode */
+     90              status = HAL_TIM_Base_Start_IT(&htim1);
+     91              if (status == HAL_OK)
+     92              {
+     93              /* Enable the TIM1 global Interrupt */
+     94                  HAL_NVIC_EnableIRQ(TIM1_BRK_UP_TRG_COM_IRQn);
+     95                /* Configure the SysTick IRQ priority */
+     96                if (TickPriority < (1UL << __NVIC_PRIO_BITS))
+     97                {
+     98                  /* Configure the TIM IRQ priority */
+     99                  HAL_NVIC_SetPriority(TIM1_BRK_UP_TRG_COM_IRQn, TickPriority, 0U);
+    100                  uwTickPrio = TickPriority;
+    101                }
+    102                else
+    103                {
+    104                  status = HAL_ERROR;
+    105                }
+    106              }
+    107            }
+    108          
+    109           /* Return function status */
+    110            return status;
+    111          }
+    112          
+    113          /**
+    114            * @brief  Suspend Tick increment.
+    115            * @note   Disable the tick increment by disabling TIM1 update interrupt.
+    116            * @param  None
+    117            * @retval None
+    118            */
+    119          void HAL_SuspendTick(void)
+    120          {
+    121            /* Disable TIM1 update Interrupt */
+    122            __HAL_TIM_DISABLE_IT(&htim1, TIM_IT_UPDATE);
+    123          }
+    124          
+    125          /**
+    126            * @brief  Resume Tick increment.
+    127            * @note   Enable the tick increment by Enabling TIM1 update interrupt.
+    128            * @param  None
+    129            * @retval None
+    130            */
+    131          void HAL_ResumeTick(void)
+    132          {
+    133            /* Enable TIM1 Update interrupt */
+    134            __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_UPDATE);
+    135          }
+    136          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      56   HAL_InitTick
+        56   -> HAL_NVIC_EnableIRQ
+        56   -> HAL_NVIC_SetPriority
+        56   -> HAL_RCC_GetClockConfig
+        56   -> HAL_RCC_GetPCLK1Freq
+        56   -> HAL_TIM_Base_Init
+        56   -> HAL_TIM_Base_Start_IT
+        56 __aeabi_uidiv
+       0   HAL_ResumeTick
+       0   HAL_SuspendTick
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable2
+       4  ??DataTable2_1
+       4  ??DataTable2_2
+       4  ??DataTable2_3
+       4  ??DataTable2_4
+       4  ??DataTable2_5
+     172  HAL_InitTick
+      16  HAL_ResumeTick
+      16  HAL_SuspendTick
+      76  htim1
+
+ 
+  76 bytes in section .bss
+ 228 bytes in section .text
+ 
+ 228 bytes of CODE memory
+  76 bytes of DATA memory
+
+Errors: none
+Warnings: none

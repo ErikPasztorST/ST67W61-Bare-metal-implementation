@@ -1,0 +1,10 @@
+../ST67W6X/Drivers/spi_iface.c:309:6:spi_iface_ncp_ready_high	8	static
+../ST67W6X/Drivers/spi_iface.c:317:6:spi_iface_ncp_ready_low	0	static
+../ST67W6X/Drivers/spi_iface.c:323:9:wait_for_rdy	16	static
+../ST67W6X/Drivers/spi_iface.c:418:22:spi_iface_get_cmd_type	16	static
+../ST67W6X/Drivers/spi_iface.c:443:6:fill_buffer_header	0	static
+../ST67W6X/Drivers/spi_iface.c:451:6:fill_buffer_data	8	static
+../ST67W6X/Drivers/spi_iface.c:345:9:spi_iface_txRx	32	static
+../ST67W6X/Drivers/spi_iface.c:59:9:spi_iface_init	64	static
+../ST67W6X/Drivers/spi_iface.c:150:9:spi_iface_send	64	static
+../ST67W6X/Drivers/spi_iface.c:276:9:spi_iface_receive_report	56	static

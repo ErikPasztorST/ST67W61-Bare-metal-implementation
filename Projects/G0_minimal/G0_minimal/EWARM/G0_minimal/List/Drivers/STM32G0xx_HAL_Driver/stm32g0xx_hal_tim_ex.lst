@@ -1,0 +1,3150 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  11:20:08
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_tim_ex.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_tim_ex.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_tim_ex.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_clustering --no_scheduling --debug --endian=little
+#        --cpu=Cortex-M0+ -e --fpu=None --dlib_config "C:\Program Files\IAR
+#        Systems\Embedded Workbench 9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -On) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_tim_ex.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_tim_ex.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_tim_ex.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_tim_ex.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm32g0xx_hal_tim_ex.c
+      4            * @author  MCD Application Team
+      5            * @brief   TIM HAL module driver.
+      6            *          This file provides firmware functions to manage the following
+      7            *          functionalities of the Timer Extended peripheral:
+      8            *           + Time Hall Sensor Interface Initialization
+      9            *           + Time Hall Sensor Interface Start
+     10            *           + Time Complementary signal break and dead time configuration
+     11            *           + Time Master and Slave synchronization configuration
+     12            *           + Time Output Compare/PWM Channel Configuration (for channels 5 and 6)
+     13            *           + Time OCRef clear configuration
+     14            *           + Timer remapping capabilities configuration
+     15            ******************************************************************************
+     16            * @attention
+     17            *
+     18            * Copyright (c) 2018 STMicroelectronics.
+     19            * All rights reserved.
+     20            *
+     21            * This software is licensed under terms that can be found in the LICENSE file
+     22            * in the root directory of this software component.
+     23            * If no LICENSE file comes with this software, it is provided AS-IS.
+     24            *
+     25            ******************************************************************************
+     26            @verbatim
+     27            ==============================================================================
+     28                                ##### TIMER Extended features #####
+     29            ==============================================================================
+     30            [..]
+     31              The Timer Extended features include:
+     32              (#) Complementary outputs with programmable dead-time for :
+     33                  (++) Output Compare
+     34                  (++) PWM generation (Edge and Center-aligned Mode)
+     35                  (++) One-pulse mode output
+     36              (#) Synchronization circuit to control the timer with external signals and to
+     37                  interconnect several timers together.
+     38              (#) Break input to put the timer output signals in reset state or in a known state.
+     39              (#) Supports incremental (quadrature) encoder and hall-sensor circuitry for
+     40                  positioning purposes
+     41          
+     42                      ##### How to use this driver #####
+     43            ==============================================================================
+     44              [..]
+     45               (#) Initialize the TIM low level resources by implementing the following functions
+     46                   depending on the selected feature:
+     47                     (++) Hall Sensor output : HAL_TIMEx_HallSensor_MspInit()
+     48          
+     49               (#) Initialize the TIM low level resources :
+     50                  (##) Enable the TIM interface clock using __HAL_RCC_TIMx_CLK_ENABLE();
+     51                  (##) TIM pins configuration
+     52                      (+++) Enable the clock for the TIM GPIOs using the following function:
+     53                        __HAL_RCC_GPIOx_CLK_ENABLE();
+     54                      (+++) Configure these TIM pins in Alternate function mode using HAL_GPIO_Init();
+     55          
+     56               (#) The external Clock can be configured, if needed (the default clock is the
+     57                   internal clock from the APBx), using the following function:
+     58                   HAL_TIM_ConfigClockSource, the clock configuration should be done before
+     59                   any start function.
+     60          
+     61               (#) Configure the TIM in the desired functioning mode using one of the
+     62                   initialization function of this driver:
+     63                    (++) HAL_TIMEx_HallSensor_Init() and HAL_TIMEx_ConfigCommutEvent(): to use the
+     64                         Timer Hall Sensor Interface and the commutation event with the corresponding
+     65                         Interrupt and DMA request if needed (Note that One Timer is used to interface
+     66                         with the Hall sensor Interface and another Timer should be used to use
+     67                         the commutation event).
+     68          
+     69               (#) Activate the TIM peripheral using one of the start functions:
+     70                     (++) Complementary Output Compare : HAL_TIMEx_OCN_Start(), HAL_TIMEx_OCN_Start_DMA(),
+     71                          HAL_TIMEx_OCN_Start_IT()
+     72                     (++) Complementary PWM generation : HAL_TIMEx_PWMN_Start(), HAL_TIMEx_PWMN_Start_DMA(),
+     73                          HAL_TIMEx_PWMN_Start_IT()
+     74                     (++) Complementary One-pulse mode output : HAL_TIMEx_OnePulseN_Start(), HAL_TIMEx_OnePulseN_Start_IT()
+     75                     (++) Hall Sensor output : HAL_TIMEx_HallSensor_Start(), HAL_TIMEx_HallSensor_Start_DMA(),
+     76                          HAL_TIMEx_HallSensor_Start_IT().
+     77          
+     78            @endverbatim
+     79            ******************************************************************************
+     80            */
+     81          
+     82          /* Includes ------------------------------------------------------------------*/
+     83          #include "stm32g0xx_hal.h"
+     84          
+     85          /** @addtogroup STM32G0xx_HAL_Driver
+     86            * @{
+     87            */
+     88          
+     89          /** @defgroup TIMEx TIMEx
+     90            * @brief TIM Extended HAL module driver
+     91            * @{
+     92            */
+     93          
+     94          #ifdef HAL_TIM_MODULE_ENABLED
+     95          
+     96          /* Private typedef -----------------------------------------------------------*/
+     97          /* Private define ------------------------------------------------------------*/
+     98          /* Private constants ---------------------------------------------------------*/
+     99          /** @defgroup TIMEx_Private_Constants TIM Extended Private Constants
+    100            * @{
+    101            */
+    102          /* Timeout for break input rearm */
+    103          #define TIM_BREAKINPUT_REARM_TIMEOUT    5UL /* 5 milliseconds */
+    104          /**
+    105            * @}
+    106            */
+    107          /* End of private constants --------------------------------------------------*/
+    108          
+    109          /* Private macros ------------------------------------------------------------*/
+    110          /* Private variables ---------------------------------------------------------*/
+    111          /* Private function prototypes -----------------------------------------------*/
+    112          static void TIM_DMADelayPulseNCplt(DMA_HandleTypeDef *hdma);
+    113          static void TIM_DMAErrorCCxN(DMA_HandleTypeDef *hdma);
+    114          static void TIM_CCxNChannelCmd(TIM_TypeDef *TIMx, uint32_t Channel, uint32_t ChannelNState);
+    115          
+    116          /* Exported functions --------------------------------------------------------*/
+    117          /** @defgroup TIMEx_Exported_Functions TIM Extended Exported Functions
+    118            * @{
+    119            */
+    120          
+    121          /** @defgroup TIMEx_Exported_Functions_Group1 Extended Timer Hall Sensor functions
+    122            * @brief    Timer Hall Sensor functions
+    123            *
+    124          @verbatim
+    125            ==============================================================================
+    126                                ##### Timer Hall Sensor functions #####
+    127            ==============================================================================
+    128            [..]
+    129              This section provides functions allowing to:
+    130              (+) Initialize and configure TIM HAL Sensor.
+    131              (+) De-initialize TIM HAL Sensor.
+    132              (+) Start the Hall Sensor Interface.
+    133              (+) Stop the Hall Sensor Interface.
+    134              (+) Start the Hall Sensor Interface and enable interrupts.
+    135              (+) Stop the Hall Sensor Interface and disable interrupts.
+    136              (+) Start the Hall Sensor Interface and enable DMA transfers.
+    137              (+) Stop the Hall Sensor Interface and disable DMA transfers.
+    138          
+    139          @endverbatim
+    140            * @{
+    141            */
+    142          /**
+    143            * @brief  Initializes the TIM Hall Sensor Interface and initialize the associated handle.
+    144            * @note   When the timer instance is initialized in Hall Sensor Interface mode,
+    145            *         timer channels 1 and channel 2 are reserved and cannot be used for
+    146            *         other purpose.
+    147            * @param  htim TIM Hall Sensor Interface handle
+    148            * @param  sConfig TIM Hall Sensor configuration structure
+    149            * @retval HAL status
+    150            */
+    151          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Init(TIM_HandleTypeDef *htim, const TIM_HallSensor_InitTypeDef *sConfig)
+    152          {
+    153            TIM_OC_InitTypeDef OC_Config;
+    154          
+    155            /* Check the TIM handle allocation */
+    156            if (htim == NULL)
+    157            {
+    158              return HAL_ERROR;
+    159            }
+    160          
+    161            /* Check the parameters */
+    162            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    163            assert_param(IS_TIM_COUNTER_MODE(htim->Init.CounterMode));
+    164            assert_param(IS_TIM_CLOCKDIVISION_DIV(htim->Init.ClockDivision));
+    165            assert_param(IS_TIM_AUTORELOAD_PRELOAD(htim->Init.AutoReloadPreload));
+    166            assert_param(IS_TIM_IC_POLARITY(sConfig->IC1Polarity));
+    167            assert_param(IS_TIM_PERIOD(htim, htim->Init.Period));
+    168            assert_param(IS_TIM_IC_PRESCALER(sConfig->IC1Prescaler));
+    169            assert_param(IS_TIM_IC_FILTER(sConfig->IC1Filter));
+    170          
+    171            if (htim->State == HAL_TIM_STATE_RESET)
+    172            {
+    173              /* Allocate lock resource and initialize it */
+    174              htim->Lock = HAL_UNLOCKED;
+    175          
+    176          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+    177              /* Reset interrupt callbacks to legacy week callbacks */
+    178              TIM_ResetCallback(htim);
+    179          
+    180              if (htim->HallSensor_MspInitCallback == NULL)
+    181              {
+    182                htim->HallSensor_MspInitCallback = HAL_TIMEx_HallSensor_MspInit;
+    183              }
+    184              /* Init the low level hardware : GPIO, CLOCK, NVIC */
+    185              htim->HallSensor_MspInitCallback(htim);
+    186          #else
+    187              /* Init the low level hardware : GPIO, CLOCK, NVIC and DMA */
+    188              HAL_TIMEx_HallSensor_MspInit(htim);
+    189          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+    190            }
+    191          
+    192            /* Set the TIM state */
+    193            htim->State = HAL_TIM_STATE_BUSY;
+    194          
+    195            /* Configure the Time base in the Encoder Mode */
+    196            TIM_Base_SetConfig(htim->Instance, &htim->Init);
+    197          
+    198            /* Configure the Channel 1 as Input Channel to interface with the three Outputs of the  Hall sensor */
+    199            TIM_TI1_SetConfig(htim->Instance, sConfig->IC1Polarity, TIM_ICSELECTION_TRC, sConfig->IC1Filter);
+    200          
+    201            /* Reset the IC1PSC Bits */
+    202            htim->Instance->CCMR1 &= ~TIM_CCMR1_IC1PSC;
+    203            /* Set the IC1PSC value */
+    204            htim->Instance->CCMR1 |= sConfig->IC1Prescaler;
+    205          
+    206            /* Enable the Hall sensor interface (XOR function of the three inputs) */
+    207            htim->Instance->CR2 |= TIM_CR2_TI1S;
+    208          
+    209            /* Select the TIM_TS_TI1F_ED signal as Input trigger for the TIM */
+    210            htim->Instance->SMCR &= ~TIM_SMCR_TS;
+    211            htim->Instance->SMCR |= TIM_TS_TI1F_ED;
+    212          
+    213            /* Use the TIM_TS_TI1F_ED signal to reset the TIM counter each edge detection */
+    214            htim->Instance->SMCR &= ~TIM_SMCR_SMS;
+    215            htim->Instance->SMCR |= TIM_SLAVEMODE_RESET;
+    216          
+    217            /* Program channel 2 in PWM 2 mode with the desired Commutation_Delay*/
+    218            OC_Config.OCFastMode = TIM_OCFAST_DISABLE;
+    219            OC_Config.OCIdleState = TIM_OCIDLESTATE_RESET;
+    220            OC_Config.OCMode = TIM_OCMODE_PWM2;
+    221            OC_Config.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+    222            OC_Config.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+    223            OC_Config.OCPolarity = TIM_OCPOLARITY_HIGH;
+    224            OC_Config.Pulse = sConfig->Commutation_Delay;
+    225          
+    226            TIM_OC2_SetConfig(htim->Instance, &OC_Config);
+    227          
+    228            /* Select OC2REF as trigger output on TRGO: write the MMS bits in the TIMx_CR2
+    229              register to 101 */
+    230            htim->Instance->CR2 &= ~TIM_CR2_MMS;
+    231            htim->Instance->CR2 |= TIM_TRGO_OC2REF;
+    232          
+    233            /* Initialize the DMA burst operation state */
+    234            htim->DMABurstState = HAL_DMA_BURST_STATE_READY;
+    235          
+    236            /* Initialize the TIM channels state */
+    237            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    238            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    239            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    240            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    241          
+    242            /* Initialize the TIM state*/
+    243            htim->State = HAL_TIM_STATE_READY;
+    244          
+    245            return HAL_OK;
+    246          }
+    247          
+    248          /**
+    249            * @brief  DeInitializes the TIM Hall Sensor interface
+    250            * @param  htim TIM Hall Sensor Interface handle
+    251            * @retval HAL status
+    252            */
+    253          HAL_StatusTypeDef HAL_TIMEx_HallSensor_DeInit(TIM_HandleTypeDef *htim)
+    254          {
+    255            /* Check the parameters */
+    256            assert_param(IS_TIM_INSTANCE(htim->Instance));
+    257          
+    258            htim->State = HAL_TIM_STATE_BUSY;
+    259          
+    260            /* Disable the TIM Peripheral Clock */
+    261            __HAL_TIM_DISABLE(htim);
+    262          
+    263          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+    264            if (htim->HallSensor_MspDeInitCallback == NULL)
+    265            {
+    266              htim->HallSensor_MspDeInitCallback = HAL_TIMEx_HallSensor_MspDeInit;
+    267            }
+    268            /* DeInit the low level hardware */
+    269            htim->HallSensor_MspDeInitCallback(htim);
+    270          #else
+    271            /* DeInit the low level hardware: GPIO, CLOCK, NVIC */
+    272            HAL_TIMEx_HallSensor_MspDeInit(htim);
+    273          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+    274          
+    275            /* Change the DMA burst operation state */
+    276            htim->DMABurstState = HAL_DMA_BURST_STATE_RESET;
+    277          
+    278            /* Change the TIM channels state */
+    279            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_RESET);
+    280            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_RESET);
+    281            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_RESET);
+    282            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_RESET);
+    283          
+    284            /* Change TIM state */
+    285            htim->State = HAL_TIM_STATE_RESET;
+    286          
+    287            /* Release Lock */
+    288            __HAL_UNLOCK(htim);
+    289          
+    290            return HAL_OK;
+    291          }
+    292          
+    293          /**
+    294            * @brief  Initializes the TIM Hall Sensor MSP.
+    295            * @param  htim TIM Hall Sensor Interface handle
+    296            * @retval None
+    297            */
+    298          __weak void HAL_TIMEx_HallSensor_MspInit(TIM_HandleTypeDef *htim)
+    299          {
+    300            /* Prevent unused argument(s) compilation warning */
+    301            UNUSED(htim);
+    302          
+    303            /* NOTE : This function should not be modified, when the callback is needed,
+    304                      the HAL_TIMEx_HallSensor_MspInit could be implemented in the user file
+    305             */
+    306          }
+    307          
+    308          /**
+    309            * @brief  DeInitializes TIM Hall Sensor MSP.
+    310            * @param  htim TIM Hall Sensor Interface handle
+    311            * @retval None
+    312            */
+    313          __weak void HAL_TIMEx_HallSensor_MspDeInit(TIM_HandleTypeDef *htim)
+    314          {
+    315            /* Prevent unused argument(s) compilation warning */
+    316            UNUSED(htim);
+    317          
+    318            /* NOTE : This function should not be modified, when the callback is needed,
+    319                      the HAL_TIMEx_HallSensor_MspDeInit could be implemented in the user file
+    320             */
+    321          }
+    322          
+    323          /**
+    324            * @brief  Starts the TIM Hall Sensor Interface.
+    325            * @param  htim TIM Hall Sensor Interface handle
+    326            * @retval HAL status
+    327            */
+    328          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Start(TIM_HandleTypeDef *htim)
+    329          {
+    330            uint32_t tmpsmcr;
+    331            HAL_TIM_ChannelStateTypeDef channel_1_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_1);
+    332            HAL_TIM_ChannelStateTypeDef channel_2_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_2);
+    333            HAL_TIM_ChannelStateTypeDef complementary_channel_1_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_1);
+    334            HAL_TIM_ChannelStateTypeDef complementary_channel_2_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_2);
+    335          
+    336            /* Check the parameters */
+    337            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    338          
+    339            /* Check the TIM channels state */
+    340            if ((channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+    341                || (channel_2_state != HAL_TIM_CHANNEL_STATE_READY)
+    342                || (complementary_channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+    343                || (complementary_channel_2_state != HAL_TIM_CHANNEL_STATE_READY))
+    344            {
+    345              return HAL_ERROR;
+    346            }
+    347          
+    348            /* Set the TIM channels state */
+    349            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    350            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+    351            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    352            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+    353          
+    354            /* Enable the Input Capture channel 1
+    355            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    356            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    357            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_ENABLE);
+    358          
+    359            /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    360            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    361            {
+    362              tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    363              if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    364              {
+    365                __HAL_TIM_ENABLE(htim);
+    366              }
+    367            }
+    368            else
+    369            {
+    370              __HAL_TIM_ENABLE(htim);
+    371            }
+    372          
+    373            /* Return function status */
+    374            return HAL_OK;
+    375          }
+    376          
+    377          /**
+    378            * @brief  Stops the TIM Hall sensor Interface.
+    379            * @param  htim TIM Hall Sensor Interface handle
+    380            * @retval HAL status
+    381            */
+    382          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Stop(TIM_HandleTypeDef *htim)
+    383          {
+    384            /* Check the parameters */
+    385            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    386          
+    387            /* Disable the Input Capture channels 1, 2 and 3
+    388            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    389            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    390            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_DISABLE);
+    391          
+    392            /* Disable the Peripheral */
+    393            __HAL_TIM_DISABLE(htim);
+    394          
+    395            /* Set the TIM channels state */
+    396            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    397            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    398            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    399            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    400          
+    401            /* Return function status */
+    402            return HAL_OK;
+    403          }
+    404          
+    405          /**
+    406            * @brief  Starts the TIM Hall Sensor Interface in interrupt mode.
+    407            * @param  htim TIM Hall Sensor Interface handle
+    408            * @retval HAL status
+    409            */
+    410          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Start_IT(TIM_HandleTypeDef *htim)
+    411          {
+    412            uint32_t tmpsmcr;
+    413            HAL_TIM_ChannelStateTypeDef channel_1_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_1);
+    414            HAL_TIM_ChannelStateTypeDef channel_2_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_2);
+    415            HAL_TIM_ChannelStateTypeDef complementary_channel_1_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_1);
+    416            HAL_TIM_ChannelStateTypeDef complementary_channel_2_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_2);
+    417          
+    418            /* Check the parameters */
+    419            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    420          
+    421            /* Check the TIM channels state */
+    422            if ((channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+    423                || (channel_2_state != HAL_TIM_CHANNEL_STATE_READY)
+    424                || (complementary_channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+    425                || (complementary_channel_2_state != HAL_TIM_CHANNEL_STATE_READY))
+    426            {
+    427              return HAL_ERROR;
+    428            }
+    429          
+    430            /* Set the TIM channels state */
+    431            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    432            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+    433            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    434            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+    435          
+    436            /* Enable the capture compare Interrupts 1 event */
+    437            __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC1);
+    438          
+    439            /* Enable the Input Capture channel 1
+    440            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    441            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    442            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_ENABLE);
+    443          
+    444            /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    445            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    446            {
+    447              tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    448              if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    449              {
+    450                __HAL_TIM_ENABLE(htim);
+    451              }
+    452            }
+    453            else
+    454            {
+    455              __HAL_TIM_ENABLE(htim);
+    456            }
+    457          
+    458            /* Return function status */
+    459            return HAL_OK;
+    460          }
+    461          
+    462          /**
+    463            * @brief  Stops the TIM Hall Sensor Interface in interrupt mode.
+    464            * @param  htim TIM Hall Sensor Interface handle
+    465            * @retval HAL status
+    466            */
+    467          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Stop_IT(TIM_HandleTypeDef *htim)
+    468          {
+    469            /* Check the parameters */
+    470            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    471          
+    472            /* Disable the Input Capture channel 1
+    473            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    474            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    475            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_DISABLE);
+    476          
+    477            /* Disable the capture compare Interrupts event */
+    478            __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC1);
+    479          
+    480            /* Disable the Peripheral */
+    481            __HAL_TIM_DISABLE(htim);
+    482          
+    483            /* Set the TIM channels state */
+    484            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    485            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    486            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    487            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+    488          
+    489            /* Return function status */
+    490            return HAL_OK;
+    491          }
+    492          
+    493          /**
+    494            * @brief  Starts the TIM Hall Sensor Interface in DMA mode.
+    495            * @param  htim TIM Hall Sensor Interface handle
+    496            * @param  pData The destination Buffer address.
+    497            * @param  Length The length of data to be transferred from TIM peripheral to memory.
+    498            * @retval HAL status
+    499            */
+    500          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Start_DMA(TIM_HandleTypeDef *htim, uint32_t *pData, uint16_t Length)
+    501          {
+    502            uint32_t tmpsmcr;
+    503            HAL_TIM_ChannelStateTypeDef channel_1_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_1);
+    504            HAL_TIM_ChannelStateTypeDef complementary_channel_1_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_1);
+    505          
+    506            /* Check the parameters */
+    507            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    508          
+    509            /* Set the TIM channel state */
+    510            if ((channel_1_state == HAL_TIM_CHANNEL_STATE_BUSY)
+    511                || (complementary_channel_1_state == HAL_TIM_CHANNEL_STATE_BUSY))
+    512            {
+    513              return HAL_BUSY;
+    514            }
+    515            else if ((channel_1_state == HAL_TIM_CHANNEL_STATE_READY)
+    516                     && (complementary_channel_1_state == HAL_TIM_CHANNEL_STATE_READY))
+    517            {
+    518              if ((pData == NULL) || (Length == 0U))
+    519              {
+    520                return HAL_ERROR;
+    521              }
+    522              else
+    523              {
+    524                TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    525                TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+    526              }
+    527            }
+    528            else
+    529            {
+    530              return HAL_ERROR;
+    531            }
+    532          
+    533            /* Enable the Input Capture channel 1
+    534            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    535            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    536            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_ENABLE);
+    537          
+    538            /* Set the DMA Input Capture 1 Callbacks */
+    539            htim->hdma[TIM_DMA_ID_CC1]->XferCpltCallback = TIM_DMACaptureCplt;
+    540            htim->hdma[TIM_DMA_ID_CC1]->XferHalfCpltCallback = TIM_DMACaptureHalfCplt;
+    541            /* Set the DMA error callback */
+    542            htim->hdma[TIM_DMA_ID_CC1]->XferErrorCallback = TIM_DMAError ;
+    543          
+    544            /* Enable the DMA channel for Capture 1*/
+    545            if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC1], (uint32_t)&htim->Instance->CCR1, (uint32_t)pData, Length) != HAL_OK)
+    546            {
+    547              /* Return error status */
+    548              return HAL_ERROR;
+    549            }
+    550            /* Enable the capture compare 1 Interrupt */
+    551            __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC1);
+    552          
+    553            /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    554            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    555            {
+    556              tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    557              if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    558              {
+    559                __HAL_TIM_ENABLE(htim);
+    560              }
+    561            }
+    562            else
+    563            {
+    564              __HAL_TIM_ENABLE(htim);
+    565            }
+    566          
+    567            /* Return function status */
+    568            return HAL_OK;
+    569          }
+    570          
+    571          /**
+    572            * @brief  Stops the TIM Hall Sensor Interface in DMA mode.
+    573            * @param  htim TIM Hall Sensor Interface handle
+    574            * @retval HAL status
+    575            */
+    576          HAL_StatusTypeDef HAL_TIMEx_HallSensor_Stop_DMA(TIM_HandleTypeDef *htim)
+    577          {
+    578            /* Check the parameters */
+    579            assert_param(IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(htim->Instance));
+    580          
+    581            /* Disable the Input Capture channel 1
+    582            (in the Hall Sensor Interface the three possible channels that can be used are TIM_CHANNEL_1,
+    583            TIM_CHANNEL_2 and TIM_CHANNEL_3) */
+    584            TIM_CCxChannelCmd(htim->Instance, TIM_CHANNEL_1, TIM_CCx_DISABLE);
+    585          
+    586          
+    587            /* Disable the capture compare Interrupts 1 event */
+    588            __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC1);
+    589          
+    590            (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC1]);
+    591          
+    592            /* Disable the Peripheral */
+    593            __HAL_TIM_DISABLE(htim);
+    594          
+    595            /* Set the TIM channel state */
+    596            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    597            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+    598          
+    599            /* Return function status */
+    600            return HAL_OK;
+    601          }
+    602          
+    603          /**
+    604            * @}
+    605            */
+    606          
+    607          /** @defgroup TIMEx_Exported_Functions_Group2 Extended Timer Complementary Output Compare functions
+    608            *  @brief   Timer Complementary Output Compare functions
+    609            *
+    610          @verbatim
+    611            ==============================================================================
+    612                        ##### Timer Complementary Output Compare functions #####
+    613            ==============================================================================
+    614            [..]
+    615              This section provides functions allowing to:
+    616              (+) Start the Complementary Output Compare/PWM.
+    617              (+) Stop the Complementary Output Compare/PWM.
+    618              (+) Start the Complementary Output Compare/PWM and enable interrupts.
+    619              (+) Stop the Complementary Output Compare/PWM and disable interrupts.
+    620              (+) Start the Complementary Output Compare/PWM and enable DMA transfers.
+    621              (+) Stop the Complementary Output Compare/PWM and disable DMA transfers.
+    622          
+    623          @endverbatim
+    624            * @{
+    625            */
+    626          
+    627          /**
+    628            * @brief  Starts the TIM Output Compare signal generation on the complementary
+    629            *         output.
+    630            * @param  htim TIM Output Compare handle
+    631            * @param  Channel TIM Channel to be enabled
+    632            *          This parameter can be one of the following values:
+    633            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+    634            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+    635            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+    636            * @retval HAL status
+    637            */
+    638          HAL_StatusTypeDef HAL_TIMEx_OCN_Start(TIM_HandleTypeDef *htim, uint32_t Channel)
+    639          {
+    640            uint32_t tmpsmcr;
+    641          
+    642            /* Check the parameters */
+    643            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+    644          
+    645            /* Check the TIM complementary channel state */
+    646            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) != HAL_TIM_CHANNEL_STATE_READY)
+    647            {
+    648              return HAL_ERROR;
+    649            }
+    650          
+    651            /* Set the TIM complementary channel state */
+    652            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+    653          
+    654            /* Enable the Capture compare channel N */
+    655            TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+    656          
+    657            /* Enable the Main Output */
+    658            __HAL_TIM_MOE_ENABLE(htim);
+    659          
+    660            /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    661            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    662            {
+    663              tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    664              if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    665              {
+    666                __HAL_TIM_ENABLE(htim);
+    667              }
+    668            }
+    669            else
+    670            {
+    671              __HAL_TIM_ENABLE(htim);
+    672            }
+    673          
+    674            /* Return function status */
+    675            return HAL_OK;
+    676          }
+    677          
+    678          /**
+    679            * @brief  Stops the TIM Output Compare signal generation on the complementary
+    680            *         output.
+    681            * @param  htim TIM handle
+    682            * @param  Channel TIM Channel to be disabled
+    683            *          This parameter can be one of the following values:
+    684            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+    685            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+    686            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+    687            * @retval HAL status
+    688            */
+    689          HAL_StatusTypeDef HAL_TIMEx_OCN_Stop(TIM_HandleTypeDef *htim, uint32_t Channel)
+    690          {
+    691            /* Check the parameters */
+    692            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+    693          
+    694            /* Disable the Capture compare channel N */
+    695            TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+    696          
+    697            /* Disable the Main Output */
+    698            __HAL_TIM_MOE_DISABLE(htim);
+    699          
+    700            /* Disable the Peripheral */
+    701            __HAL_TIM_DISABLE(htim);
+    702          
+    703            /* Set the TIM complementary channel state */
+    704            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+    705          
+    706            /* Return function status */
+    707            return HAL_OK;
+    708          }
+    709          
+    710          /**
+    711            * @brief  Starts the TIM Output Compare signal generation in interrupt mode
+    712            *         on the complementary output.
+    713            * @param  htim TIM OC handle
+    714            * @param  Channel TIM Channel to be enabled
+    715            *          This parameter can be one of the following values:
+    716            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+    717            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+    718            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+    719            * @retval HAL status
+    720            */
+    721          HAL_StatusTypeDef HAL_TIMEx_OCN_Start_IT(TIM_HandleTypeDef *htim, uint32_t Channel)
+    722          {
+    723            HAL_StatusTypeDef status = HAL_OK;
+    724            uint32_t tmpsmcr;
+    725          
+    726            /* Check the parameters */
+    727            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+    728          
+    729            /* Check the TIM complementary channel state */
+    730            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) != HAL_TIM_CHANNEL_STATE_READY)
+    731            {
+    732              return HAL_ERROR;
+    733            }
+    734          
+    735            /* Set the TIM complementary channel state */
+    736            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+    737          
+    738            switch (Channel)
+    739            {
+    740              case TIM_CHANNEL_1:
+    741              {
+    742                /* Enable the TIM Output Compare interrupt */
+    743                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC1);
+    744                break;
+    745              }
+    746          
+    747              case TIM_CHANNEL_2:
+    748              {
+    749                /* Enable the TIM Output Compare interrupt */
+    750                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC2);
+    751                break;
+    752              }
+    753          
+    754              case TIM_CHANNEL_3:
+    755              {
+    756                /* Enable the TIM Output Compare interrupt */
+    757                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC3);
+    758                break;
+    759              }
+    760          
+    761          
+    762              default:
+    763                status = HAL_ERROR;
+    764                break;
+    765            }
+    766          
+    767            if (status == HAL_OK)
+    768            {
+    769              /* Enable the TIM Break interrupt */
+    770              __HAL_TIM_ENABLE_IT(htim, TIM_IT_BREAK);
+    771          
+    772              /* Enable the Capture compare channel N */
+    773              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+    774          
+    775              /* Enable the Main Output */
+    776              __HAL_TIM_MOE_ENABLE(htim);
+    777          
+    778              /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    779              if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    780              {
+    781                tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    782                if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    783                {
+    784                  __HAL_TIM_ENABLE(htim);
+    785                }
+    786              }
+    787              else
+    788              {
+    789                __HAL_TIM_ENABLE(htim);
+    790              }
+    791            }
+    792          
+    793            /* Return function status */
+    794            return status;
+    795          }
+    796          
+    797          /**
+    798            * @brief  Stops the TIM Output Compare signal generation in interrupt mode
+    799            *         on the complementary output.
+    800            * @param  htim TIM Output Compare handle
+    801            * @param  Channel TIM Channel to be disabled
+    802            *          This parameter can be one of the following values:
+    803            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+    804            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+    805            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+    806            * @retval HAL status
+    807            */
+    808          HAL_StatusTypeDef HAL_TIMEx_OCN_Stop_IT(TIM_HandleTypeDef *htim, uint32_t Channel)
+    809          {
+    810            HAL_StatusTypeDef status = HAL_OK;
+    811            uint32_t tmpccer;
+    812          
+    813            /* Check the parameters */
+    814            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+    815          
+    816            switch (Channel)
+    817            {
+    818              case TIM_CHANNEL_1:
+    819              {
+    820                /* Disable the TIM Output Compare interrupt */
+    821                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC1);
+    822                break;
+    823              }
+    824          
+    825              case TIM_CHANNEL_2:
+    826              {
+    827                /* Disable the TIM Output Compare interrupt */
+    828                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC2);
+    829                break;
+    830              }
+    831          
+    832              case TIM_CHANNEL_3:
+    833              {
+    834                /* Disable the TIM Output Compare interrupt */
+    835                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC3);
+    836                break;
+    837              }
+    838          
+    839              default:
+    840                status = HAL_ERROR;
+    841                break;
+    842            }
+    843          
+    844            if (status == HAL_OK)
+    845            {
+    846              /* Disable the Capture compare channel N */
+    847              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+    848          
+    849              /* Disable the TIM Break interrupt (only if no more channel is active) */
+    850              tmpccer = htim->Instance->CCER;
+    851              if ((tmpccer & TIM_CCER_CCxNE_MASK) == (uint32_t)RESET)
+    852              {
+    853                __HAL_TIM_DISABLE_IT(htim, TIM_IT_BREAK);
+    854              }
+    855          
+    856              /* Disable the Main Output */
+    857              __HAL_TIM_MOE_DISABLE(htim);
+    858          
+    859              /* Disable the Peripheral */
+    860              __HAL_TIM_DISABLE(htim);
+    861          
+    862              /* Set the TIM complementary channel state */
+    863              TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+    864            }
+    865          
+    866            /* Return function status */
+    867            return status;
+    868          }
+    869          
+    870          /**
+    871            * @brief  Starts the TIM Output Compare signal generation in DMA mode
+    872            *         on the complementary output.
+    873            * @param  htim TIM Output Compare handle
+    874            * @param  Channel TIM Channel to be enabled
+    875            *          This parameter can be one of the following values:
+    876            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+    877            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+    878            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+    879            * @param  pData The source Buffer address.
+    880            * @param  Length The length of data to be transferred from memory to TIM peripheral
+    881            * @retval HAL status
+    882            */
+    883          HAL_StatusTypeDef HAL_TIMEx_OCN_Start_DMA(TIM_HandleTypeDef *htim, uint32_t Channel, const uint32_t *pData,
+    884                                                    uint16_t Length)
+    885          {
+    886            HAL_StatusTypeDef status = HAL_OK;
+    887            uint32_t tmpsmcr;
+    888          
+    889            /* Check the parameters */
+    890            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+    891          
+    892            /* Set the TIM complementary channel state */
+    893            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) == HAL_TIM_CHANNEL_STATE_BUSY)
+    894            {
+    895              return HAL_BUSY;
+    896            }
+    897            else if (TIM_CHANNEL_N_STATE_GET(htim, Channel) == HAL_TIM_CHANNEL_STATE_READY)
+    898            {
+    899              if ((pData == NULL) || (Length == 0U))
+    900              {
+    901                return HAL_ERROR;
+    902              }
+    903              else
+    904              {
+    905                TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+    906              }
+    907            }
+    908            else
+    909            {
+    910              return HAL_ERROR;
+    911            }
+    912          
+    913            switch (Channel)
+    914            {
+    915              case TIM_CHANNEL_1:
+    916              {
+    917                /* Set the DMA compare callbacks */
+    918                htim->hdma[TIM_DMA_ID_CC1]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+    919                htim->hdma[TIM_DMA_ID_CC1]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+    920          
+    921                /* Set the DMA error callback */
+    922                htim->hdma[TIM_DMA_ID_CC1]->XferErrorCallback = TIM_DMAErrorCCxN ;
+    923          
+    924                /* Enable the DMA channel */
+    925                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC1], (uint32_t)pData, (uint32_t)&htim->Instance->CCR1,
+    926                                     Length) != HAL_OK)
+    927                {
+    928                  /* Return error status */
+    929                  return HAL_ERROR;
+    930                }
+    931                /* Enable the TIM Output Compare DMA request */
+    932                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC1);
+    933                break;
+    934              }
+    935          
+    936              case TIM_CHANNEL_2:
+    937              {
+    938                /* Set the DMA compare callbacks */
+    939                htim->hdma[TIM_DMA_ID_CC2]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+    940                htim->hdma[TIM_DMA_ID_CC2]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+    941          
+    942                /* Set the DMA error callback */
+    943                htim->hdma[TIM_DMA_ID_CC2]->XferErrorCallback = TIM_DMAErrorCCxN ;
+    944          
+    945                /* Enable the DMA channel */
+    946                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC2], (uint32_t)pData, (uint32_t)&htim->Instance->CCR2,
+    947                                     Length) != HAL_OK)
+    948                {
+    949                  /* Return error status */
+    950                  return HAL_ERROR;
+    951                }
+    952                /* Enable the TIM Output Compare DMA request */
+    953                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC2);
+    954                break;
+    955              }
+    956          
+    957              case TIM_CHANNEL_3:
+    958              {
+    959                /* Set the DMA compare callbacks */
+    960                htim->hdma[TIM_DMA_ID_CC3]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+    961                htim->hdma[TIM_DMA_ID_CC3]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+    962          
+    963                /* Set the DMA error callback */
+    964                htim->hdma[TIM_DMA_ID_CC3]->XferErrorCallback = TIM_DMAErrorCCxN ;
+    965          
+    966                /* Enable the DMA channel */
+    967                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC3], (uint32_t)pData, (uint32_t)&htim->Instance->CCR3,
+    968                                     Length) != HAL_OK)
+    969                {
+    970                  /* Return error status */
+    971                  return HAL_ERROR;
+    972                }
+    973                /* Enable the TIM Output Compare DMA request */
+    974                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC3);
+    975                break;
+    976              }
+    977          
+    978              default:
+    979                status = HAL_ERROR;
+    980                break;
+    981            }
+    982          
+    983            if (status == HAL_OK)
+    984            {
+    985              /* Enable the Capture compare channel N */
+    986              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+    987          
+    988              /* Enable the Main Output */
+    989              __HAL_TIM_MOE_ENABLE(htim);
+    990          
+    991              /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+    992              if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+    993              {
+    994                tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+    995                if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+    996                {
+    997                  __HAL_TIM_ENABLE(htim);
+    998                }
+    999              }
+   1000              else
+   1001              {
+   1002                __HAL_TIM_ENABLE(htim);
+   1003              }
+   1004            }
+   1005          
+   1006            /* Return function status */
+   1007            return status;
+   1008          }
+   1009          
+   1010          /**
+   1011            * @brief  Stops the TIM Output Compare signal generation in DMA mode
+   1012            *         on the complementary output.
+   1013            * @param  htim TIM Output Compare handle
+   1014            * @param  Channel TIM Channel to be disabled
+   1015            *          This parameter can be one of the following values:
+   1016            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1017            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1018            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1019            * @retval HAL status
+   1020            */
+   1021          HAL_StatusTypeDef HAL_TIMEx_OCN_Stop_DMA(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1022          {
+   1023            HAL_StatusTypeDef status = HAL_OK;
+   1024          
+   1025            /* Check the parameters */
+   1026            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1027          
+   1028            switch (Channel)
+   1029            {
+   1030              case TIM_CHANNEL_1:
+   1031              {
+   1032                /* Disable the TIM Output Compare DMA request */
+   1033                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC1);
+   1034                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC1]);
+   1035                break;
+   1036              }
+   1037          
+   1038              case TIM_CHANNEL_2:
+   1039              {
+   1040                /* Disable the TIM Output Compare DMA request */
+   1041                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC2);
+   1042                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC2]);
+   1043                break;
+   1044              }
+   1045          
+   1046              case TIM_CHANNEL_3:
+   1047              {
+   1048                /* Disable the TIM Output Compare DMA request */
+   1049                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC3);
+   1050                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC3]);
+   1051                break;
+   1052              }
+   1053          
+   1054              default:
+   1055                status = HAL_ERROR;
+   1056                break;
+   1057            }
+   1058          
+   1059            if (status == HAL_OK)
+   1060            {
+   1061              /* Disable the Capture compare channel N */
+   1062              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+   1063          
+   1064              /* Disable the Main Output */
+   1065              __HAL_TIM_MOE_DISABLE(htim);
+   1066          
+   1067              /* Disable the Peripheral */
+   1068              __HAL_TIM_DISABLE(htim);
+   1069          
+   1070              /* Set the TIM complementary channel state */
+   1071              TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+   1072            }
+   1073          
+   1074            /* Return function status */
+   1075            return status;
+   1076          }
+   1077          
+   1078          /**
+   1079            * @}
+   1080            */
+   1081          
+   1082          /** @defgroup TIMEx_Exported_Functions_Group3 Extended Timer Complementary PWM functions
+   1083            * @brief    Timer Complementary PWM functions
+   1084            *
+   1085          @verbatim
+   1086            ==============================================================================
+   1087                           ##### Timer Complementary PWM functions #####
+   1088            ==============================================================================
+   1089            [..]
+   1090              This section provides functions allowing to:
+   1091              (+) Start the Complementary PWM.
+   1092              (+) Stop the Complementary PWM.
+   1093              (+) Start the Complementary PWM and enable interrupts.
+   1094              (+) Stop the Complementary PWM and disable interrupts.
+   1095              (+) Start the Complementary PWM and enable DMA transfers.
+   1096              (+) Stop the Complementary PWM and disable DMA transfers.
+   1097          @endverbatim
+   1098            * @{
+   1099            */
+   1100          
+   1101          /**
+   1102            * @brief  Starts the PWM signal generation on the complementary output.
+   1103            * @param  htim TIM handle
+   1104            * @param  Channel TIM Channel to be enabled
+   1105            *          This parameter can be one of the following values:
+   1106            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1107            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1108            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1109            * @retval HAL status
+   1110            */
+   1111          HAL_StatusTypeDef HAL_TIMEx_PWMN_Start(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1112          {
+   1113            uint32_t tmpsmcr;
+   1114          
+   1115            /* Check the parameters */
+   1116            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1117          
+   1118            /* Check the TIM complementary channel state */
+   1119            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) != HAL_TIM_CHANNEL_STATE_READY)
+   1120            {
+   1121              return HAL_ERROR;
+   1122            }
+   1123          
+   1124            /* Set the TIM complementary channel state */
+   1125            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+   1126          
+   1127            /* Enable the complementary PWM output  */
+   1128            TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+   1129          
+   1130            /* Enable the Main Output */
+   1131            __HAL_TIM_MOE_ENABLE(htim);
+   1132          
+   1133            /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+   1134            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+   1135            {
+   1136              tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+   1137              if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+   1138              {
+   1139                __HAL_TIM_ENABLE(htim);
+   1140              }
+   1141            }
+   1142            else
+   1143            {
+   1144              __HAL_TIM_ENABLE(htim);
+   1145            }
+   1146          
+   1147            /* Return function status */
+   1148            return HAL_OK;
+   1149          }
+   1150          
+   1151          /**
+   1152            * @brief  Stops the PWM signal generation on the complementary output.
+   1153            * @param  htim TIM handle
+   1154            * @param  Channel TIM Channel to be disabled
+   1155            *          This parameter can be one of the following values:
+   1156            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1157            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1158            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1159            * @retval HAL status
+   1160            */
+   1161          HAL_StatusTypeDef HAL_TIMEx_PWMN_Stop(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1162          {
+   1163            /* Check the parameters */
+   1164            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1165          
+   1166            /* Disable the complementary PWM output  */
+   1167            TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+   1168          
+   1169            /* Disable the Main Output */
+   1170            __HAL_TIM_MOE_DISABLE(htim);
+   1171          
+   1172            /* Disable the Peripheral */
+   1173            __HAL_TIM_DISABLE(htim);
+   1174          
+   1175            /* Set the TIM complementary channel state */
+   1176            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+   1177          
+   1178            /* Return function status */
+   1179            return HAL_OK;
+   1180          }
+   1181          
+   1182          /**
+   1183            * @brief  Starts the PWM signal generation in interrupt mode on the
+   1184            *         complementary output.
+   1185            * @param  htim TIM handle
+   1186            * @param  Channel TIM Channel to be disabled
+   1187            *          This parameter can be one of the following values:
+   1188            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1189            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1190            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1191            * @retval HAL status
+   1192            */
+   1193          HAL_StatusTypeDef HAL_TIMEx_PWMN_Start_IT(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1194          {
+   1195            HAL_StatusTypeDef status = HAL_OK;
+   1196            uint32_t tmpsmcr;
+   1197          
+   1198            /* Check the parameters */
+   1199            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1200          
+   1201            /* Check the TIM complementary channel state */
+   1202            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) != HAL_TIM_CHANNEL_STATE_READY)
+   1203            {
+   1204              return HAL_ERROR;
+   1205            }
+   1206          
+   1207            /* Set the TIM complementary channel state */
+   1208            TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+   1209          
+   1210            switch (Channel)
+   1211            {
+   1212              case TIM_CHANNEL_1:
+   1213              {
+   1214                /* Enable the TIM Capture/Compare 1 interrupt */
+   1215                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC1);
+   1216                break;
+   1217              }
+   1218          
+   1219              case TIM_CHANNEL_2:
+   1220              {
+   1221                /* Enable the TIM Capture/Compare 2 interrupt */
+   1222                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC2);
+   1223                break;
+   1224              }
+   1225          
+   1226              case TIM_CHANNEL_3:
+   1227              {
+   1228                /* Enable the TIM Capture/Compare 3 interrupt */
+   1229                __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC3);
+   1230                break;
+   1231              }
+   1232          
+   1233              default:
+   1234                status = HAL_ERROR;
+   1235                break;
+   1236            }
+   1237          
+   1238            if (status == HAL_OK)
+   1239            {
+   1240              /* Enable the TIM Break interrupt */
+   1241              __HAL_TIM_ENABLE_IT(htim, TIM_IT_BREAK);
+   1242          
+   1243              /* Enable the complementary PWM output  */
+   1244              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+   1245          
+   1246              /* Enable the Main Output */
+   1247              __HAL_TIM_MOE_ENABLE(htim);
+   1248          
+   1249              /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+   1250              if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+   1251              {
+   1252                tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+   1253                if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+   1254                {
+   1255                  __HAL_TIM_ENABLE(htim);
+   1256                }
+   1257              }
+   1258              else
+   1259              {
+   1260                __HAL_TIM_ENABLE(htim);
+   1261              }
+   1262            }
+   1263          
+   1264            /* Return function status */
+   1265            return status;
+   1266          }
+   1267          
+   1268          /**
+   1269            * @brief  Stops the PWM signal generation in interrupt mode on the
+   1270            *         complementary output.
+   1271            * @param  htim TIM handle
+   1272            * @param  Channel TIM Channel to be disabled
+   1273            *          This parameter can be one of the following values:
+   1274            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1275            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1276            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1277            * @retval HAL status
+   1278            */
+   1279          HAL_StatusTypeDef HAL_TIMEx_PWMN_Stop_IT(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1280          {
+   1281            HAL_StatusTypeDef status = HAL_OK;
+   1282            uint32_t tmpccer;
+   1283          
+   1284            /* Check the parameters */
+   1285            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1286          
+   1287            switch (Channel)
+   1288            {
+   1289              case TIM_CHANNEL_1:
+   1290              {
+   1291                /* Disable the TIM Capture/Compare 1 interrupt */
+   1292                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC1);
+   1293                break;
+   1294              }
+   1295          
+   1296              case TIM_CHANNEL_2:
+   1297              {
+   1298                /* Disable the TIM Capture/Compare 2 interrupt */
+   1299                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC2);
+   1300                break;
+   1301              }
+   1302          
+   1303              case TIM_CHANNEL_3:
+   1304              {
+   1305                /* Disable the TIM Capture/Compare 3 interrupt */
+   1306                __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC3);
+   1307                break;
+   1308              }
+   1309          
+   1310              default:
+   1311                status = HAL_ERROR;
+   1312                break;
+   1313            }
+   1314          
+   1315            if (status == HAL_OK)
+   1316            {
+   1317              /* Disable the complementary PWM output  */
+   1318              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+   1319          
+   1320              /* Disable the TIM Break interrupt (only if no more channel is active) */
+   1321              tmpccer = htim->Instance->CCER;
+   1322              if ((tmpccer & TIM_CCER_CCxNE_MASK) == (uint32_t)RESET)
+   1323              {
+   1324                __HAL_TIM_DISABLE_IT(htim, TIM_IT_BREAK);
+   1325              }
+   1326          
+   1327              /* Disable the Main Output */
+   1328              __HAL_TIM_MOE_DISABLE(htim);
+   1329          
+   1330              /* Disable the Peripheral */
+   1331              __HAL_TIM_DISABLE(htim);
+   1332          
+   1333              /* Set the TIM complementary channel state */
+   1334              TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+   1335            }
+   1336          
+   1337            /* Return function status */
+   1338            return status;
+   1339          }
+   1340          
+   1341          /**
+   1342            * @brief  Starts the TIM PWM signal generation in DMA mode on the
+   1343            *         complementary output
+   1344            * @param  htim TIM handle
+   1345            * @param  Channel TIM Channel to be enabled
+   1346            *          This parameter can be one of the following values:
+   1347            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1348            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1349            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1350            * @param  pData The source Buffer address.
+   1351            * @param  Length The length of data to be transferred from memory to TIM peripheral
+   1352            * @retval HAL status
+   1353            */
+   1354          HAL_StatusTypeDef HAL_TIMEx_PWMN_Start_DMA(TIM_HandleTypeDef *htim, uint32_t Channel, const uint32_t *pData,
+   1355                                                     uint16_t Length)
+   1356          {
+   1357            HAL_StatusTypeDef status = HAL_OK;
+   1358            uint32_t tmpsmcr;
+   1359          
+   1360            /* Check the parameters */
+   1361            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1362          
+   1363            /* Set the TIM complementary channel state */
+   1364            if (TIM_CHANNEL_N_STATE_GET(htim, Channel) == HAL_TIM_CHANNEL_STATE_BUSY)
+   1365            {
+   1366              return HAL_BUSY;
+   1367            }
+   1368            else if (TIM_CHANNEL_N_STATE_GET(htim, Channel) == HAL_TIM_CHANNEL_STATE_READY)
+   1369            {
+   1370              if ((pData == NULL) || (Length == 0U))
+   1371              {
+   1372                return HAL_ERROR;
+   1373              }
+   1374              else
+   1375              {
+   1376                TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_BUSY);
+   1377              }
+   1378            }
+   1379            else
+   1380            {
+   1381              return HAL_ERROR;
+   1382            }
+   1383          
+   1384            switch (Channel)
+   1385            {
+   1386              case TIM_CHANNEL_1:
+   1387              {
+   1388                /* Set the DMA compare callbacks */
+   1389                htim->hdma[TIM_DMA_ID_CC1]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+   1390                htim->hdma[TIM_DMA_ID_CC1]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+   1391          
+   1392                /* Set the DMA error callback */
+   1393                htim->hdma[TIM_DMA_ID_CC1]->XferErrorCallback = TIM_DMAErrorCCxN ;
+   1394          
+   1395                /* Enable the DMA channel */
+   1396                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC1], (uint32_t)pData, (uint32_t)&htim->Instance->CCR1,
+   1397                                     Length) != HAL_OK)
+   1398                {
+   1399                  /* Return error status */
+   1400                  return HAL_ERROR;
+   1401                }
+   1402                /* Enable the TIM Capture/Compare 1 DMA request */
+   1403                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC1);
+   1404                break;
+   1405              }
+   1406          
+   1407              case TIM_CHANNEL_2:
+   1408              {
+   1409                /* Set the DMA compare callbacks */
+   1410                htim->hdma[TIM_DMA_ID_CC2]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+   1411                htim->hdma[TIM_DMA_ID_CC2]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+   1412          
+   1413                /* Set the DMA error callback */
+   1414                htim->hdma[TIM_DMA_ID_CC2]->XferErrorCallback = TIM_DMAErrorCCxN ;
+   1415          
+   1416                /* Enable the DMA channel */
+   1417                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC2], (uint32_t)pData, (uint32_t)&htim->Instance->CCR2,
+   1418                                     Length) != HAL_OK)
+   1419                {
+   1420                  /* Return error status */
+   1421                  return HAL_ERROR;
+   1422                }
+   1423                /* Enable the TIM Capture/Compare 2 DMA request */
+   1424                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC2);
+   1425                break;
+   1426              }
+   1427          
+   1428              case TIM_CHANNEL_3:
+   1429              {
+   1430                /* Set the DMA compare callbacks */
+   1431                htim->hdma[TIM_DMA_ID_CC3]->XferCpltCallback = TIM_DMADelayPulseNCplt;
+   1432                htim->hdma[TIM_DMA_ID_CC3]->XferHalfCpltCallback = TIM_DMADelayPulseHalfCplt;
+   1433          
+   1434                /* Set the DMA error callback */
+   1435                htim->hdma[TIM_DMA_ID_CC3]->XferErrorCallback = TIM_DMAErrorCCxN ;
+   1436          
+   1437                /* Enable the DMA channel */
+   1438                if (HAL_DMA_Start_IT(htim->hdma[TIM_DMA_ID_CC3], (uint32_t)pData, (uint32_t)&htim->Instance->CCR3,
+   1439                                     Length) != HAL_OK)
+   1440                {
+   1441                  /* Return error status */
+   1442                  return HAL_ERROR;
+   1443                }
+   1444                /* Enable the TIM Capture/Compare 3 DMA request */
+   1445                __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_CC3);
+   1446                break;
+   1447              }
+   1448          
+   1449              default:
+   1450                status = HAL_ERROR;
+   1451                break;
+   1452            }
+   1453          
+   1454            if (status == HAL_OK)
+   1455            {
+   1456              /* Enable the complementary PWM output  */
+   1457              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_ENABLE);
+   1458          
+   1459              /* Enable the Main Output */
+   1460              __HAL_TIM_MOE_ENABLE(htim);
+   1461          
+   1462              /* Enable the Peripheral, except in trigger mode where enable is automatically done with trigger */
+   1463              if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+   1464              {
+   1465                tmpsmcr = htim->Instance->SMCR & TIM_SMCR_SMS;
+   1466                if (!IS_TIM_SLAVEMODE_TRIGGER_ENABLED(tmpsmcr))
+   1467                {
+   1468                  __HAL_TIM_ENABLE(htim);
+   1469                }
+   1470              }
+   1471              else
+   1472              {
+   1473                __HAL_TIM_ENABLE(htim);
+   1474              }
+   1475            }
+   1476          
+   1477            /* Return function status */
+   1478            return status;
+   1479          }
+   1480          
+   1481          /**
+   1482            * @brief  Stops the TIM PWM signal generation in DMA mode on the complementary
+   1483            *         output
+   1484            * @param  htim TIM handle
+   1485            * @param  Channel TIM Channel to be disabled
+   1486            *          This parameter can be one of the following values:
+   1487            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1488            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1489            *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+   1490            * @retval HAL status
+   1491            */
+   1492          HAL_StatusTypeDef HAL_TIMEx_PWMN_Stop_DMA(TIM_HandleTypeDef *htim, uint32_t Channel)
+   1493          {
+   1494            HAL_StatusTypeDef status = HAL_OK;
+   1495          
+   1496            /* Check the parameters */
+   1497            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, Channel));
+   1498          
+   1499            switch (Channel)
+   1500            {
+   1501              case TIM_CHANNEL_1:
+   1502              {
+   1503                /* Disable the TIM Capture/Compare 1 DMA request */
+   1504                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC1);
+   1505                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC1]);
+   1506                break;
+   1507              }
+   1508          
+   1509              case TIM_CHANNEL_2:
+   1510              {
+   1511                /* Disable the TIM Capture/Compare 2 DMA request */
+   1512                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC2);
+   1513                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC2]);
+   1514                break;
+   1515              }
+   1516          
+   1517              case TIM_CHANNEL_3:
+   1518              {
+   1519                /* Disable the TIM Capture/Compare 3 DMA request */
+   1520                __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_CC3);
+   1521                (void)HAL_DMA_Abort_IT(htim->hdma[TIM_DMA_ID_CC3]);
+   1522                break;
+   1523              }
+   1524          
+   1525              default:
+   1526                status = HAL_ERROR;
+   1527                break;
+   1528            }
+   1529          
+   1530            if (status == HAL_OK)
+   1531            {
+   1532              /* Disable the complementary PWM output */
+   1533              TIM_CCxNChannelCmd(htim->Instance, Channel, TIM_CCxN_DISABLE);
+   1534          
+   1535              /* Disable the Main Output */
+   1536              __HAL_TIM_MOE_DISABLE(htim);
+   1537          
+   1538              /* Disable the Peripheral */
+   1539              __HAL_TIM_DISABLE(htim);
+   1540          
+   1541              /* Set the TIM complementary channel state */
+   1542              TIM_CHANNEL_N_STATE_SET(htim, Channel, HAL_TIM_CHANNEL_STATE_READY);
+   1543            }
+   1544          
+   1545            /* Return function status */
+   1546            return status;
+   1547          }
+   1548          
+   1549          /**
+   1550            * @}
+   1551            */
+   1552          
+   1553          /** @defgroup TIMEx_Exported_Functions_Group4 Extended Timer Complementary One Pulse functions
+   1554            * @brief    Timer Complementary One Pulse functions
+   1555            *
+   1556          @verbatim
+   1557            ==============================================================================
+   1558                          ##### Timer Complementary One Pulse functions #####
+   1559            ==============================================================================
+   1560            [..]
+   1561              This section provides functions allowing to:
+   1562              (+) Start the Complementary One Pulse generation.
+   1563              (+) Stop the Complementary One Pulse.
+   1564              (+) Start the Complementary One Pulse and enable interrupts.
+   1565              (+) Stop the Complementary One Pulse and disable interrupts.
+   1566          
+   1567          @endverbatim
+   1568            * @{
+   1569            */
+   1570          
+   1571          /**
+   1572            * @brief  Starts the TIM One Pulse signal generation on the complementary
+   1573            *         output.
+   1574            * @note OutputChannel must match the pulse output channel chosen when calling
+   1575            *       @ref HAL_TIM_OnePulse_ConfigChannel().
+   1576            * @param  htim TIM One Pulse handle
+   1577            * @param  OutputChannel pulse output channel to enable
+   1578            *          This parameter can be one of the following values:
+   1579            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1580            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1581            * @retval HAL status
+   1582            */
+   1583          HAL_StatusTypeDef HAL_TIMEx_OnePulseN_Start(TIM_HandleTypeDef *htim, uint32_t OutputChannel)
+   1584          {
+   1585            uint32_t input_channel = (OutputChannel == TIM_CHANNEL_1) ? TIM_CHANNEL_2 : TIM_CHANNEL_1;
+   1586            HAL_TIM_ChannelStateTypeDef channel_1_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_1);
+   1587            HAL_TIM_ChannelStateTypeDef channel_2_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_2);
+   1588            HAL_TIM_ChannelStateTypeDef complementary_channel_1_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_1);
+   1589            HAL_TIM_ChannelStateTypeDef complementary_channel_2_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_2);
+   1590          
+   1591            /* Check the parameters */
+   1592            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, OutputChannel));
+   1593          
+   1594            /* Check the TIM channels state */
+   1595            if ((channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+   1596                || (channel_2_state != HAL_TIM_CHANNEL_STATE_READY)
+   1597                || (complementary_channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+   1598                || (complementary_channel_2_state != HAL_TIM_CHANNEL_STATE_READY))
+   1599            {
+   1600              return HAL_ERROR;
+   1601            }
+   1602          
+   1603            /* Set the TIM channels state */
+   1604            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+   1605            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+   1606            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+   1607            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+   1608          
+   1609            /* Enable the complementary One Pulse output channel and the Input Capture channel */
+   1610            TIM_CCxNChannelCmd(htim->Instance, OutputChannel, TIM_CCxN_ENABLE);
+   1611            TIM_CCxChannelCmd(htim->Instance, input_channel, TIM_CCx_ENABLE);
+   1612          
+   1613            /* Enable the Main Output */
+   1614            __HAL_TIM_MOE_ENABLE(htim);
+   1615          
+   1616            /* Return function status */
+   1617            return HAL_OK;
+   1618          }
+   1619          
+   1620          /**
+   1621            * @brief  Stops the TIM One Pulse signal generation on the complementary
+   1622            *         output.
+   1623            * @note OutputChannel must match the pulse output channel chosen when calling
+   1624            *       @ref HAL_TIM_OnePulse_ConfigChannel().
+   1625            * @param  htim TIM One Pulse handle
+   1626            * @param  OutputChannel pulse output channel to disable
+   1627            *          This parameter can be one of the following values:
+   1628            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1629            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1630            * @retval HAL status
+   1631            */
+   1632          HAL_StatusTypeDef HAL_TIMEx_OnePulseN_Stop(TIM_HandleTypeDef *htim, uint32_t OutputChannel)
+   1633          {
+   1634            uint32_t input_channel = (OutputChannel == TIM_CHANNEL_1) ? TIM_CHANNEL_2 : TIM_CHANNEL_1;
+   1635          
+   1636            /* Check the parameters */
+   1637            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, OutputChannel));
+   1638          
+   1639            /* Disable the complementary One Pulse output channel and the Input Capture channel */
+   1640            TIM_CCxNChannelCmd(htim->Instance, OutputChannel, TIM_CCxN_DISABLE);
+   1641            TIM_CCxChannelCmd(htim->Instance, input_channel, TIM_CCx_DISABLE);
+   1642          
+   1643            /* Disable the Main Output */
+   1644            __HAL_TIM_MOE_DISABLE(htim);
+   1645          
+   1646            /* Disable the Peripheral */
+   1647            __HAL_TIM_DISABLE(htim);
+   1648          
+   1649            /* Set the TIM  channels state */
+   1650            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   1651            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   1652            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   1653            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   1654          
+   1655            /* Return function status */
+   1656            return HAL_OK;
+   1657          }
+   1658          
+   1659          /**
+   1660            * @brief  Starts the TIM One Pulse signal generation in interrupt mode on the
+   1661            *         complementary channel.
+   1662            * @note OutputChannel must match the pulse output channel chosen when calling
+   1663            *       @ref HAL_TIM_OnePulse_ConfigChannel().
+   1664            * @param  htim TIM One Pulse handle
+   1665            * @param  OutputChannel pulse output channel to enable
+   1666            *          This parameter can be one of the following values:
+   1667            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1668            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1669            * @retval HAL status
+   1670            */
+   1671          HAL_StatusTypeDef HAL_TIMEx_OnePulseN_Start_IT(TIM_HandleTypeDef *htim, uint32_t OutputChannel)
+   1672          {
+   1673            uint32_t input_channel = (OutputChannel == TIM_CHANNEL_1) ? TIM_CHANNEL_2 : TIM_CHANNEL_1;
+   1674            HAL_TIM_ChannelStateTypeDef channel_1_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_1);
+   1675            HAL_TIM_ChannelStateTypeDef channel_2_state = TIM_CHANNEL_STATE_GET(htim, TIM_CHANNEL_2);
+   1676            HAL_TIM_ChannelStateTypeDef complementary_channel_1_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_1);
+   1677            HAL_TIM_ChannelStateTypeDef complementary_channel_2_state = TIM_CHANNEL_N_STATE_GET(htim, TIM_CHANNEL_2);
+   1678          
+   1679            /* Check the parameters */
+   1680            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, OutputChannel));
+   1681          
+   1682            /* Check the TIM channels state */
+   1683            if ((channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+   1684                || (channel_2_state != HAL_TIM_CHANNEL_STATE_READY)
+   1685                || (complementary_channel_1_state != HAL_TIM_CHANNEL_STATE_READY)
+   1686                || (complementary_channel_2_state != HAL_TIM_CHANNEL_STATE_READY))
+   1687            {
+   1688              return HAL_ERROR;
+   1689            }
+   1690          
+   1691            /* Set the TIM channels state */
+   1692            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+   1693            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+   1694            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_BUSY);
+   1695            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_BUSY);
+   1696          
+   1697            /* Enable the TIM Capture/Compare 1 interrupt */
+   1698            __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC1);
+   1699          
+   1700            /* Enable the TIM Capture/Compare 2 interrupt */
+   1701            __HAL_TIM_ENABLE_IT(htim, TIM_IT_CC2);
+   1702          
+   1703            /* Enable the complementary One Pulse output channel and the Input Capture channel */
+   1704            TIM_CCxNChannelCmd(htim->Instance, OutputChannel, TIM_CCxN_ENABLE);
+   1705            TIM_CCxChannelCmd(htim->Instance, input_channel, TIM_CCx_ENABLE);
+   1706          
+   1707            /* Enable the Main Output */
+   1708            __HAL_TIM_MOE_ENABLE(htim);
+   1709          
+   1710            /* Return function status */
+   1711            return HAL_OK;
+   1712          }
+   1713          
+   1714          /**
+   1715            * @brief  Stops the TIM One Pulse signal generation in interrupt mode on the
+   1716            *         complementary channel.
+   1717            * @note OutputChannel must match the pulse output channel chosen when calling
+   1718            *       @ref HAL_TIM_OnePulse_ConfigChannel().
+   1719            * @param  htim TIM One Pulse handle
+   1720            * @param  OutputChannel pulse output channel to disable
+   1721            *          This parameter can be one of the following values:
+   1722            *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+   1723            *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+   1724            * @retval HAL status
+   1725            */
+   1726          HAL_StatusTypeDef HAL_TIMEx_OnePulseN_Stop_IT(TIM_HandleTypeDef *htim, uint32_t OutputChannel)
+   1727          {
+   1728            uint32_t input_channel = (OutputChannel == TIM_CHANNEL_1) ? TIM_CHANNEL_2 : TIM_CHANNEL_1;
+   1729          
+   1730            /* Check the parameters */
+   1731            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, OutputChannel));
+   1732          
+   1733            /* Disable the TIM Capture/Compare 1 interrupt */
+   1734            __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC1);
+   1735          
+   1736            /* Disable the TIM Capture/Compare 2 interrupt */
+   1737            __HAL_TIM_DISABLE_IT(htim, TIM_IT_CC2);
+   1738          
+   1739            /* Disable the complementary One Pulse output channel and the Input Capture channel */
+   1740            TIM_CCxNChannelCmd(htim->Instance, OutputChannel, TIM_CCxN_DISABLE);
+   1741            TIM_CCxChannelCmd(htim->Instance, input_channel, TIM_CCx_DISABLE);
+   1742          
+   1743            /* Disable the Main Output */
+   1744            __HAL_TIM_MOE_DISABLE(htim);
+   1745          
+   1746            /* Disable the Peripheral */
+   1747            __HAL_TIM_DISABLE(htim);
+   1748          
+   1749            /* Set the TIM  channels state */
+   1750            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   1751            TIM_CHANNEL_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   1752            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   1753            TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   1754          
+   1755            /* Return function status */
+   1756            return HAL_OK;
+   1757          }
+   1758          
+   1759          /**
+   1760            * @}
+   1761            */
+   1762          
+   1763          /** @defgroup TIMEx_Exported_Functions_Group5 Extended Peripheral Control functions
+   1764            * @brief    Peripheral Control functions
+   1765            *
+   1766          @verbatim
+   1767            ==============================================================================
+   1768                              ##### Peripheral Control functions #####
+   1769            ==============================================================================
+   1770            [..]
+   1771              This section provides functions allowing to:
+   1772                (+) Configure the commutation event in case of use of the Hall sensor interface.
+   1773                (+) Configure Output channels for OC and PWM mode.
+   1774          
+   1775                (+) Configure Complementary channels, break features and dead time.
+   1776                (+) Configure Master synchronization.
+   1777                (+) Configure timer remapping capabilities.
+   1778                (+) Select timer input source.
+   1779                (+) Enable or disable channel grouping.
+   1780          
+   1781          @endverbatim
+   1782            * @{
+   1783            */
+   1784          
+   1785          /**
+   1786            * @brief  Configure the TIM commutation event sequence.
+   1787            * @note  This function is mandatory to use the commutation event in order to
+   1788            *        update the configuration at each commutation detection on the TRGI input of the Timer,
+   1789            *        the typical use of this feature is with the use of another Timer(interface Timer)
+   1790            *        configured in Hall sensor interface, this interface Timer will generate the
+   1791            *        commutation at its TRGO output (connected to Timer used in this function) each time
+   1792            *        the TI1 of the Interface Timer detect a commutation at its input TI1.
+   1793            * @param  htim TIM handle
+   1794            * @param  InputTrigger the Internal trigger corresponding to the Timer Interfacing with the Hall sensor
+   1795            *          This parameter can be one of the following values:
+   1796            *            @arg TIM_TS_ITR0: Internal trigger 0 selected
+   1797            *            @arg TIM_TS_ITR1: Internal trigger 1 selected
+   1798            *            @arg TIM_TS_ITR2: Internal trigger 2 selected
+   1799            *            @arg TIM_TS_ITR3: Internal trigger 3 selected
+   1800            *            @arg TIM_TS_NONE: No trigger is needed
+   1801            * @param  CommutationSource the Commutation Event source
+   1802            *          This parameter can be one of the following values:
+   1803            *            @arg TIM_COMMUTATION_TRGI: Commutation source is the TRGI of the Interface Timer
+   1804            *            @arg TIM_COMMUTATION_SOFTWARE:  Commutation source is set by software using the COMG bit
+   1805            * @retval HAL status
+   1806            */
+   1807          HAL_StatusTypeDef HAL_TIMEx_ConfigCommutEvent(TIM_HandleTypeDef *htim, uint32_t  InputTrigger,
+   1808                                                        uint32_t  CommutationSource)
+   1809          {
+   1810            /* Check the parameters */
+   1811            assert_param(IS_TIM_COMMUTATION_EVENT_INSTANCE(htim->Instance));
+   1812            assert_param(IS_TIM_INTERNAL_TRIGGEREVENT_SELECTION(InputTrigger));
+   1813          
+   1814            __HAL_LOCK(htim);
+   1815          
+   1816            if ((InputTrigger == TIM_TS_ITR0) || (InputTrigger == TIM_TS_ITR1) ||
+   1817                (InputTrigger == TIM_TS_ITR2) || (InputTrigger == TIM_TS_ITR3))
+   1818            {
+   1819              /* Select the Input trigger */
+   1820              htim->Instance->SMCR &= ~TIM_SMCR_TS;
+   1821              htim->Instance->SMCR |= InputTrigger;
+   1822            }
+   1823          
+   1824            /* Select the Capture Compare preload feature */
+   1825            htim->Instance->CR2 |= TIM_CR2_CCPC;
+   1826            /* Select the Commutation event source */
+   1827            htim->Instance->CR2 &= ~TIM_CR2_CCUS;
+   1828            htim->Instance->CR2 |= CommutationSource;
+   1829          
+   1830            /* Disable Commutation Interrupt */
+   1831            __HAL_TIM_DISABLE_IT(htim, TIM_IT_COM);
+   1832          
+   1833            /* Disable Commutation DMA request */
+   1834            __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_COM);
+   1835          
+   1836            __HAL_UNLOCK(htim);
+   1837          
+   1838            return HAL_OK;
+   1839          }
+   1840          
+   1841          /**
+   1842            * @brief  Configure the TIM commutation event sequence with interrupt.
+   1843            * @note  This function is mandatory to use the commutation event in order to
+   1844            *        update the configuration at each commutation detection on the TRGI input of the Timer,
+   1845            *        the typical use of this feature is with the use of another Timer(interface Timer)
+   1846            *        configured in Hall sensor interface, this interface Timer will generate the
+   1847            *        commutation at its TRGO output (connected to Timer used in this function) each time
+   1848            *        the TI1 of the Interface Timer detect a commutation at its input TI1.
+   1849            * @param  htim TIM handle
+   1850            * @param  InputTrigger the Internal trigger corresponding to the Timer Interfacing with the Hall sensor
+   1851            *          This parameter can be one of the following values:
+   1852            *            @arg TIM_TS_ITR0: Internal trigger 0 selected
+   1853            *            @arg TIM_TS_ITR1: Internal trigger 1 selected
+   1854            *            @arg TIM_TS_ITR2: Internal trigger 2 selected
+   1855            *            @arg TIM_TS_ITR3: Internal trigger 3 selected
+   1856            *            @arg TIM_TS_NONE: No trigger is needed
+   1857            * @param  CommutationSource the Commutation Event source
+   1858            *          This parameter can be one of the following values:
+   1859            *            @arg TIM_COMMUTATION_TRGI: Commutation source is the TRGI of the Interface Timer
+   1860            *            @arg TIM_COMMUTATION_SOFTWARE:  Commutation source is set by software using the COMG bit
+   1861            * @retval HAL status
+   1862            */
+   1863          HAL_StatusTypeDef HAL_TIMEx_ConfigCommutEvent_IT(TIM_HandleTypeDef *htim, uint32_t  InputTrigger,
+   1864                                                           uint32_t  CommutationSource)
+   1865          {
+   1866            /* Check the parameters */
+   1867            assert_param(IS_TIM_COMMUTATION_EVENT_INSTANCE(htim->Instance));
+   1868            assert_param(IS_TIM_INTERNAL_TRIGGEREVENT_SELECTION(InputTrigger));
+   1869          
+   1870            __HAL_LOCK(htim);
+   1871          
+   1872            if ((InputTrigger == TIM_TS_ITR0) || (InputTrigger == TIM_TS_ITR1) ||
+   1873                (InputTrigger == TIM_TS_ITR2) || (InputTrigger == TIM_TS_ITR3))
+   1874            {
+   1875              /* Select the Input trigger */
+   1876              htim->Instance->SMCR &= ~TIM_SMCR_TS;
+   1877              htim->Instance->SMCR |= InputTrigger;
+   1878            }
+   1879          
+   1880            /* Select the Capture Compare preload feature */
+   1881            htim->Instance->CR2 |= TIM_CR2_CCPC;
+   1882            /* Select the Commutation event source */
+   1883            htim->Instance->CR2 &= ~TIM_CR2_CCUS;
+   1884            htim->Instance->CR2 |= CommutationSource;
+   1885          
+   1886            /* Disable Commutation DMA request */
+   1887            __HAL_TIM_DISABLE_DMA(htim, TIM_DMA_COM);
+   1888          
+   1889            /* Enable the Commutation Interrupt */
+   1890            __HAL_TIM_ENABLE_IT(htim, TIM_IT_COM);
+   1891          
+   1892            __HAL_UNLOCK(htim);
+   1893          
+   1894            return HAL_OK;
+   1895          }
+   1896          
+   1897          /**
+   1898            * @brief  Configure the TIM commutation event sequence with DMA.
+   1899            * @note  This function is mandatory to use the commutation event in order to
+   1900            *        update the configuration at each commutation detection on the TRGI input of the Timer,
+   1901            *        the typical use of this feature is with the use of another Timer(interface Timer)
+   1902            *        configured in Hall sensor interface, this interface Timer will generate the
+   1903            *        commutation at its TRGO output (connected to Timer used in this function) each time
+   1904            *        the TI1 of the Interface Timer detect a commutation at its input TI1.
+   1905            * @note  The user should configure the DMA in his own software, in This function only the COMDE bit is set
+   1906            * @param  htim TIM handle
+   1907            * @param  InputTrigger the Internal trigger corresponding to the Timer Interfacing with the Hall sensor
+   1908            *          This parameter can be one of the following values:
+   1909            *            @arg TIM_TS_ITR0: Internal trigger 0 selected
+   1910            *            @arg TIM_TS_ITR1: Internal trigger 1 selected
+   1911            *            @arg TIM_TS_ITR2: Internal trigger 2 selected
+   1912            *            @arg TIM_TS_ITR3: Internal trigger 3 selected
+   1913            *            @arg TIM_TS_NONE: No trigger is needed
+   1914            * @param  CommutationSource the Commutation Event source
+   1915            *          This parameter can be one of the following values:
+   1916            *            @arg TIM_COMMUTATION_TRGI: Commutation source is the TRGI of the Interface Timer
+   1917            *            @arg TIM_COMMUTATION_SOFTWARE:  Commutation source is set by software using the COMG bit
+   1918            * @retval HAL status
+   1919            */
+   1920          HAL_StatusTypeDef HAL_TIMEx_ConfigCommutEvent_DMA(TIM_HandleTypeDef *htim, uint32_t  InputTrigger,
+   1921                                                            uint32_t  CommutationSource)
+   1922          {
+   1923            /* Check the parameters */
+   1924            assert_param(IS_TIM_COMMUTATION_EVENT_INSTANCE(htim->Instance));
+   1925            assert_param(IS_TIM_INTERNAL_TRIGGEREVENT_SELECTION(InputTrigger));
+   1926          
+   1927            __HAL_LOCK(htim);
+   1928          
+   1929            if ((InputTrigger == TIM_TS_ITR0) || (InputTrigger == TIM_TS_ITR1) ||
+   1930                (InputTrigger == TIM_TS_ITR2) || (InputTrigger == TIM_TS_ITR3))
+   1931            {
+   1932              /* Select the Input trigger */
+   1933              htim->Instance->SMCR &= ~TIM_SMCR_TS;
+   1934              htim->Instance->SMCR |= InputTrigger;
+   1935            }
+   1936          
+   1937            /* Select the Capture Compare preload feature */
+   1938            htim->Instance->CR2 |= TIM_CR2_CCPC;
+   1939            /* Select the Commutation event source */
+   1940            htim->Instance->CR2 &= ~TIM_CR2_CCUS;
+   1941            htim->Instance->CR2 |= CommutationSource;
+   1942          
+   1943            /* Enable the Commutation DMA Request */
+   1944            /* Set the DMA Commutation Callback */
+   1945            htim->hdma[TIM_DMA_ID_COMMUTATION]->XferCpltCallback = TIMEx_DMACommutationCplt;
+   1946            htim->hdma[TIM_DMA_ID_COMMUTATION]->XferHalfCpltCallback = TIMEx_DMACommutationHalfCplt;
+   1947            /* Set the DMA error callback */
+   1948            htim->hdma[TIM_DMA_ID_COMMUTATION]->XferErrorCallback = TIM_DMAError;
+   1949          
+   1950            /* Disable Commutation Interrupt */
+   1951            __HAL_TIM_DISABLE_IT(htim, TIM_IT_COM);
+   1952          
+   1953            /* Enable the Commutation DMA Request */
+   1954            __HAL_TIM_ENABLE_DMA(htim, TIM_DMA_COM);
+   1955          
+   1956            __HAL_UNLOCK(htim);
+   1957          
+   1958            return HAL_OK;
+   1959          }
+   1960          
+   1961          /**
+   1962            * @brief  Configures the TIM in master mode.
+   1963            * @param  htim TIM handle.
+   1964            * @param  sMasterConfig pointer to a TIM_MasterConfigTypeDef structure that
+   1965            *         contains the selected trigger output (TRGO) and the Master/Slave
+   1966            *         mode.
+   1967            * @retval HAL status
+   1968            */
+   1969          HAL_StatusTypeDef HAL_TIMEx_MasterConfigSynchronization(TIM_HandleTypeDef *htim,
+   1970                                                                  const TIM_MasterConfigTypeDef *sMasterConfig)
+   1971          {
+   1972            uint32_t tmpcr2;
+   1973            uint32_t tmpsmcr;
+   1974          
+   1975            /* Check the parameters */
+   1976            assert_param(IS_TIM_MASTER_INSTANCE(htim->Instance));
+   1977            assert_param(IS_TIM_TRGO_SOURCE(sMasterConfig->MasterOutputTrigger));
+   1978            assert_param(IS_TIM_MSM_STATE(sMasterConfig->MasterSlaveMode));
+   1979          
+   1980            /* Check input state */
+   1981            __HAL_LOCK(htim);
+   1982          
+   1983            /* Change the handler state */
+   1984            htim->State = HAL_TIM_STATE_BUSY;
+   1985          
+   1986            /* Get the TIMx CR2 register value */
+   1987            tmpcr2 = htim->Instance->CR2;
+   1988          
+   1989            /* Get the TIMx SMCR register value */
+   1990            tmpsmcr = htim->Instance->SMCR;
+   1991          
+   1992            /* If the timer supports ADC synchronization through TRGO2, set the master mode selection 2 */
+   1993            if (IS_TIM_TRGO2_INSTANCE(htim->Instance))
+   1994            {
+   1995              /* Check the parameters */
+   1996              assert_param(IS_TIM_TRGO2_SOURCE(sMasterConfig->MasterOutputTrigger2));
+   1997          
+   1998              /* Clear the MMS2 bits */
+   1999              tmpcr2 &= ~TIM_CR2_MMS2;
+   2000              /* Select the TRGO2 source*/
+   2001              tmpcr2 |= sMasterConfig->MasterOutputTrigger2;
+   2002            }
+   2003          
+   2004            /* Reset the MMS Bits */
+   2005            tmpcr2 &= ~TIM_CR2_MMS;
+   2006            /* Select the TRGO source */
+   2007            tmpcr2 |=  sMasterConfig->MasterOutputTrigger;
+   2008          
+   2009            /* Update TIMx CR2 */
+   2010            htim->Instance->CR2 = tmpcr2;
+   2011          
+   2012            if (IS_TIM_SLAVE_INSTANCE(htim->Instance))
+   2013            {
+   2014              /* Reset the MSM Bit */
+   2015              tmpsmcr &= ~TIM_SMCR_MSM;
+   2016              /* Set master mode */
+   2017              tmpsmcr |= sMasterConfig->MasterSlaveMode;
+   2018          
+   2019              /* Update TIMx SMCR */
+   2020              htim->Instance->SMCR = tmpsmcr;
+   2021            }
+   2022          
+   2023            /* Change the htim state */
+   2024            htim->State = HAL_TIM_STATE_READY;
+   2025          
+   2026            __HAL_UNLOCK(htim);
+   2027          
+   2028            return HAL_OK;
+   2029          }
+   2030          
+   2031          /**
+   2032            * @brief  Configures the Break feature, dead time, Lock level, OSSI/OSSR State
+   2033            *         and the AOE(automatic output enable).
+   2034            * @param  htim TIM handle
+   2035            * @param  sBreakDeadTimeConfig pointer to a TIM_ConfigBreakDeadConfigTypeDef structure that
+   2036            *         contains the BDTR Register configuration  information for the TIM peripheral.
+   2037            * @note   Interrupts can be generated when an active level is detected on the
+   2038            *         break input, the break 2 input or the system break input. Break
+   2039            *         interrupt can be enabled by calling the @ref __HAL_TIM_ENABLE_IT macro.
+   2040            * @retval HAL status
+   2041            */
+   2042          HAL_StatusTypeDef HAL_TIMEx_ConfigBreakDeadTime(TIM_HandleTypeDef *htim,
+   2043                                                          const TIM_BreakDeadTimeConfigTypeDef *sBreakDeadTimeConfig)
+   2044          {
+   2045            /* Keep this variable initialized to 0 as it is used to configure BDTR register */
+   2046            uint32_t tmpbdtr = 0U;
+   2047          
+   2048            /* Check the parameters */
+   2049            assert_param(IS_TIM_BREAK_INSTANCE(htim->Instance));
+   2050            assert_param(IS_TIM_OSSR_STATE(sBreakDeadTimeConfig->OffStateRunMode));
+   2051            assert_param(IS_TIM_OSSI_STATE(sBreakDeadTimeConfig->OffStateIDLEMode));
+   2052            assert_param(IS_TIM_LOCK_LEVEL(sBreakDeadTimeConfig->LockLevel));
+   2053            assert_param(IS_TIM_DEADTIME(sBreakDeadTimeConfig->DeadTime));
+   2054            assert_param(IS_TIM_BREAK_STATE(sBreakDeadTimeConfig->BreakState));
+   2055            assert_param(IS_TIM_BREAK_POLARITY(sBreakDeadTimeConfig->BreakPolarity));
+   2056            assert_param(IS_TIM_BREAK_FILTER(sBreakDeadTimeConfig->BreakFilter));
+   2057            assert_param(IS_TIM_AUTOMATIC_OUTPUT_STATE(sBreakDeadTimeConfig->AutomaticOutput));
+   2058            assert_param(IS_TIM_BREAK_AFMODE(sBreakDeadTimeConfig->BreakAFMode));
+   2059          
+   2060            /* Check input state */
+   2061            __HAL_LOCK(htim);
+   2062          
+   2063            /* Set the Lock level, the Break enable Bit and the Polarity, the OSSR State,
+   2064               the OSSI State, the dead time value and the Automatic Output Enable Bit */
+   2065          
+   2066            /* Set the BDTR bits */
+   2067            MODIFY_REG(tmpbdtr, TIM_BDTR_DTG, sBreakDeadTimeConfig->DeadTime);
+   2068            MODIFY_REG(tmpbdtr, TIM_BDTR_LOCK, sBreakDeadTimeConfig->LockLevel);
+   2069            MODIFY_REG(tmpbdtr, TIM_BDTR_OSSI, sBreakDeadTimeConfig->OffStateIDLEMode);
+   2070            MODIFY_REG(tmpbdtr, TIM_BDTR_OSSR, sBreakDeadTimeConfig->OffStateRunMode);
+   2071            MODIFY_REG(tmpbdtr, TIM_BDTR_BKE, sBreakDeadTimeConfig->BreakState);
+   2072            MODIFY_REG(tmpbdtr, TIM_BDTR_BKP, sBreakDeadTimeConfig->BreakPolarity);
+   2073            MODIFY_REG(tmpbdtr, TIM_BDTR_AOE, sBreakDeadTimeConfig->AutomaticOutput);
+   2074            MODIFY_REG(tmpbdtr, TIM_BDTR_BKF, (sBreakDeadTimeConfig->BreakFilter << TIM_BDTR_BKF_Pos));
+   2075            MODIFY_REG(tmpbdtr, TIM_BDTR_BKBID, sBreakDeadTimeConfig->BreakAFMode);
+   2076          
+   2077            if (IS_TIM_BKIN2_INSTANCE(htim->Instance))
+   2078            {
+   2079              /* Check the parameters */
+   2080              assert_param(IS_TIM_BREAK2_STATE(sBreakDeadTimeConfig->Break2State));
+   2081              assert_param(IS_TIM_BREAK2_POLARITY(sBreakDeadTimeConfig->Break2Polarity));
+   2082              assert_param(IS_TIM_BREAK_FILTER(sBreakDeadTimeConfig->Break2Filter));
+   2083              assert_param(IS_TIM_BREAK2_AFMODE(sBreakDeadTimeConfig->Break2AFMode));
+   2084          
+   2085              /* Set the BREAK2 input related BDTR bits */
+   2086              MODIFY_REG(tmpbdtr, TIM_BDTR_BK2F, (sBreakDeadTimeConfig->Break2Filter << TIM_BDTR_BK2F_Pos));
+   2087              MODIFY_REG(tmpbdtr, TIM_BDTR_BK2E, sBreakDeadTimeConfig->Break2State);
+   2088              MODIFY_REG(tmpbdtr, TIM_BDTR_BK2P, sBreakDeadTimeConfig->Break2Polarity);
+   2089              MODIFY_REG(tmpbdtr, TIM_BDTR_BK2BID, sBreakDeadTimeConfig->Break2AFMode);
+   2090            }
+   2091          
+   2092            /* Set TIMx_BDTR */
+   2093            htim->Instance->BDTR = tmpbdtr;
+   2094          
+   2095            __HAL_UNLOCK(htim);
+   2096          
+   2097            return HAL_OK;
+   2098          }
+   2099          
+   2100          /**
+   2101            * @brief  Configures the break input source.
+   2102            * @param  htim TIM handle.
+   2103            * @param  BreakInput Break input to configure
+   2104            *          This parameter can be one of the following values:
+   2105            *            @arg TIM_BREAKINPUT_BRK: Timer break input
+   2106            *            @arg TIM_BREAKINPUT_BRK2: Timer break 2 input
+   2107            * @param  sBreakInputConfig Break input source configuration
+   2108            * @retval HAL status
+   2109            */
+   2110          HAL_StatusTypeDef HAL_TIMEx_ConfigBreakInput(TIM_HandleTypeDef *htim,
+   2111                                                       uint32_t BreakInput,
+   2112                                                       const TIMEx_BreakInputConfigTypeDef *sBreakInputConfig)
+   2113          {
+   2114            HAL_StatusTypeDef status = HAL_OK;
+   2115            uint32_t tmporx;
+   2116            uint32_t bkin_enable_mask;
+   2117            uint32_t bkin_polarity_mask;
+   2118            uint32_t bkin_enable_bitpos;
+   2119            uint32_t bkin_polarity_bitpos;
+   2120          
+   2121            /* Check the parameters */
+   2122            assert_param(IS_TIM_BREAK_INSTANCE(htim->Instance));
+   2123            assert_param(IS_TIM_BREAKINPUT(BreakInput));
+   2124            assert_param(IS_TIM_BREAKINPUTSOURCE(sBreakInputConfig->Source));
+   2125            assert_param(IS_TIM_BREAKINPUTSOURCE_STATE(sBreakInputConfig->Enable));
+   2126            assert_param(IS_TIM_BREAKINPUTSOURCE_POLARITY(sBreakInputConfig->Polarity));
+   2127          
+   2128            /* Check input state */
+   2129            __HAL_LOCK(htim);
+   2130          
+   2131            switch (sBreakInputConfig->Source)
+   2132            {
+   2133              case TIM_BREAKINPUTSOURCE_BKIN:
+   2134              {
+   2135                bkin_enable_mask = TIM1_AF1_BKINE;
+   2136                bkin_enable_bitpos = TIM1_AF1_BKINE_Pos;
+   2137                bkin_polarity_mask = TIM1_AF1_BKINP;
+   2138                bkin_polarity_bitpos = TIM1_AF1_BKINP_Pos;
+   2139                break;
+   2140              }
+   2141          #if defined(COMP1) && defined(COMP2)
+   2142              case TIM_BREAKINPUTSOURCE_COMP1:
+   2143              {
+   2144                bkin_enable_mask = TIM1_AF1_BKCMP1E;
+   2145                bkin_enable_bitpos = TIM1_AF1_BKCMP1E_Pos;
+   2146                bkin_polarity_mask = TIM1_AF1_BKCMP1P;
+   2147                bkin_polarity_bitpos = TIM1_AF1_BKCMP1P_Pos;
+   2148                break;
+   2149              }
+   2150              case TIM_BREAKINPUTSOURCE_COMP2:
+   2151              {
+   2152                bkin_enable_mask = TIM1_AF1_BKCMP2E;
+   2153                bkin_enable_bitpos = TIM1_AF1_BKCMP2E_Pos;
+   2154                bkin_polarity_mask = TIM1_AF1_BKCMP2P;
+   2155                bkin_polarity_bitpos = TIM1_AF1_BKCMP2P_Pos;
+   2156                break;
+   2157              }
+   2158          #endif /* COMP1 && COMP2 */
+   2159          #if defined(COMP3)
+   2160              case TIM_BREAKINPUTSOURCE_COMP3:
+   2161              {
+   2162                bkin_enable_mask = TIM1_AF1_BKCMP3E;
+   2163                bkin_enable_bitpos = TIM1_AF1_BKCMP3E_Pos;
+   2164                bkin_polarity_mask = TIM1_AF1_BKCMP3P;
+   2165                bkin_polarity_bitpos = TIM1_AF1_BKCMP3P_Pos;
+   2166                break;
+   2167              }
+   2168          #endif /* COMP3 */
+   2169          
+   2170              default:
+   2171              {
+   2172                bkin_enable_mask = 0U;
+   2173                bkin_polarity_mask = 0U;
+   2174                bkin_enable_bitpos = 0U;
+   2175                bkin_polarity_bitpos = 0U;
+   2176                break;
+   2177              }
+   2178            }
+   2179          
+   2180            switch (BreakInput)
+   2181            {
+   2182              case TIM_BREAKINPUT_BRK:
+   2183              {
+   2184                /* Get the TIMx_AF1 register value */
+   2185                tmporx = htim->Instance->AF1;
+   2186          
+   2187                /* Enable the break input */
+   2188                tmporx &= ~bkin_enable_mask;
+   2189                tmporx |= (sBreakInputConfig->Enable << bkin_enable_bitpos) & bkin_enable_mask;
+   2190          
+   2191                /* Set the break input polarity */
+   2192                tmporx &= ~bkin_polarity_mask;
+   2193                tmporx |= (sBreakInputConfig->Polarity << bkin_polarity_bitpos) & bkin_polarity_mask;
+   2194          
+   2195                /* Set TIMx_AF1 */
+   2196                htim->Instance->AF1 = tmporx;
+   2197                break;
+   2198              }
+   2199              case TIM_BREAKINPUT_BRK2:
+   2200              {
+   2201                /* Get the TIMx_AF2 register value */
+   2202                tmporx = htim->Instance->AF2;
+   2203          
+   2204                /* Enable the break input */
+   2205                tmporx &= ~bkin_enable_mask;
+   2206                tmporx |= (sBreakInputConfig->Enable << bkin_enable_bitpos) & bkin_enable_mask;
+   2207          
+   2208                /* Set the break input polarity */
+   2209                tmporx &= ~bkin_polarity_mask;
+   2210                tmporx |= (sBreakInputConfig->Polarity << bkin_polarity_bitpos) & bkin_polarity_mask;
+   2211          
+   2212                /* Set TIMx_AF2 */
+   2213                htim->Instance->AF2 = tmporx;
+   2214                break;
+   2215              }
+   2216              default:
+   2217                status = HAL_ERROR;
+   2218                break;
+   2219            }
+   2220          
+   2221            __HAL_UNLOCK(htim);
+   2222          
+   2223            return status;
+   2224          }
+   2225          
+   2226          /**
+   2227            * @brief  Configures the TIMx Remapping input capabilities.
+   2228            * @param  htim TIM handle.
+   2229            * @param  Remap specifies the TIM remapping source.
+   2230            *         For TIM1, the parameter can take one of the following values:
+   2231            *            @arg TIM_TIM1_ETR_GPIO:                TIM1 ETR is is connected to GPIO
+   2232            *            @arg TIM_TIM1_ETR_COMP1:               TIM1 ETR is connected to COMP1 output
+   2233            *            @arg TIM_TIM1_ETR_COMP2:               TIM1 ETR is connected to COMP2 output
+   2234            *            @arg TIM_TIM1_ETR_COMP3:               TIM1 ETR is connected to COMP3 output    (**)
+   2235            *            @arg TIM_TIM1_ETR_ADC1_AWD1:           TIM1 ETR is connected to ADC1 AWD1
+   2236            *            @arg TIM_TIM1_ETR_ADC1_AWD2:           TIM1 ETR is connected to ADC1 AWD2
+   2237            *            @arg TIM_TIM1_ETR_ADC1_AWD3:           TIM1 ETR is connected to ADC1 AWD3
+   2238            *
+   2239            *         For TIM2, the parameter can take one of the following values: (*)
+   2240            *            @arg TIM_TIM2_ETR_GPIO:                TIM2_ETR is connected to GPIO
+   2241            *            @arg TIM_TIM2_ETR_COMP1:               TIM2_ETR is connected to COMP1 output
+   2242            *            @arg TIM_TIM2_ETR_COMP2:               TIM2_ETR is connected to COMP2 output
+   2243            *            @arg TIM_TIM2_ETR_COMP3:               TIM2_ETR is connected to COMP3 output    (**)
+   2244            *            @arg TIM_TIM2_ETR_LSE:                 TIM2_ETR is connected to LSE
+   2245            *            @arg TIM_TIM2_ETR_MCO:                 TIM2_ETR is connected to MCO             (**)
+   2246            *            @arg TIM_TIM2_ETR_MCO2:                TIM2_ETR is connected to MCO2            (**)
+   2247            *
+   2248            *         For TIM3, the parameter can take one of the following values:
+   2249            *            @arg TIM_TIM3_ETR_GPIO                TIM3_ETR is connected to GPIO
+   2250            *            @arg TIM_TIM3_ETR_COMP1               TIM3_ETR is connected to COMP1 output
+   2251            *            @arg TIM_TIM3_ETR_COMP2               TIM3_ETR is connected to COMP2 output
+   2252            *            @arg TIM_TIM3_ETR_COMP3               TIM3_ETR is connected to COMP3 output    (**)
+   2253            *
+   2254            *         For TIM4, the parameter can take one of the following values:(*)
+   2255            *            @arg TIM_TIM4_ETR_GPIO                TIM4_ETR is connected to GPIO
+   2256            *            @arg TIM_TIM4_ETR_COMP1               TIM4_ETR is connected to COMP1 output
+   2257            *            @arg TIM_TIM4_ETR_COMP2               TIM4_ETR is connected to COMP2 output
+   2258            *            @arg TIM_TIM4_ETR_COMP3               TIM4_ETR is connected to COMP3 output    (**)
+   2259            *
+   2260            *  (*) Timer instance not available on all devices \n
+   2261            *  (**) Value not defined in all devices. \n
+   2262            *
+   2263            * @retval HAL status
+   2264            */
+   2265          HAL_StatusTypeDef HAL_TIMEx_RemapConfig(TIM_HandleTypeDef *htim, uint32_t Remap)
+   2266          {
+   2267            /* Check parameters */
+   2268            assert_param(IS_TIM_REMAP_INSTANCE(htim->Instance));
+   2269            assert_param(IS_TIM_REMAP(Remap));
+   2270          
+   2271            __HAL_LOCK(htim);
+   2272          
+   2273            MODIFY_REG(htim->Instance->AF1, TIM1_AF1_ETRSEL_Msk, Remap);
+   2274          
+   2275            __HAL_UNLOCK(htim);
+   2276          
+   2277            return HAL_OK;
+   2278          }
+   2279          
+   2280          /**
+   2281            * @brief  Select the timer input source
+   2282            * @param  htim TIM handle.
+   2283            * @param  Channel specifies the TIM Channel
+   2284            *          This parameter can be one of the following values:
+   2285            *            @arg TIM_CHANNEL_1: TI1 input channel
+   2286            *            @arg TIM_CHANNEL_2: TI2 input channel
+   2287            *            @arg TIM_CHANNEL_3: TI3 input channel
+   2288            * @param  TISelection specifies the timer input source
+   2289            *
+   2290            *         For TIM1 this parameter can be one of the following values:
+   2291            *            @arg TIM_TIM1_TI1_GPIO:                TIM1 TI1 is connected to GPIO
+   2292            *            @arg TIM_TIM1_TI1_COMP1:               TIM1 TI1 is connected to COMP1 output
+   2293            *            @arg TIM_TIM1_TI2_GPIO:                TIM1 TI2 is connected to GPIO
+   2294            *            @arg TIM_TIM1_TI2_COMP2:               TIM1 TI2 is connected to COMP2 output
+   2295            *            @arg TIM_TIM1_TI3_GPIO:                TIM1 TI3 is connected to GPIO
+   2296            *            @arg TIM_TIM1_TI3_COMP3:               TIM1 TI3 is connected to COMP3 output   (**)
+   2297            *
+   2298            *         For TIM2, the parameter is one of the following values: (*)
+   2299            *            @arg TIM_TIM2_TI1_GPIO:                TIM2 TI1 is connected to GPIO
+   2300            *            @arg TIM_TIM2_TI1_COMP1:               TIM2 TI1 is connected to COMP1 output
+   2301            *            @arg TIM_TIM2_TI2_GPIO:                TIM2 TI2 is connected to GPIO
+   2302            *            @arg TIM_TIM2_TI2_COMP2:               TIM2 TI2 is connected to COMP2 output
+   2303            *            @arg TIM_TIM2_TI3_GPIO:                TIM2 TI3 is connected to GPIO
+   2304            *            @arg TIM_TIM2_TI3_COMP3:               TIM2 TI3 is connected to COMP3 output   (**)
+   2305            *
+   2306            *         For TIM3, the parameter is one of the following values:
+   2307            *            @arg TIM_TIM3_TI1_GPIO:                TIM3 TI1 is connected to GPIO
+   2308            *            @arg TIM_TIM3_TI1_COMP1:               TIM3 TI1 is connected to COMP1 output
+   2309            *            @arg TIM_TIM3_TI2_GPIO:                TIM3 TI2 is connected to GPIO
+   2310            *            @arg TIM_TIM3_TI2_COMP2:               TIM3 TI2 is connected to COMP2 output
+   2311            *            @arg TIM_TIM3_TI3_GPIO:                TIM3 TI3 is connected to GPIO
+   2312            *            @arg TIM_TIM3_TI3_COMP3:               TIM3 TI3 is connected to COMP3 output   (**)
+   2313            *
+   2314            *         For TIM4, the parameter is one of the following values: (*)
+   2315            *            @arg TIM_TIM4_TI1_GPIO:                TIM4 TI1 is connected to GPIO
+   2316            *            @arg TIM_TIM4_TI1_COMP1:               TIM4 TI1 is connected to COMP1 output
+   2317            *            @arg TIM_TIM4_TI2_GPIO:                TIM4 TI2 is connected to GPIO
+   2318            *            @arg TIM_TIM4_TI2_COMP2:               TIM4 TI2 is connected to COMP2 output
+   2319            *            @arg TIM_TIM4_TI3_GPIO:                TIM4 TI3 is connected to GPIO
+   2320            *            @arg TIM_TIM4_TI3_COMP3:               TIM4 TI3 is connected to COMP3 output
+   2321            *
+   2322            *         For TIM14, the parameter is one of the following values:
+   2323            *            @arg TIM_TIM14_TI1_GPIO:               TIM14 TI1 is connected to GPIO
+   2324            *            @arg TIM_TIM14_TI1_RTC:                TIM14 TI1 is connected to RTC clock
+   2325            *            @arg TIM_TIM14_TI1_HSE_32:             TIM14 TI1 is connected to HSE div 32
+   2326            *            @arg TIM_TIM14_TI1_MCO:                TIM14 TI1 is connected to MCO
+   2327            *            @arg TIM_TIM14_TI1_MCO2:               TIM14 TI1 is connected to MCO2          (**)
+   2328            *
+   2329            *         For TIM15, the parameter is one of the following values:
+   2330            *            @arg TIM_TIM15_TI1_GPIO:               TIM15 TI1 is connected to GPIO
+   2331            *            @arg TIM_TIM15_TI1_TIM2_CH1:           TIM15 TI1 is connected to TIM2 CH1
+   2332            *            @arg TIM_TIM15_TI1_TIM3_CH1:           TIM15 TI1 is connected to TIM3 CH1
+   2333            *            @arg TIM_TIM15_TI2_GPIO:               TIM15 TI2 is connected to GPIO
+   2334            *            @arg TIM_TIM15_TI2_TIM2_CH2:           TIM15 TI2 is connected to TIM2 CH2
+   2335            *            @arg TIM_TIM15_TI2_TIM3_CH2:           TIM15 TI2 is connected to TIM3 CH2
+   2336            *
+   2337            *         For TIM16, the parameter can have the following values:
+   2338            *            @arg TIM_TIM16_TI1_GPIO:               TIM16 TI1 is connected to GPIO
+   2339            *            @arg TIM_TIM16_TI1_LSI:                TIM16 TI1 is connected to LSI
+   2340            *            @arg TIM_TIM16_TI1_LSE:                TIM16 TI1 is connected to LSE
+   2341            *            @arg TIM_TIM16_TI1_RTC_WAKEUP:         TIM16 TI1 is connected to TRC wakeup interrupt
+   2342            *            @arg TIM_TIM16_TI1_MCO2:               TIM16 TI1 is connected to MCO2          (**)
+   2343            *
+   2344            *         For TIM17, the parameter can have the following values:
+   2345            *            @arg TIM_TIM17_TI1_GPIO:               TIM17 TI1 is connected to GPIO
+   2346            *            @arg TIM_TIM14_TI1_HSI:                TIM17 TI1 is connected to HSI           (**)
+   2347            *            @arg TIM_TIM17_TI1_HSE_32:             TIM17 TI1 is connected to HSE div 32
+   2348            *            @arg TIM_TIM17_TI1_MCO:                TIM17 TI1 is connected to MCO
+   2349            *            @arg TIM_TIM17_TI1_MCO2:               TIM17 TI1 is connected to MCO2          (**)
+   2350            *
+   2351            *  (*) Timer instance not available on all devices \n
+   2352            *  (**) Value not defined in all devices. \n
+   2353            *
+   2354            * @retval HAL status
+   2355            */
+   2356          HAL_StatusTypeDef  HAL_TIMEx_TISelection(TIM_HandleTypeDef *htim, uint32_t TISelection, uint32_t Channel)
+   2357          {
+   2358            HAL_StatusTypeDef status = HAL_OK;
+   2359          
+   2360            /* Check parameters */
+   2361            assert_param(IS_TIM_TISEL_INSTANCE(htim->Instance));
+   2362            assert_param(IS_TIM_TISEL(TISelection));
+   2363          
+   2364            __HAL_LOCK(htim);
+   2365          
+   2366            switch (Channel)
+   2367            {
+   2368              case TIM_CHANNEL_1:
+   2369                MODIFY_REG(htim->Instance->TISEL, TIM_TISEL_TI1SEL, TISelection);
+   2370                break;
+   2371              case TIM_CHANNEL_2:
+   2372                MODIFY_REG(htim->Instance->TISEL, TIM_TISEL_TI2SEL, TISelection);
+   2373                break;
+   2374              case TIM_CHANNEL_3:
+   2375                MODIFY_REG(htim->Instance->TISEL, TIM_TISEL_TI3SEL, TISelection);
+   2376                break;
+   2377              default:
+   2378                status = HAL_ERROR;
+   2379                break;
+   2380            }
+   2381          
+   2382            __HAL_UNLOCK(htim);
+   2383          
+   2384            return status;
+   2385          }
+   2386          
+   2387          /**
+   2388            * @brief  Group channel 5 and channel 1, 2 or 3
+   2389            * @param  htim TIM handle.
+   2390            * @param  Channels specifies the reference signal(s) the OC5REF is combined with.
+   2391            *         This parameter can be any combination of the following values:
+   2392            *         TIM_GROUPCH5_NONE: No effect of OC5REF on OC1REFC, OC2REFC and OC3REFC
+   2393            *         TIM_GROUPCH5_OC1REFC: OC1REFC is the logical AND of OC1REFC and OC5REF
+   2394            *         TIM_GROUPCH5_OC2REFC: OC2REFC is the logical AND of OC2REFC and OC5REF
+   2395            *         TIM_GROUPCH5_OC3REFC: OC3REFC is the logical AND of OC3REFC and OC5REF
+   2396            * @retval HAL status
+   2397            */
+   2398          HAL_StatusTypeDef HAL_TIMEx_GroupChannel5(TIM_HandleTypeDef *htim, uint32_t Channels)
+   2399          {
+   2400            /* Check parameters */
+   2401            assert_param(IS_TIM_COMBINED3PHASEPWM_INSTANCE(htim->Instance));
+   2402            assert_param(IS_TIM_GROUPCH5(Channels));
+   2403          
+   2404            /* Process Locked */
+   2405            __HAL_LOCK(htim);
+   2406          
+   2407            htim->State = HAL_TIM_STATE_BUSY;
+   2408          
+   2409            /* Clear GC5Cx bit fields */
+   2410            htim->Instance->CCR5 &= ~(TIM_CCR5_GC5C3 | TIM_CCR5_GC5C2 | TIM_CCR5_GC5C1);
+   2411          
+   2412            /* Set GC5Cx bit fields */
+   2413            htim->Instance->CCR5 |= Channels;
+   2414          
+   2415            /* Change the htim state */
+   2416            htim->State = HAL_TIM_STATE_READY;
+   2417          
+   2418            __HAL_UNLOCK(htim);
+   2419          
+   2420            return HAL_OK;
+   2421          }
+   2422          
+   2423          /**
+   2424            * @brief  Disarm the designated break input (when it operates in bidirectional mode).
+   2425            * @param  htim TIM handle.
+   2426            * @param  BreakInput Break input to disarm
+   2427            *          This parameter can be one of the following values:
+   2428            *            @arg TIM_BREAKINPUT_BRK: Timer break input
+   2429            *            @arg TIM_BREAKINPUT_BRK2: Timer break 2 input
+   2430            * @note  The break input can be disarmed only when it is configured in
+   2431            *        bidirectional mode and when when MOE is reset.
+   2432            * @note  Purpose is to be able to have the input voltage back to high-state,
+   2433            *        whatever the time constant on the output .
+   2434            * @retval HAL status
+   2435            */
+   2436          HAL_StatusTypeDef HAL_TIMEx_DisarmBreakInput(TIM_HandleTypeDef *htim, uint32_t BreakInput)
+   2437          {
+   2438            HAL_StatusTypeDef status = HAL_OK;
+   2439            uint32_t tmpbdtr;
+   2440          
+   2441            /* Check the parameters */
+   2442            assert_param(IS_TIM_BREAK_INSTANCE(htim->Instance));
+   2443            assert_param(IS_TIM_BREAKINPUT(BreakInput));
+   2444          
+   2445            switch (BreakInput)
+   2446            {
+   2447              case TIM_BREAKINPUT_BRK:
+   2448              {
+   2449                /* Check initial conditions */
+   2450                tmpbdtr = READ_REG(htim->Instance->BDTR);
+   2451                if ((READ_BIT(tmpbdtr, TIM_BDTR_BKBID) == TIM_BDTR_BKBID) &&
+   2452                    (READ_BIT(tmpbdtr, TIM_BDTR_MOE) == 0U))
+   2453                {
+   2454                  /* Break input BRK is disarmed */
+   2455                  SET_BIT(htim->Instance->BDTR, TIM_BDTR_BKDSRM);
+   2456                }
+   2457                break;
+   2458              }
+   2459              case TIM_BREAKINPUT_BRK2:
+   2460              {
+   2461                /* Check initial conditions */
+   2462                tmpbdtr = READ_REG(htim->Instance->BDTR);
+   2463                if ((READ_BIT(tmpbdtr, TIM_BDTR_BK2BID) == TIM_BDTR_BK2BID) &&
+   2464                    (READ_BIT(tmpbdtr, TIM_BDTR_MOE) == 0U))
+   2465                {
+   2466                  /* Break input BRK is disarmed */
+   2467                  SET_BIT(htim->Instance->BDTR, TIM_BDTR_BK2DSRM);
+   2468                }
+   2469                break;
+   2470              }
+   2471              default:
+   2472                status = HAL_ERROR;
+   2473                break;
+   2474            }
+   2475          
+   2476            return status;
+   2477          }
+   2478          
+   2479          /**
+   2480            * @brief  Arm the designated break input (when it operates in bidirectional mode).
+   2481            * @param  htim TIM handle.
+   2482            * @param  BreakInput Break input to arm
+   2483            *          This parameter can be one of the following values:
+   2484            *            @arg TIM_BREAKINPUT_BRK: Timer break input
+   2485            *            @arg TIM_BREAKINPUT_BRK2: Timer break 2 input
+   2486            * @note  Arming is possible at anytime, even if fault is present.
+   2487            * @note  Break input is automatically armed as soon as MOE bit is set.
+   2488            * @retval HAL status
+   2489            */
+   2490          HAL_StatusTypeDef HAL_TIMEx_ReArmBreakInput(const TIM_HandleTypeDef *htim, uint32_t BreakInput)
+   2491          {
+   2492            HAL_StatusTypeDef status = HAL_OK;
+   2493            uint32_t tickstart;
+   2494          
+   2495            /* Check the parameters */
+   2496            assert_param(IS_TIM_BREAK_INSTANCE(htim->Instance));
+   2497            assert_param(IS_TIM_BREAKINPUT(BreakInput));
+   2498          
+   2499            switch (BreakInput)
+   2500            {
+   2501              case TIM_BREAKINPUT_BRK:
+   2502              {
+   2503                /* Check initial conditions */
+   2504                if (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BKBID) == TIM_BDTR_BKBID)
+   2505                {
+   2506                  /* Break input BRK is re-armed automatically by hardware. Poll to check whether fault condition disappeared */
+   2507                  /* Init tickstart for timeout management */
+   2508                  tickstart = HAL_GetTick();
+   2509                  while (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BKDSRM) != 0UL)
+   2510                  {
+   2511                    if ((HAL_GetTick() - tickstart) > TIM_BREAKINPUT_REARM_TIMEOUT)
+   2512                    {
+   2513                      /* New check to avoid false timeout detection in case of preemption */
+   2514                      if (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BKDSRM) != 0UL)
+   2515                      {
+   2516                        return HAL_TIMEOUT;
+   2517                      }
+   2518                    }
+   2519                  }
+   2520                }
+   2521                break;
+   2522              }
+   2523          
+   2524              case TIM_BREAKINPUT_BRK2:
+   2525              {
+   2526                /* Check initial conditions */
+   2527                if (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BK2BID) == TIM_BDTR_BK2BID)
+   2528                {
+   2529                  /* Break input BRK2 is re-armed automatically by hardware. Poll to check whether fault condition disappeared */
+   2530                  /* Init tickstart for timeout management */
+   2531                  tickstart = HAL_GetTick();
+   2532                  while (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BK2DSRM) != 0UL)
+   2533                  {
+   2534                    if ((HAL_GetTick() - tickstart) > TIM_BREAKINPUT_REARM_TIMEOUT)
+   2535                    {
+   2536                      /* New check to avoid false timeout detection in case of preemption */
+   2537                      if (READ_BIT(htim->Instance->BDTR, TIM_BDTR_BK2DSRM) != 0UL)
+   2538                      {
+   2539                        return HAL_TIMEOUT;
+   2540                      }
+   2541                    }
+   2542                  }
+   2543                }
+   2544                break;
+   2545              }
+   2546              default:
+   2547                status = HAL_ERROR;
+   2548                break;
+   2549            }
+   2550          
+   2551            return status;
+   2552          }
+   2553          
+   2554          /**
+   2555            * @}
+   2556            */
+   2557          
+   2558          /** @defgroup TIMEx_Exported_Functions_Group6 Extended Callbacks functions
+   2559            * @brief    Extended Callbacks functions
+   2560            *
+   2561          @verbatim
+   2562            ==============================================================================
+   2563                              ##### Extended Callbacks functions #####
+   2564            ==============================================================================
+   2565            [..]
+   2566              This section provides Extended TIM callback functions:
+   2567              (+) Timer Commutation callback
+   2568              (+) Timer Break callback
+   2569          
+   2570          @endverbatim
+   2571            * @{
+   2572            */
+   2573          
+   2574          /**
+   2575            * @brief  Commutation callback in non-blocking mode
+   2576            * @param  htim TIM handle
+   2577            * @retval None
+   2578            */
+   2579          __weak void HAL_TIMEx_CommutCallback(TIM_HandleTypeDef *htim)
+   2580          {
+   2581            /* Prevent unused argument(s) compilation warning */
+   2582            UNUSED(htim);
+   2583          
+   2584            /* NOTE : This function should not be modified, when the callback is needed,
+   2585                      the HAL_TIMEx_CommutCallback could be implemented in the user file
+   2586             */
+   2587          }
+   2588          /**
+   2589            * @brief  Commutation half complete callback in non-blocking mode
+   2590            * @param  htim TIM handle
+   2591            * @retval None
+   2592            */
+   2593          __weak void HAL_TIMEx_CommutHalfCpltCallback(TIM_HandleTypeDef *htim)
+   2594          {
+   2595            /* Prevent unused argument(s) compilation warning */
+   2596            UNUSED(htim);
+   2597          
+   2598            /* NOTE : This function should not be modified, when the callback is needed,
+   2599                      the HAL_TIMEx_CommutHalfCpltCallback could be implemented in the user file
+   2600             */
+   2601          }
+   2602          
+   2603          /**
+   2604            * @brief  Break detection callback in non-blocking mode
+   2605            * @param  htim TIM handle
+   2606            * @retval None
+   2607            */
+   2608          __weak void HAL_TIMEx_BreakCallback(TIM_HandleTypeDef *htim)
+   2609          {
+   2610            /* Prevent unused argument(s) compilation warning */
+   2611            UNUSED(htim);
+   2612          
+   2613            /* NOTE : This function should not be modified, when the callback is needed,
+   2614                      the HAL_TIMEx_BreakCallback could be implemented in the user file
+   2615             */
+   2616          }
+   2617          
+   2618          /**
+   2619            * @brief  Break2 detection callback in non blocking mode
+   2620            * @param  htim: TIM handle
+   2621            * @retval None
+   2622            */
+   2623          __weak void HAL_TIMEx_Break2Callback(TIM_HandleTypeDef *htim)
+   2624          {
+   2625            /* Prevent unused argument(s) compilation warning */
+   2626            UNUSED(htim);
+   2627          
+   2628            /* NOTE : This function Should not be modified, when the callback is needed,
+   2629                      the HAL_TIMEx_Break2Callback could be implemented in the user file
+   2630             */
+   2631          }
+   2632          /**
+   2633            * @}
+   2634            */
+   2635          
+   2636          /** @defgroup TIMEx_Exported_Functions_Group7 Extended Peripheral State functions
+   2637            * @brief    Extended Peripheral State functions
+   2638            *
+   2639          @verbatim
+   2640            ==============================================================================
+   2641                          ##### Extended Peripheral State functions #####
+   2642            ==============================================================================
+   2643            [..]
+   2644              This subsection permits to get in run-time the status of the peripheral
+   2645              and the data flow.
+   2646          
+   2647          @endverbatim
+   2648            * @{
+   2649            */
+   2650          
+   2651          /**
+   2652            * @brief  Return the TIM Hall Sensor interface handle state.
+   2653            * @param  htim TIM Hall Sensor handle
+   2654            * @retval HAL state
+   2655            */
+   2656          HAL_TIM_StateTypeDef HAL_TIMEx_HallSensor_GetState(const TIM_HandleTypeDef *htim)
+   2657          {
+   2658            return htim->State;
+   2659          }
+   2660          
+   2661          /**
+   2662            * @brief  Return actual state of the TIM complementary channel.
+   2663            * @param  htim TIM handle
+   2664            * @param  ChannelN TIM Complementary channel
+   2665            *          This parameter can be one of the following values:
+   2666            *            @arg TIM_CHANNEL_1: TIM Channel 1
+   2667            *            @arg TIM_CHANNEL_2: TIM Channel 2
+   2668            *            @arg TIM_CHANNEL_3: TIM Channel 3
+   2669            * @retval TIM Complementary channel state
+   2670            */
+   2671          HAL_TIM_ChannelStateTypeDef HAL_TIMEx_GetChannelNState(const TIM_HandleTypeDef *htim,  uint32_t ChannelN)
+   2672          {
+   2673            HAL_TIM_ChannelStateTypeDef channel_state;
+   2674          
+   2675            /* Check the parameters */
+   2676            assert_param(IS_TIM_CCXN_INSTANCE(htim->Instance, ChannelN));
+   2677          
+   2678            channel_state = TIM_CHANNEL_N_STATE_GET(htim, ChannelN);
+   2679          
+   2680            return channel_state;
+   2681          }
+   2682          /**
+   2683            * @}
+   2684            */
+   2685          
+   2686          /**
+   2687            * @}
+   2688            */
+   2689          
+   2690          /* Private functions ---------------------------------------------------------*/
+   2691          /** @defgroup TIMEx_Private_Functions TIM Extended Private Functions
+   2692            * @{
+   2693            */
+   2694          
+   2695          /**
+   2696            * @brief  TIM DMA Commutation callback.
+   2697            * @param  hdma pointer to DMA handle.
+   2698            * @retval None
+   2699            */
+   2700          void TIMEx_DMACommutationCplt(DMA_HandleTypeDef *hdma)
+   2701          {
+   2702            TIM_HandleTypeDef *htim = (TIM_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+   2703          
+   2704            /* Change the htim state */
+   2705            htim->State = HAL_TIM_STATE_READY;
+   2706          
+   2707          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+   2708            htim->CommutationCallback(htim);
+   2709          #else
+   2710            HAL_TIMEx_CommutCallback(htim);
+   2711          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+   2712          }
+   2713          
+   2714          /**
+   2715            * @brief  TIM DMA Commutation half complete callback.
+   2716            * @param  hdma pointer to DMA handle.
+   2717            * @retval None
+   2718            */
+   2719          void TIMEx_DMACommutationHalfCplt(DMA_HandleTypeDef *hdma)
+   2720          {
+   2721            TIM_HandleTypeDef *htim = (TIM_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+   2722          
+   2723            /* Change the htim state */
+   2724            htim->State = HAL_TIM_STATE_READY;
+   2725          
+   2726          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+   2727            htim->CommutationHalfCpltCallback(htim);
+   2728          #else
+   2729            HAL_TIMEx_CommutHalfCpltCallback(htim);
+   2730          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+   2731          }
+   2732          
+   2733          
+   2734          /**
+   2735            * @brief  TIM DMA Delay Pulse complete callback (complementary channel).
+   2736            * @param  hdma pointer to DMA handle.
+   2737            * @retval None
+   2738            */
+   2739          static void TIM_DMADelayPulseNCplt(DMA_HandleTypeDef *hdma)
+   2740          {
+   2741            TIM_HandleTypeDef *htim = (TIM_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+   2742          
+   2743            if (hdma == htim->hdma[TIM_DMA_ID_CC1])
+   2744            {
+   2745              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;
+   2746          
+   2747              if (hdma->Init.Mode == DMA_NORMAL)
+   2748              {
+   2749                TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   2750              }
+   2751            }
+   2752            else if (hdma == htim->hdma[TIM_DMA_ID_CC2])
+   2753            {
+   2754              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_2;
+   2755          
+   2756              if (hdma->Init.Mode == DMA_NORMAL)
+   2757              {
+   2758                TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   2759              }
+   2760            }
+   2761            else if (hdma == htim->hdma[TIM_DMA_ID_CC3])
+   2762            {
+   2763              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_3;
+   2764          
+   2765              if (hdma->Init.Mode == DMA_NORMAL)
+   2766              {
+   2767                TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_3, HAL_TIM_CHANNEL_STATE_READY);
+   2768              }
+   2769            }
+   2770            else
+   2771            {
+   2772              /* nothing to do */
+   2773            }
+   2774          
+   2775          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+   2776            htim->PWM_PulseFinishedCallback(htim);
+   2777          #else
+   2778            HAL_TIM_PWM_PulseFinishedCallback(htim);
+   2779          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+   2780          
+   2781            htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+   2782          }
+   2783          
+   2784          /**
+   2785            * @brief  TIM DMA error callback (complementary channel)
+   2786            * @param  hdma pointer to DMA handle.
+   2787            * @retval None
+   2788            */
+   2789          static void TIM_DMAErrorCCxN(DMA_HandleTypeDef *hdma)
+   2790          {
+   2791            TIM_HandleTypeDef *htim = (TIM_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+   2792          
+   2793            if (hdma == htim->hdma[TIM_DMA_ID_CC1])
+   2794            {
+   2795              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_1;
+   2796              TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_1, HAL_TIM_CHANNEL_STATE_READY);
+   2797            }
+   2798            else if (hdma == htim->hdma[TIM_DMA_ID_CC2])
+   2799            {
+   2800              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_2;
+   2801              TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_2, HAL_TIM_CHANNEL_STATE_READY);
+   2802            }
+   2803            else if (hdma == htim->hdma[TIM_DMA_ID_CC3])
+   2804            {
+   2805              htim->Channel = HAL_TIM_ACTIVE_CHANNEL_3;
+   2806              TIM_CHANNEL_N_STATE_SET(htim, TIM_CHANNEL_3, HAL_TIM_CHANNEL_STATE_READY);
+   2807            }
+   2808            else
+   2809            {
+   2810              /* nothing to do */
+   2811            }
+   2812          
+   2813          #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
+   2814            htim->ErrorCallback(htim);
+   2815          #else
+   2816            HAL_TIM_ErrorCallback(htim);
+   2817          #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
+   2818          
+   2819            htim->Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+   2820          }
+   2821          
+   2822          /**
+   2823            * @brief  Enables or disables the TIM Capture Compare Channel xN.
+   2824            * @param  TIMx to select the TIM peripheral
+   2825            * @param  Channel specifies the TIM Channel
+   2826            *          This parameter can be one of the following values:
+   2827            *            @arg TIM_CHANNEL_1: TIM Channel 1
+   2828            *            @arg TIM_CHANNEL_2: TIM Channel 2
+   2829            *            @arg TIM_CHANNEL_3: TIM Channel 3
+   2830            * @param  ChannelNState specifies the TIM Channel CCxNE bit new state.
+   2831            *          This parameter can be: TIM_CCxN_ENABLE or TIM_CCxN_Disable.
+   2832            * @retval None
+   2833            */
+   2834          static void TIM_CCxNChannelCmd(TIM_TypeDef *TIMx, uint32_t Channel, uint32_t ChannelNState)
+   2835          {
+   2836            uint32_t tmp;
+   2837          
+   2838            tmp = TIM_CCER_CC1NE << (Channel & 0xFU); /* 0xFU = 15 bits max shift */
+   2839          
+   2840            /* Reset the CCxNE Bit */
+   2841            TIMx->CCER &=  ~tmp;
+   2842          
+   2843            /* Set or reset the CCxNE Bit */
+   2844            TIMx->CCER |= (uint32_t)(ChannelNState << (Channel & 0xFU)); /* 0xFU = 15 bits max shift */
+   2845          }
+   2846          /**
+   2847            * @}
+   2848            */
+   2849          
+   2850          #endif /* HAL_TIM_MODULE_ENABLED */
+   2851          /**
+   2852            * @}
+   2853            */
+   2854          
+   2855          /**
+   2856            * @}
+   2857            */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   HAL_TIMEx_Break2Callback
+       0   HAL_TIMEx_BreakCallback
+       0   HAL_TIMEx_CommutCallback
+       0   HAL_TIMEx_CommutHalfCpltCallback
+      12   HAL_TIMEx_ConfigBreakDeadTime
+      36   HAL_TIMEx_ConfigBreakInput
+      12   HAL_TIMEx_ConfigCommutEvent
+      12   HAL_TIMEx_ConfigCommutEvent_DMA
+      12   HAL_TIMEx_ConfigCommutEvent_IT
+      12   HAL_TIMEx_DisarmBreakInput
+       4   HAL_TIMEx_GetChannelNState
+       8   HAL_TIMEx_GroupChannel5
+       8   HAL_TIMEx_HallSensor_DeInit
+         8   -> HAL_TIMEx_HallSensor_MspDeInit
+       0   HAL_TIMEx_HallSensor_GetState
+      40   HAL_TIMEx_HallSensor_Init
+        40   -> HAL_TIMEx_HallSensor_MspInit
+        40   -> TIM_Base_SetConfig
+        40   -> TIM_OC2_SetConfig
+        40   -> TIM_TI1_SetConfig
+       0   HAL_TIMEx_HallSensor_MspDeInit
+       0   HAL_TIMEx_HallSensor_MspInit
+      32   HAL_TIMEx_HallSensor_Start
+        32   -> TIM_CCxChannelCmd
+      32   HAL_TIMEx_HallSensor_Start_DMA
+        32   -> HAL_DMA_Start_IT
+        32   -> TIM_CCxChannelCmd
+      32   HAL_TIMEx_HallSensor_Start_IT
+        32   -> TIM_CCxChannelCmd
+       8   HAL_TIMEx_HallSensor_Stop
+         8   -> TIM_CCxChannelCmd
+       8   HAL_TIMEx_HallSensor_Stop_DMA
+         8   -> HAL_DMA_Abort_IT
+         8   -> TIM_CCxChannelCmd
+       8   HAL_TIMEx_HallSensor_Stop_IT
+         8   -> TIM_CCxChannelCmd
+      16   HAL_TIMEx_MasterConfigSynchronization
+      16   HAL_TIMEx_OCN_Start
+        16   -> TIM_CCxNChannelCmd
+      32   HAL_TIMEx_OCN_Start_DMA
+        32   -> HAL_DMA_Start_IT
+        32   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_OCN_Start_IT
+        24   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_OCN_Stop
+        16   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_OCN_Stop_DMA
+        16   -> HAL_DMA_Abort_IT
+        16   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_OCN_Stop_IT
+        24   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_OnePulseN_Start
+        24   -> TIM_CCxChannelCmd
+        24   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_OnePulseN_Start_IT
+        24   -> TIM_CCxChannelCmd
+        24   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_OnePulseN_Stop
+        16   -> TIM_CCxChannelCmd
+        16   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_OnePulseN_Stop_IT
+        16   -> TIM_CCxChannelCmd
+        16   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_PWMN_Start
+        16   -> TIM_CCxNChannelCmd
+      32   HAL_TIMEx_PWMN_Start_DMA
+        32   -> HAL_DMA_Start_IT
+        32   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_PWMN_Start_IT
+        24   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_PWMN_Stop
+        16   -> TIM_CCxNChannelCmd
+      16   HAL_TIMEx_PWMN_Stop_DMA
+        16   -> HAL_DMA_Abort_IT
+        16   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_PWMN_Stop_IT
+        24   -> TIM_CCxNChannelCmd
+      24   HAL_TIMEx_ReArmBreakInput
+        24   -> HAL_GetTick
+       4   HAL_TIMEx_RemapConfig
+      16   HAL_TIMEx_TISelection
+      16   TIMEx_DMACommutationCplt
+        16   -> HAL_TIMEx_CommutCallback
+      16   TIMEx_DMACommutationHalfCplt
+        16   -> HAL_TIMEx_CommutHalfCpltCallback
+      12   TIM_CCxNChannelCmd
+      16   TIM_DMADelayPulseNCplt
+        16   -> HAL_TIM_PWM_PulseFinishedCallback
+      16   TIM_DMAErrorCCxN
+        16   -> HAL_TIM_ErrorCallback
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable10
+       4  ??DataTable10_1
+       4  ??DataTable11
+       4  ??DataTable11_1
+       4  ??DataTable11_2
+       4  ??DataTable11_3
+       4  ??DataTable11_4
+       4  ??DataTable12
+       4  ??DataTable12_1
+       4  ??DataTable13
+       4  ??DataTable13_1
+       4  ??DataTable13_2
+       4  ??DataTable14
+       4  ??DataTable14_1
+       4  ??DataTable14_2
+       4  ??DataTable14_3
+       4  ??DataTable15
+       4  ??DataTable15_1
+       4  ??DataTable15_2
+       4  ??DataTable15_3
+       4  ??DataTable15_4
+       4  ??DataTable15_5
+       4  ??DataTable15_6
+       4  ??DataTable17
+       4  ??DataTable17_1
+       4  ??DataTable17_2
+       4  ??DataTable17_3
+       4  ??DataTable17_4
+       4  ??DataTable18
+       4  ??DataTable18_1
+       4  ??DataTable18_2
+       4  ??DataTable19
+       4  ??DataTable19_1
+       4  ??DataTable19_2
+       4  ??DataTable20
+       4  ??DataTable20_1
+       4  ??DataTable20_2
+       4  ??DataTable20_3
+       4  ??DataTable20_4
+       4  ??DataTable20_5
+       4  ??DataTable20_6
+       4  ??DataTable20_7
+       4  ??DataTable20_8
+       4  ??DataTable21
+       4  ??DataTable21_1
+       4  ??DataTable25
+       4  ??DataTable26
+       4  ??DataTable26_1
+       4  ??DataTable27
+       4  ??DataTable27_1
+       4  ??DataTable28
+       4  ??DataTable28_1
+       4  ??DataTable28_2
+       4  ??DataTable28_3
+       4  ??DataTable28_4
+       4  ??DataTable29
+       4  ??DataTable29_1
+       4  ??DataTable29_10
+       4  ??DataTable29_11
+       4  ??DataTable29_12
+       4  ??DataTable29_13
+       4  ??DataTable29_14
+       4  ??DataTable29_2
+       4  ??DataTable29_3
+       4  ??DataTable29_4
+       4  ??DataTable29_5
+       4  ??DataTable29_6
+       4  ??DataTable29_7
+       4  ??DataTable29_8
+       4  ??DataTable29_9
+       4  ??DataTable3
+       4  ??DataTable4
+       4  ??DataTable5
+       4  ??DataTable5_1
+       4  ??DataTable5_2
+       4  ??DataTable5_3
+       4  ??DataTable5_4
+       4  ??DataTable5_5
+       4  ??DataTable6
+       4  ??DataTable9
+       4  ??DataTable9_1
+       4  ??DataTable9_2
+       4  ??DataTable9_3
+       4  ??DataTable9_4
+       4  ??DataTable9_5
+       4  ??DataTable9_6
+       4  ??DataTable9_7
+       4  ??DataTable9_8
+       2  HAL_TIMEx_Break2Callback
+       2  HAL_TIMEx_BreakCallback
+       2  HAL_TIMEx_CommutCallback
+       2  HAL_TIMEx_CommutHalfCpltCallback
+     154  HAL_TIMEx_ConfigBreakDeadTime
+     216  HAL_TIMEx_ConfigBreakInput
+     128  HAL_TIMEx_ConfigCommutEvent
+     148  HAL_TIMEx_ConfigCommutEvent_DMA
+     128  HAL_TIMEx_ConfigCommutEvent_IT
+      94  HAL_TIMEx_DisarmBreakInput
+      42  HAL_TIMEx_GetChannelNState
+      64  HAL_TIMEx_GroupChannel5
+     106  HAL_TIMEx_HallSensor_DeInit
+       6  HAL_TIMEx_HallSensor_GetState
+     246  HAL_TIMEx_HallSensor_Init
+       2  HAL_TIMEx_HallSensor_MspDeInit
+       2  HAL_TIMEx_HallSensor_MspInit
+     200  HAL_TIMEx_HallSensor_Start
+     260  HAL_TIMEx_HallSensor_Start_DMA
+     212  HAL_TIMEx_HallSensor_Start_IT
+      86  HAL_TIMEx_HallSensor_Stop
+      88  HAL_TIMEx_HallSensor_Stop_DMA
+      98  HAL_TIMEx_HallSensor_Stop_IT
+     132  HAL_TIMEx_MasterConfigSynchronization
+     216  HAL_TIMEx_OCN_Start
+     494  HAL_TIMEx_OCN_Start_DMA
+     302  HAL_TIMEx_OCN_Start_IT
+     140  HAL_TIMEx_OCN_Stop
+     232  HAL_TIMEx_OCN_Stop_DMA
+     234  HAL_TIMEx_OCN_Stop_IT
+     150  HAL_TIMEx_OnePulseN_Start
+     174  HAL_TIMEx_OnePulseN_Start_IT
+     142  HAL_TIMEx_OnePulseN_Stop
+     166  HAL_TIMEx_OnePulseN_Stop_IT
+     216  HAL_TIMEx_PWMN_Start
+     494  HAL_TIMEx_PWMN_Start_DMA
+     302  HAL_TIMEx_PWMN_Start_IT
+     140  HAL_TIMEx_PWMN_Stop
+     232  HAL_TIMEx_PWMN_Stop_DMA
+     234  HAL_TIMEx_PWMN_Stop_IT
+     136  HAL_TIMEx_ReArmBreakInput
+      46  HAL_TIMEx_RemapConfig
+     102  HAL_TIMEx_TISelection
+      20  TIMEx_DMACommutationCplt
+      20  TIMEx_DMACommutationHalfCplt
+      36  TIM_CCxNChannelCmd
+      92  TIM_DMADelayPulseNCplt
+      74  TIM_DMAErrorCCxN
+
+ 
+ 7'166 bytes in section .text
+ 
+ 7'154 bytes of CODE memory (+ 12 bytes shared)
+
+Errors: none
+Warnings: none

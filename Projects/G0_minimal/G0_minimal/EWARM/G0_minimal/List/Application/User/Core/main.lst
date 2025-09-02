@@ -1,0 +1,611 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:45
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode                     =  thumb
+#    Endian                       =  little
+#    Source file                  =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\main.c
+#    Command line                 =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\main.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\main.c -D
+#        USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\main.o.d
+#    Locale                       =  C
+#    List file                    =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core\main.lst
+#    Object file                  =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\main.o
+#    Runtime model:                  
+#      __CPP_Runtime              =  1
+#      __SystemLibrary            =  DLib
+#      __dlib_file_descriptor     =  1
+#      __dlib_full_locale_support =  1
+#      __dlib_version             =  6
+#      __iar_require _Printf         
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\main.c
+      1          /* USER CODE BEGIN Header */
+      2          /**
+      3            ******************************************************************************
+      4            * @file           : main.c
+      5            * @brief          : Main program body
+      6            ******************************************************************************
+      7            * @attention
+      8            *
+      9            * Copyright (c) 2025 STMicroelectronics.
+     10            * All rights reserved.
+     11            *
+     12            * This software is licensed under terms that can be found in the LICENSE file
+     13            * in the root directory of this software component.
+     14            * If no LICENSE file comes with this software, it is provided AS-IS.
+     15            *
+     16            ******************************************************************************
+     17            */
+     18          /* USER CODE END Header */
+     19          /* Includes ------------------------------------------------------------------*/
+     20          #include "main.h"
+     21          
+     22          /* Private includes ----------------------------------------------------------*/
+     23          /* USER CODE BEGIN Includes */
+     24          #include "spi_iface.h"
+     25          #include "stdio.h"
+     26          #include "stdlib.h"
+     27          #include "string.h"
+     28          
+     29          #if defined(__ICCARM__)
+     30          #include <LowLevelIOInterface.h>
+     31          #endif /* __ICCARM__ */
+     32          /* USER CODE END Includes */
+     33          
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* USER CODE BEGIN PTD */
+     36          
+     37          /* USER CODE END PTD */
+     38          
+     39          /* Private define ------------------------------------------------------------*/
+     40          /* USER CODE BEGIN PD */
+     41          
+     42          /* USER CODE END PD */
+     43          
+     44          /* Private macro -------------------------------------------------------------*/
+     45          /* USER CODE BEGIN PM */
+     46          
+     47          /* USER CODE END PM */
+     48          
+     49          /* Private variables ---------------------------------------------------------*/
+     50          SPI_HandleTypeDef hspi1;
+     51          
+     52          UART_HandleTypeDef huart2;
+     53          
+     54          /* USER CODE BEGIN PV */
+     55          volatile uint8_t wait_for_scan_report = 0;
+     56          volatile uint8_t wait_for_ip_report = 0;
+     57          
+     58          /* USER CODE END PV */
+     59          
+     60          /* Private function prototypes -----------------------------------------------*/
+     61          void SystemClock_Config(void);
+     62          static void MX_GPIO_Init(void);
+     63          /* USER CODE BEGIN PFP */
+     64          
+     65          /* USER CODE END PFP */
+     66          
+     67          /* Private user code ---------------------------------------------------------*/
+     68          /* USER CODE BEGIN 0 */
+     69          #if defined(__ICCARM__)
+     70          size_t __write(int file, unsigned char const *ptr, size_t len)
+     71          {
+     72            size_t idx;
+     73            unsigned char const *pdata = ptr;
+     74            /* USER CODE BEGIN __write_1 */
+     75          
+     76            /* USER CODE END __write_1 */
+     77            
+     78            HAL_UART_Transmit(&huart2, pdata, len, 10000);
+     79            return len;
+     80            /* USER CODE BEGIN __write_End */
+     81          
+     82            /* USER CODE END __write_End */
+     83          }
+     84          #else
+     85          
+     86          #if defined ( __GNUC__) && !defined(__clang__)
+     87          /* With GCC, small printf (option LD Linker->Libraries->Small printf
+     88             set to 'Yes') calls __io_putchar() */
+     89          #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+     90          #else
+     91          #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+     92          #endif
+     93          
+     94          PUTCHAR_PROTOTYPE
+     95          {
+     96            /* USER CODE BEGIN PUTCHAR_PROTOTYPE_1 */
+     97          
+     98            /* USER CODE END PUTCHAR_PROTOTYPE_1 */
+     99            HAL_UART_Transmit(&huart2, (unsigned char *)&ch, 1, 1000);
+    100            return ch;
+    101            /* USER CODE BEGIN PUTCHAR_PROTOTYPE_End */
+    102          
+    103            /* USER CODE END PUTCHAR_PROTOTYPE_End */
+    104          }
+    105          #endif /* __ICCARM__ */
+    106          
+    107          static void report_callback(void)
+    108          {
+    109          	char *report = NULL;
+    110          	int32_t ret;
+    111          
+    112          	ret = spi_iface_receive_report(&report);
+    113          	printf("Report: %s", report);
+    114          
+    115          	if (wait_for_scan_report == 1 && ret == 16)
+    116          	{
+    117          		if (strncmp(report, "+CW:SCAN_DONE\r\n", 16) == 0) wait_for_scan_report = 0;
+    118          	}
+    119          	else if (wait_for_ip_report == 1 && ret == 12)
+    120          	{
+    121          		if (strncmp(report, "+CW:GOTIP\r\n", 12) == 0) wait_for_ip_report = 0;
+    122          	}
+    123          	free(report);
+    124          }
+    125          
+    126          /* USER CODE END 0 */
+    127          
+    128          /**
+    129            * @brief  The application entry point.
+    130            * @retval int
+    131            */
+    132          int main(void)
+    133          {
+    134          
+    135            /* USER CODE BEGIN 1 */
+    136          
+    137            /* USER CODE END 1 */
+    138          
+    139            /* MCU Configuration--------------------------------------------------------*/
+    140          
+    141            /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    142            HAL_Init();
+    143          
+    144            /* USER CODE BEGIN Init */
+    145          
+    146            /* USER CODE END Init */
+    147          
+    148            /* Configure the system clock */
+    149            SystemClock_Config();
+    150          
+    151            /* USER CODE BEGIN SysInit */
+    152          
+    153            /* USER CODE END SysInit */
+    154          
+    155            /* Initialize all configured peripherals */
+    156            MX_GPIO_Init();
+    157            MX_SPI1_Init();
+    158            MX_USART2_UART_Init();
+    159            /* USER CODE BEGIN 2 */
+    160            int32_t ret = 0;
+    161            char *resp = NULL;
+    162          
+    163            ret = spi_iface_init(&report_callback);
+    164          
+    165            spi_iface_send("AT+CWMODE=1,0", &resp);
+    166            spi_iface_send("AT+SLCLDTIM", &resp);
+    167            spi_iface_send("AT+CWLAPOPT=1,3", &resp);
+    168          
+    169            wait_for_scan_report = 1;
+    170            spi_iface_send("AT+CWLAP=0", &resp);
+    171            while(wait_for_scan_report) {}
+    172          
+    173            wait_for_ip_report = 1;
+    174            spi_iface_send("AT+CWJAP=\"TOMCAT\",\"freescale2\"", &resp);
+    175            while(wait_for_ip_report) {}
+    176          
+    177            spi_iface_send("AT+CIPSTA?", &resp);
+    178            spi_iface_send("AT+PING=\"www.google.com\",64,8,500", &resp);
+    179          
+    180            free(resp);
+    181          
+    182            /* USER CODE END 2 */
+    183          
+    184            /* Infinite loop */
+    185            /* USER CODE BEGIN WHILE */
+    186            while (1)
+    187            {
+    188              /* USER CODE END WHILE */
+    189          
+    190              /* USER CODE BEGIN 3 */
+    191            }
+    192            /* USER CODE END 3 */
+    193          }
+    194          
+    195          /**
+    196            * @brief System Clock Configuration
+    197            * @retval None
+    198            */
+    199          void SystemClock_Config(void)
+    200          {
+    201            RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    202            RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    203          
+    204            /** Configure the main internal regulator output voltage
+    205            */
+    206            HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+    207          
+    208            /** Initializes the RCC Oscillators according to the specified parameters
+    209            * in the RCC_OscInitTypeDef structure.
+    210            */
+    211            RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    212            RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    213            RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
+    214            RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    215            RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    216            RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    217            RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+    218            RCC_OscInitStruct.PLL.PLLN = 8;
+    219            RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    220            RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+    221            RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+    222            if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    223            {
+    224              Error_Handler();
+    225            }
+    226          
+    227            /** Initializes the CPU, AHB and APB buses clocks
+    228            */
+    229            RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+    230                                        |RCC_CLOCKTYPE_PCLK1;
+    231            RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    232            RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    233            RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    234          
+    235            if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+    236            {
+    237              Error_Handler();
+    238            }
+    239          }
+    240          
+    241          /**
+    242            * @brief SPI1 Initialization Function
+    243            * @param None
+    244            * @retval None
+    245            */
+    246          void MX_SPI1_Init(void)
+    247          {
+    248          
+    249            /* USER CODE BEGIN SPI1_Init 0 */
+    250          
+    251            /* USER CODE END SPI1_Init 0 */
+    252          
+    253            /* USER CODE BEGIN SPI1_Init 1 */
+    254          
+    255            /* USER CODE END SPI1_Init 1 */
+    256            /* SPI1 parameter configuration*/
+    257            hspi1.Instance = SPI1;
+    258            hspi1.Init.Mode = SPI_MODE_MASTER;
+    259            hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+    260            hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+    261            hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+    262            hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+    263            hspi1.Init.NSS = SPI_NSS_SOFT;
+    264            hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+    265            hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    266            hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+    267            hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    268            hspi1.Init.CRCPolynomial = 7;
+    269            hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+    270            hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+    271            if (HAL_SPI_Init(&hspi1) != HAL_OK)
+    272            {
+    273              Error_Handler();
+    274            }
+    275            /* USER CODE BEGIN SPI1_Init 2 */
+    276          
+    277            /* USER CODE END SPI1_Init 2 */
+    278          
+    279          }
+    280          
+    281          /**
+    282            * @brief USART2 Initialization Function
+    283            * @param None
+    284            * @retval None
+    285            */
+    286          void MX_USART2_UART_Init(void)
+    287          {
+    288          
+    289            /* USER CODE BEGIN USART2_Init 0 */
+    290          
+    291            /* USER CODE END USART2_Init 0 */
+    292          
+    293            /* USER CODE BEGIN USART2_Init 1 */
+    294          
+    295            /* USER CODE END USART2_Init 1 */
+    296            huart2.Instance = USART2;
+    297            huart2.Init.BaudRate = 115200;
+    298            huart2.Init.WordLength = UART_WORDLENGTH_8B;
+    299            huart2.Init.StopBits = UART_STOPBITS_1;
+    300            huart2.Init.Parity = UART_PARITY_NONE;
+    301            huart2.Init.Mode = UART_MODE_TX_RX;
+    302            huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    303            huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+    304            huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    305            huart2.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+    306            huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    307            if (HAL_UART_Init(&huart2) != HAL_OK)
+    308            {
+    309              Error_Handler();
+    310            }
+    311            if (HAL_UARTEx_SetTxFifoThreshold(&huart2, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+    312            {
+    313              Error_Handler();
+    314            }
+    315            if (HAL_UARTEx_SetRxFifoThreshold(&huart2, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+    316            {
+    317              Error_Handler();
+    318            }
+    319            if (HAL_UARTEx_DisableFifoMode(&huart2) != HAL_OK)
+    320            {
+    321              Error_Handler();
+    322            }
+    323            /* USER CODE BEGIN USART2_Init 2 */
+    324          
+    325            /* USER CODE END USART2_Init 2 */
+    326          
+    327          }
+    328          
+    329          /**
+    330            * @brief GPIO Initialization Function
+    331            * @param None
+    332            * @retval None
+    333            */
+    334          static void MX_GPIO_Init(void)
+    335          {
+    336            GPIO_InitTypeDef GPIO_InitStruct = {0};
+    337            /* USER CODE BEGIN MX_GPIO_Init_1 */
+    338          
+    339            /* USER CODE END MX_GPIO_Init_1 */
+    340          
+    341            /* GPIO Ports Clock Enable */
+    342            __HAL_RCC_GPIOC_CLK_ENABLE();
+    343            __HAL_RCC_GPIOF_CLK_ENABLE();
+    344            __HAL_RCC_GPIOA_CLK_ENABLE();
+    345            __HAL_RCC_GPIOB_CLK_ENABLE();
+    346          
+    347            /*Configure GPIO pin Output Level */
+    348            HAL_GPIO_WritePin(GPIOB, SPI_CS_Pin|BOOT_Pin|CHIP_EN_Pin, GPIO_PIN_RESET);
+    349          
+    350            /*Configure GPIO pin : B1_Pin */
+    351            GPIO_InitStruct.Pin = B1_Pin;
+    352            GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    353            GPIO_InitStruct.Pull = GPIO_NOPULL;
+    354            HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+    355          
+    356            /*Configure GPIO pins : SPI_CS_Pin CHIP_EN_Pin */
+    357            GPIO_InitStruct.Pin = SPI_CS_Pin|CHIP_EN_Pin;
+    358            GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    359            GPIO_InitStruct.Pull = GPIO_NOPULL;
+    360            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    361            HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    362          
+    363            /*Configure GPIO pin : BOOT_Pin */
+    364            GPIO_InitStruct.Pin = BOOT_Pin;
+    365            GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    366            GPIO_InitStruct.Pull = GPIO_NOPULL;
+    367            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    368            HAL_GPIO_Init(BOOT_GPIO_Port, &GPIO_InitStruct);
+    369          
+    370            /*Configure GPIO pin : USER_BUTTON_Pin */
+    371            GPIO_InitStruct.Pin = USER_BUTTON_Pin;
+    372            GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+    373            GPIO_InitStruct.Pull = GPIO_PULLUP;
+    374            HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
+    375          
+    376            /*Configure GPIO pin : SPI_RDY_Pin */
+    377            GPIO_InitStruct.Pin = SPI_RDY_Pin;
+    378            GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+    379            GPIO_InitStruct.Pull = GPIO_NOPULL;
+    380            HAL_GPIO_Init(SPI_RDY_GPIO_Port, &GPIO_InitStruct);
+    381          
+    382            /* EXTI interrupt init*/
+    383            HAL_NVIC_SetPriority(EXTI2_3_IRQn, 3, 0);
+    384            HAL_NVIC_EnableIRQ(EXTI2_3_IRQn);
+    385          
+    386            HAL_NVIC_SetPriority(EXTI4_15_IRQn, 3, 0);
+    387            HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+    388          
+    389            /* USER CODE BEGIN MX_GPIO_Init_2 */
+    390          
+    391            /* USER CODE END MX_GPIO_Init_2 */
+    392          }
+    393          
+    394          /* USER CODE BEGIN 4 */
+    395          
+    396          void HAL_GPIO_EXTI_Rising_Callback(uint16_t pin)
+    397          {
+    398            /* USER CODE BEGIN EXTI_Rising_Callback_1 */
+    399          
+    400            /* USER CODE END EXTI_Rising_Callback_1 */
+    401            /* Callback when data is available in Network CoProcessor to enable SPI Clock */
+    402            if (pin == SPI_RDY_Pin)
+    403            {
+    404          	  spi_iface_ncp_ready_high();
+    405            }
+    406            /* USER CODE BEGIN EXTI_Rising_Callback_End */
+    407          
+    408            /* USER CODE END EXTI_Rising_Callback_End */
+    409          }
+    410          
+    411          void HAL_GPIO_EXTI_Falling_Callback(uint16_t pin)
+    412          {
+    413            /* USER CODE BEGIN EXTI_Falling_Callback_1 */
+    414          
+    415            /* USER CODE END EXTI_Falling_Callback_1 */
+    416            /* Callback when data is available in Network CoProcessor to enable SPI Clock */
+    417            if (pin == SPI_RDY_Pin)
+    418            {
+    419          	  spi_iface_ncp_ready_low();
+    420            }
+    421          
+    422            /* Callback when user button is pressed */
+    423            if (pin == USER_BUTTON_Pin)
+    424            {
+    425          
+    426            }
+    427            /* USER CODE BEGIN EXTI_Falling_Callback_End */
+    428          
+    429            /* USER CODE END EXTI_Falling_Callback_End */
+    430          }
+    431          
+    432          /* USER CODE END 4 */
+    433          
+    434          /**
+    435            * @brief  This function is executed in case of error occurrence.
+    436            * @retval None
+    437            */
+    438          void Error_Handler(void)
+    439          {
+    440            /* USER CODE BEGIN Error_Handler_Debug */
+    441            /* User can add his own implementation to report the HAL error return state */
+    442            __disable_irq();
+    443            while (1)
+    444            {
+    445            }
+    446            /* USER CODE END Error_Handler_Debug */
+    447          }
+    448          #ifdef USE_FULL_ASSERT
+    449          /**
+    450            * @brief  Reports the name of the source file and the source line number
+    451            *         where the assert_param error has occurred.
+    452            * @param  file: pointer to the source file name
+    453            * @param  line: assert_param error line source number
+    454            * @retval None
+    455            */
+    456          void assert_failed(uint8_t *file, uint32_t line)
+    457          {
+    458            /* USER CODE BEGIN 6 */
+    459            /* User can add his own implementation to report the file name and line number,
+    460               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    461            /* USER CODE END 6 */
+    462          }
+    463          #endif /* USE_FULL_ASSERT */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   Error_Handler
+       8   HAL_GPIO_EXTI_Falling_Callback
+         8   -> spi_iface_ncp_ready_low
+       8   HAL_GPIO_EXTI_Rising_Callback
+         8   -> spi_iface_ncp_ready_high
+       8   MX_SPI1_Init
+         8   -> Error_Handler
+         8   -> HAL_SPI_Init
+       8   MX_USART2_UART_Init
+         8   -> Error_Handler
+         8   -> HAL_UARTEx_DisableFifoMode
+         8   -> HAL_UARTEx_SetRxFifoThreshold
+         8   -> HAL_UARTEx_SetTxFifoThreshold
+         8   -> HAL_UART_Init
+      88   SystemClock_Config
+        88   -> Error_Handler
+        88   -> HAL_PWREx_ControlVoltageScaling
+        88   -> HAL_RCC_ClockConfig
+        88   -> HAL_RCC_OscConfig
+        88   -> __aeabi_memclr4
+       8   __write
+         8   -> HAL_UART_Transmit
+      48   main
+        48   -> HAL_GPIO_Init
+        48   -> HAL_GPIO_WritePin
+        48   -> HAL_Init
+        48   -> HAL_NVIC_EnableIRQ
+        48   -> HAL_NVIC_SetPriority
+        48   -> MX_SPI1_Init
+        48   -> MX_USART2_UART_Init
+        48   -> SystemClock_Config
+        48   -> __aeabi_memclr4
+        48   -> free
+        48   -> spi_iface_init
+        48   -> spi_iface_send
+      24   report_callback
+        24   -> free
+        24   -> printf
+        24   -> spi_iface_receive_report
+        24   -> strncmp
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable13
+       4  ??DataTable13_1
+       4  ??DataTable13_10
+       4  ??DataTable13_11
+       4  ??DataTable13_2
+       4  ??DataTable13_3
+       4  ??DataTable13_4
+       4  ??DataTable13_5
+       4  ??DataTable13_6
+       4  ??DataTable13_7
+       4  ??DataTable13_8
+       4  ??DataTable13_9
+      36  ?_0
+      12  ?_1
+      16  ?_2
+      12  ?_3
+      16  ?_4
+      12  ?_5
+      16  ?_6
+      12  ?_7
+      32  ?_8
+      12  ?_9
+       4  Error_Handler
+      14  HAL_GPIO_EXTI_Falling_Callback
+      14  HAL_GPIO_EXTI_Rising_Callback
+      66  MX_SPI1_Init
+      98  MX_USART2_UART_Init
+     114  SystemClock_Config
+      18  __write
+     100  hspi1
+     148  huart2
+     334  main
+      86  report_callback
+       2  wait_for_scan_report
+          wait_for_ip_report
+
+ 
+ 250 bytes in section .bss
+  36 bytes in section .rodata
+ 936 bytes in section .text
+ 
+ 936 bytes of CODE  memory
+  36 bytes of CONST memory
+ 250 bytes of DATA  memory
+
+Errors: none
+Warnings: 2

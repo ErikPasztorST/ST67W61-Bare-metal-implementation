@@ -1,0 +1,9 @@
+C:\ST\STM32CubeIDE_1.18.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/string.h:31:9:memcpy	7
+../ST67W6X/Target/spi_port.c:129:6:buffer_to_hexstr	1
+../ST67W6X/Target/spi_port.c:139:6:spi_log_buffer	1
+../ST67W6X/Target/spi_port.c:162:9:spi_port_init	1
+../ST67W6X/Target/spi_port.c:176:9:spi_port_deinit	1
+../ST67W6X/Target/spi_port.c:190:9:spi_port_transfer	2
+../ST67W6X/Target/spi_port.c:230:9:spi_port_is_ready	1
+../ST67W6X/Target/spi_port.c:242:9:spi_port_set_cs	2
+../ST67W6X/Target/spi_port.c:264:10:spi_port_itm	1

@@ -1,0 +1,384 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:45
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\system_stm32g0xx.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\CMSIS\system_stm32g0xx.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\system_stm32g0xx.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\CMSIS
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\CMSIS
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\CMSIS\system_stm32g0xx.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\CMSIS\system_stm32g0xx.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\CMSIS\system_stm32g0xx.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\system_stm32g0xx.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    system_stm32g0xx.c
+      4            * @author  MCD Application Team
+      5            * @brief   CMSIS Cortex-M0+ Device Peripheral Access Layer System Source File
+      6            *
+      7            *   This file provides two functions and one global variable to be called from
+      8            *   user application:
+      9            *      - SystemInit(): This function is called at startup just after reset and
+     10            *                      before branch to main program. This call is made inside
+     11            *                      the "startup_stm32g0xx.s" file.
+     12            *
+     13            *      - SystemCoreClock variable: Contains the core clock (HCLK), it can be used
+     14            *                                  by the user application to setup the SysTick
+     15            *                                  timer or configure other parameters.
+     16            *
+     17            *      - SystemCoreClockUpdate(): Updates the variable SystemCoreClock and must
+     18            *                                 be called whenever the core clock is changed
+     19            *                                 during program execution.
+     20            *
+     21            *   After each device reset the HSI (8 MHz then 16 MHz) is used as system clock source.
+     22            *   Then SystemInit() function is called, in "startup_stm32g0xx.s" file, to
+     23            *   configure the system clock before to branch to main program.
+     24            *
+     25            *   This file configures the system clock as follows:
+     26            *=============================================================================
+     27            *-----------------------------------------------------------------------------
+     28            *        System Clock source                    | HSI
+     29            *-----------------------------------------------------------------------------
+     30            *        SYSCLK(Hz)                             | 16000000
+     31            *-----------------------------------------------------------------------------
+     32            *        HCLK(Hz)                               | 16000000
+     33            *-----------------------------------------------------------------------------
+     34            *        AHB Prescaler                          | 1
+     35            *-----------------------------------------------------------------------------
+     36            *        APB Prescaler                          | 1
+     37            *-----------------------------------------------------------------------------
+     38            *        HSI Division factor                    | 1
+     39            *-----------------------------------------------------------------------------
+     40            *        PLL_M                                  | 1
+     41            *-----------------------------------------------------------------------------
+     42            *        PLL_N                                  | 8
+     43            *-----------------------------------------------------------------------------
+     44            *        PLL_P                                  | 7
+     45            *-----------------------------------------------------------------------------
+     46            *        PLL_Q                                  | 2
+     47            *-----------------------------------------------------------------------------
+     48            *        PLL_R                                  | 2
+     49            *-----------------------------------------------------------------------------
+     50            *        Require 48MHz for RNG                  | Disabled
+     51            *-----------------------------------------------------------------------------
+     52            *=============================================================================
+     53            ******************************************************************************
+     54            * @attention
+     55            *
+     56            * Copyright (c) 2018-2021 STMicroelectronics.
+     57            * All rights reserved.
+     58            *
+     59            * This software is licensed under terms that can be found in the LICENSE file
+     60            * in the root directory of this software component.
+     61            * If no LICENSE file comes with this software, it is provided AS-IS.
+     62            *
+     63            ******************************************************************************
+     64            */
+     65          /** @addtogroup CMSIS
+     66            * @{
+     67            */
+     68          
+     69          /** @addtogroup stm32g0xx_system
+     70            * @{
+     71            */
+     72          
+     73          /** @addtogroup STM32G0xx_System_Private_Includes
+     74            * @{
+     75            */
+     76          
+     77          #include "stm32g0xx.h"
+     78          
+     79          #if !defined  (HSE_VALUE)
+     80          #define HSE_VALUE    (8000000UL)    /*!< Value of the External oscillator in Hz */
+     81          #endif /* HSE_VALUE */
+     82          
+     83          #if !defined  (HSI_VALUE)
+     84            #define HSI_VALUE  (16000000UL)   /*!< Value of the Internal oscillator in Hz*/
+     85          #endif /* HSI_VALUE */
+     86          
+     87          #if !defined  (LSI_VALUE)
+     88           #define LSI_VALUE   (32000UL)     /*!< Value of LSI in Hz*/
+     89          #endif /* LSI_VALUE */
+     90          
+     91          #if !defined  (LSE_VALUE)
+     92            #define LSE_VALUE  (32768UL)      /*!< Value of LSE in Hz*/
+     93          #endif /* LSE_VALUE */
+     94          
+     95          /**
+     96            * @}
+     97            */
+     98          
+     99          /** @addtogroup STM32G0xx_System_Private_TypesDefinitions
+    100            * @{
+    101            */
+    102          
+    103          /**
+    104            * @}
+    105            */
+    106          
+    107          /** @addtogroup STM32G0xx_System_Private_Defines
+    108            * @{
+    109            */
+    110          
+    111          /************************* Miscellaneous Configuration ************************/
+    112          /* Note: Following vector table addresses must be defined in line with linker
+    113                   configuration. */
+    114          /*!< Uncomment the following line if you need to relocate the vector table
+    115               anywhere in Flash or Sram, else the vector table is kept at the automatic
+    116               remap of boot address selected */
+    117          /* #define USER_VECT_TAB_ADDRESS */
+    118          
+    119          #if defined(USER_VECT_TAB_ADDRESS)
+    120          /*!< Uncomment the following line if you need to relocate your vector Table
+    121               in Sram else user remap will be done in Flash. */
+    122          /* #define VECT_TAB_SRAM */
+    123          #if defined(VECT_TAB_SRAM)
+    124          #define VECT_TAB_BASE_ADDRESS   SRAM_BASE       /*!< Vector Table base address field.
+    125                                                               This value must be a multiple of 0x200. */
+    126          #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
+    127                                                               This value must be a multiple of 0x200. */
+    128          #else
+    129          #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
+    130                                                               This value must be a multiple of 0x200. */
+    131          #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
+    132                                                               This value must be a multiple of 0x200. */
+    133          #endif /* VECT_TAB_SRAM */
+    134          #endif /* USER_VECT_TAB_ADDRESS */
+    135          /******************************************************************************/
+    136          /**
+    137            * @}
+    138            */
+    139          
+    140          /** @addtogroup STM32G0xx_System_Private_Macros
+    141            * @{
+    142            */
+    143          
+    144          /**
+    145            * @}
+    146            */
+    147          
+    148          /** @addtogroup STM32G0xx_System_Private_Variables
+    149            * @{
+    150            */
+    151            /* The SystemCoreClock variable is updated in three ways:
+    152                1) by calling CMSIS function SystemCoreClockUpdate()
+    153                2) by calling HAL API function HAL_RCC_GetHCLKFreq()
+    154                3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency
+    155                   Note: If you use this function to configure the system clock; then there
+    156                         is no need to call the 2 first functions listed above, since SystemCoreClock
+    157                         variable is updated automatically.
+    158            */
+    159            uint32_t SystemCoreClock = 16000000UL;
+    160          
+    161            const uint32_t AHBPrescTable[16UL] = {0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL, 6UL, 7UL, 8UL, 9UL};
+    162            const uint32_t APBPrescTable[8UL] =  {0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL};
+    163          
+    164          /**
+    165            * @}
+    166            */
+    167          
+    168          /** @addtogroup STM32G0xx_System_Private_FunctionPrototypes
+    169            * @{
+    170            */
+    171          
+    172          /**
+    173            * @}
+    174            */
+    175          
+    176          /** @addtogroup STM32G0xx_System_Private_Functions
+    177            * @{
+    178            */
+    179          
+    180          /**
+    181            * @brief  Setup the microcontroller system.
+    182            * @param  None
+    183            * @retval None
+    184            */
+    185          void SystemInit(void)
+    186          {
+    187            /* Configure the Vector Table location -------------------------------------*/
+    188          #if defined(USER_VECT_TAB_ADDRESS)
+    189            SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation */
+    190          #endif /* USER_VECT_TAB_ADDRESS */
+    191          }
+    192          
+    193          /**
+    194            * @brief  Update SystemCoreClock variable according to Clock Register Values.
+    195            *         The SystemCoreClock variable contains the core clock (HCLK), it can
+    196            *         be used by the user application to setup the SysTick timer or configure
+    197            *         other parameters.
+    198            *
+    199            * @note   Each time the core clock (HCLK) changes, this function must be called
+    200            *         to update SystemCoreClock variable value. Otherwise, any configuration
+    201            *         based on this variable will be incorrect.
+    202            *
+    203            * @note   - The system frequency computed by this function is not the real
+    204            *           frequency in the chip. It is calculated based on the predefined
+    205            *           constant and the selected clock source:
+    206            *
+    207            *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(**) / HSI division factor
+    208            *
+    209            *           - If SYSCLK source is HSE, SystemCoreClock will contain the HSE_VALUE(***)
+    210            *
+    211            *           - If SYSCLK source is LSI, SystemCoreClock will contain the LSI_VALUE
+    212            *
+    213            *           - If SYSCLK source is LSE, SystemCoreClock will contain the LSE_VALUE
+    214            *
+    215            *           - If SYSCLK source is PLL, SystemCoreClock will contain the HSE_VALUE(***)
+    216            *             or HSI_VALUE(*) multiplied/divided by the PLL factors.
+    217            *
+    218            *         (**) HSI_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default value
+    219            *              16 MHz) but the real value may vary depending on the variations
+    220            *              in voltage and temperature.
+    221            *
+    222            *         (***) HSE_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default value
+    223            *              8 MHz), user has to ensure that HSE_VALUE is same as the real
+    224            *              frequency of the crystal used. Otherwise, this function may
+    225            *              have wrong result.
+    226            *
+    227            *         - The result of this function could be not correct when using fractional
+    228            *           value for HSE crystal.
+    229            *
+    230            * @param  None
+    231            * @retval None
+    232            */
+    233          void SystemCoreClockUpdate(void)
+    234          {
+    235            uint32_t tmp;
+    236            uint32_t pllvco;
+    237            uint32_t pllr;
+    238            uint32_t pllsource;
+    239            uint32_t pllm;
+    240            uint32_t hsidiv;
+    241          
+    242            /* Get SYSCLK source -------------------------------------------------------*/
+    243            switch (RCC->CFGR & RCC_CFGR_SWS)
+    244            {
+    245              case RCC_CFGR_SWS_0:                /* HSE used as system clock */
+    246                SystemCoreClock = HSE_VALUE;
+    247                break;
+    248          
+    249              case (RCC_CFGR_SWS_1 | RCC_CFGR_SWS_0):  /* LSI used as system clock */
+    250                SystemCoreClock = LSI_VALUE;
+    251                break;
+    252          
+    253              case RCC_CFGR_SWS_2:                /* LSE used as system clock */
+    254                SystemCoreClock = LSE_VALUE;
+    255                break;
+    256          
+    257              case RCC_CFGR_SWS_1:  /* PLL used as system clock */
+    258                /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLLM) * PLLN
+    259                   SYSCLK = PLL_VCO / PLLR
+    260                   */
+    261                pllsource = (RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC);
+    262                pllm = ((RCC->PLLCFGR & RCC_PLLCFGR_PLLM) >> RCC_PLLCFGR_PLLM_Pos) + 1UL;
+    263          
+    264                if(pllsource == 0x03UL)           /* HSE used as PLL clock source */
+    265                {
+    266                  pllvco = (HSE_VALUE / pllm);
+    267                }
+    268                else                              /* HSI used as PLL clock source */
+    269                {
+    270                    pllvco = (HSI_VALUE / pllm);
+    271                }
+    272                pllvco = pllvco * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos);
+    273                pllr = (((RCC->PLLCFGR & RCC_PLLCFGR_PLLR) >> RCC_PLLCFGR_PLLR_Pos) + 1UL);
+    274          
+    275                SystemCoreClock = pllvco/pllr;
+    276                break;
+    277                
+    278              case 0x00000000U:                   /* HSI used as system clock */
+    279              default:                            /* HSI used as system clock */
+    280                hsidiv = (1UL << ((READ_BIT(RCC->CR, RCC_CR_HSIDIV))>> RCC_CR_HSIDIV_Pos));
+    281                SystemCoreClock = (HSI_VALUE/hsidiv);
+    282                break;
+    283            }
+    284            /* Compute HCLK clock frequency --------------------------------------------*/
+    285            /* Get HCLK prescaler */
+    286            tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> RCC_CFGR_HPRE_Pos)];
+    287            /* HCLK clock frequency */
+    288            SystemCoreClock >>= tmp;
+    289          }
+    290          
+    291          
+    292          /**
+    293            * @}
+    294            */
+    295          
+    296          /**
+    297            * @}
+    298            */
+    299          
+    300          /**
+    301            * @}
+    302            */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      12   SystemCoreClockUpdate
+        12 __aeabi_uidiv
+       0   SystemInit
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+      64  AHBPrescTable
+      32  APBPrescTable
+       4  SystemCoreClock
+     126  SystemCoreClockUpdate
+       2  SystemInit
+
+ 
+   4 bytes in section .data
+  96 bytes in section .rodata
+ 144 bytes in section .text
+ 
+ 144 bytes of CODE  memory
+  96 bytes of CONST memory
+   4 bytes of DATA  memory
+
+Errors: none
+Warnings: none

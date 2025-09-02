@@ -1,0 +1,327 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:45
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_msp.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_msp.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_msp.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_msp.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core\stm32g0xx_hal_msp.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_hal_msp.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_hal_msp.c
+      1          /* USER CODE BEGIN Header */
+      2          /**
+      3            ******************************************************************************
+      4            * @file         stm32g0xx_hal_msp.c
+      5            * @brief        This file provides code for the MSP Initialization
+      6            *               and de-Initialization codes.
+      7            ******************************************************************************
+      8            * @attention
+      9            *
+     10            * Copyright (c) 2025 STMicroelectronics.
+     11            * All rights reserved.
+     12            *
+     13            * This software is licensed under terms that can be found in the LICENSE file
+     14            * in the root directory of this software component.
+     15            * If no LICENSE file comes with this software, it is provided AS-IS.
+     16            *
+     17            ******************************************************************************
+     18            */
+     19          /* USER CODE END Header */
+     20          
+     21          /* Includes ------------------------------------------------------------------*/
+     22          #include "main.h"
+     23          /* USER CODE BEGIN Includes */
+     24          
+     25          /* USER CODE END Includes */
+     26          
+     27          /* Private typedef -----------------------------------------------------------*/
+     28          /* USER CODE BEGIN TD */
+     29          
+     30          /* USER CODE END TD */
+     31          
+     32          /* Private define ------------------------------------------------------------*/
+     33          /* USER CODE BEGIN Define */
+     34          
+     35          /* USER CODE END Define */
+     36          
+     37          /* Private macro -------------------------------------------------------------*/
+     38          /* USER CODE BEGIN Macro */
+     39          
+     40          /* USER CODE END Macro */
+     41          
+     42          /* Private variables ---------------------------------------------------------*/
+     43          /* USER CODE BEGIN PV */
+     44          
+     45          /* USER CODE END PV */
+     46          
+     47          /* Private function prototypes -----------------------------------------------*/
+     48          /* USER CODE BEGIN PFP */
+     49          
+     50          /* USER CODE END PFP */
+     51          
+     52          /* External functions --------------------------------------------------------*/
+     53          /* USER CODE BEGIN ExternalFunctions */
+     54          
+     55          /* USER CODE END ExternalFunctions */
+     56          
+     57          /* USER CODE BEGIN 0 */
+     58          
+     59          /* USER CODE END 0 */
+     60          /**
+     61            * Initializes the Global MSP.
+     62            */
+     63          void HAL_MspInit(void)
+     64          {
+     65          
+     66            /* USER CODE BEGIN MspInit 0 */
+     67          
+     68            /* USER CODE END MspInit 0 */
+     69          
+     70            __HAL_RCC_SYSCFG_CLK_ENABLE();
+     71            __HAL_RCC_PWR_CLK_ENABLE();
+     72          
+     73            /* System interrupt init*/
+     74            /* PendSV_IRQn interrupt configuration */
+     75            HAL_NVIC_SetPriority(PendSV_IRQn, 3, 0);
+     76          
+     77            /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+     78            */
+     79            HAL_SYSCFG_StrobeDBattpinsConfig(SYSCFG_CFGR1_UCPD1_STROBE | SYSCFG_CFGR1_UCPD2_STROBE);
+     80          
+     81            /* USER CODE BEGIN MspInit 1 */
+     82          
+     83            /* USER CODE END MspInit 1 */
+     84          }
+     85          
+     86          /**
+     87            * @brief SPI MSP Initialization
+     88            * This function configures the hardware resources used in this example
+     89            * @param hspi: SPI handle pointer
+     90            * @retval None
+     91            */
+     92          void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
+     93          {
+     94            GPIO_InitTypeDef GPIO_InitStruct = {0};
+     95            if(hspi->Instance==SPI1)
+     96            {
+     97              /* USER CODE BEGIN SPI1_MspInit 0 */
+     98          
+     99              /* USER CODE END SPI1_MspInit 0 */
+    100              /* Peripheral clock enable */
+    101              __HAL_RCC_SPI1_CLK_ENABLE();
+    102          
+    103              __HAL_RCC_GPIOA_CLK_ENABLE();
+    104              /**SPI1 GPIO Configuration
+    105              PA5     ------> SPI1_SCK
+    106              PA6     ------> SPI1_MISO
+    107              PA7     ------> SPI1_MOSI
+    108              */
+    109              GPIO_InitStruct.Pin = SPI_SCK_Pin|SPI_MISO_Pin|SPI_MOSI_Pin;
+    110              GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    111              GPIO_InitStruct.Pull = GPIO_NOPULL;
+    112              GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    113              GPIO_InitStruct.Alternate = GPIO_AF0_SPI1;
+    114              HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    115          
+    116              /* USER CODE BEGIN SPI1_MspInit 1 */
+    117          
+    118              /* USER CODE END SPI1_MspInit 1 */
+    119          
+    120            }
+    121          
+    122          }
+    123          
+    124          /**
+    125            * @brief SPI MSP De-Initialization
+    126            * This function freeze the hardware resources used in this example
+    127            * @param hspi: SPI handle pointer
+    128            * @retval None
+    129            */
+    130          void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
+    131          {
+    132            if(hspi->Instance==SPI1)
+    133            {
+    134              /* USER CODE BEGIN SPI1_MspDeInit 0 */
+    135          
+    136              /* USER CODE END SPI1_MspDeInit 0 */
+    137              /* Peripheral clock disable */
+    138              __HAL_RCC_SPI1_CLK_DISABLE();
+    139          
+    140              /**SPI1 GPIO Configuration
+    141              PA5     ------> SPI1_SCK
+    142              PA6     ------> SPI1_MISO
+    143              PA7     ------> SPI1_MOSI
+    144              */
+    145              HAL_GPIO_DeInit(GPIOA, SPI_SCK_Pin|SPI_MISO_Pin|SPI_MOSI_Pin);
+    146          
+    147              /* USER CODE BEGIN SPI1_MspDeInit 1 */
+    148          
+    149              /* USER CODE END SPI1_MspDeInit 1 */
+    150            }
+    151          
+    152          }
+    153          
+    154          /**
+    155            * @brief UART MSP Initialization
+    156            * This function configures the hardware resources used in this example
+    157            * @param huart: UART handle pointer
+    158            * @retval None
+    159            */
+    160          void HAL_UART_MspInit(UART_HandleTypeDef* huart)
+    161          {
+    162            GPIO_InitTypeDef GPIO_InitStruct = {0};
+    163            RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+    164            if(huart->Instance==USART2)
+    165            {
+    166              /* USER CODE BEGIN USART2_MspInit 0 */
+    167          
+    168              /* USER CODE END USART2_MspInit 0 */
+    169          
+    170            /** Initializes the peripherals clocks
+    171            */
+    172              PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+    173              PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+    174              if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    175              {
+    176                Error_Handler();
+    177              }
+    178          
+    179              /* Peripheral clock enable */
+    180              __HAL_RCC_USART2_CLK_ENABLE();
+    181          
+    182              __HAL_RCC_GPIOA_CLK_ENABLE();
+    183              /**USART2 GPIO Configuration
+    184              PA2     ------> USART2_TX
+    185              PA3     ------> USART2_RX
+    186              */
+    187              GPIO_InitStruct.Pin = USART2_TX_Pin|USART2_RX_Pin;
+    188              GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    189              GPIO_InitStruct.Pull = GPIO_NOPULL;
+    190              GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    191              GPIO_InitStruct.Alternate = GPIO_AF1_USART2;
+    192              HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    193          
+    194              /* USER CODE BEGIN USART2_MspInit 1 */
+    195          
+    196              /* USER CODE END USART2_MspInit 1 */
+    197          
+    198            }
+    199          
+    200          }
+    201          
+    202          /**
+    203            * @brief UART MSP De-Initialization
+    204            * This function freeze the hardware resources used in this example
+    205            * @param huart: UART handle pointer
+    206            * @retval None
+    207            */
+    208          void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
+    209          {
+    210            if(huart->Instance==USART2)
+    211            {
+    212              /* USER CODE BEGIN USART2_MspDeInit 0 */
+    213          
+    214              /* USER CODE END USART2_MspDeInit 0 */
+    215              /* Peripheral clock disable */
+    216              __HAL_RCC_USART2_CLK_DISABLE();
+    217          
+    218              /**USART2 GPIO Configuration
+    219              PA2     ------> USART2_TX
+    220              PA3     ------> USART2_RX
+    221              */
+    222              HAL_GPIO_DeInit(GPIOA, USART2_TX_Pin|USART2_RX_Pin);
+    223          
+    224              /* USER CODE BEGIN USART2_MspDeInit 1 */
+    225          
+    226              /* USER CODE END USART2_MspDeInit 1 */
+    227            }
+    228          
+    229          }
+    230          
+    231          /* USER CODE BEGIN 1 */
+    232          
+    233          /* USER CODE END 1 */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   HAL_MspInit
+         8   -> HAL_NVIC_SetPriority
+         8   -> HAL_SYSCFG_StrobeDBattpinsConfig
+       8   HAL_SPI_MspDeInit
+         8   -> HAL_GPIO_DeInit
+      32   HAL_SPI_MspInit
+        32   -> HAL_GPIO_Init
+        32   -> memset
+       8   HAL_UART_MspDeInit
+         8   -> HAL_GPIO_DeInit
+     112   HAL_UART_MspInit
+       112   -> Error_Handler
+       112   -> HAL_GPIO_Init
+       112   -> HAL_RCCEx_PeriphCLKConfig
+       112   -> memset
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable4
+       4  ??DataTable4_1
+       4  ??DataTable4_2
+       4  ??DataTable4_3
+       4  ??DataTable4_4
+       4  ??DataTable4_5
+       4  ??DataTable4_6
+      10  ?Subroutine0
+      60  HAL_MspInit
+      26  HAL_SPI_MspDeInit
+      90  HAL_SPI_MspInit
+      24  HAL_UART_MspDeInit
+     116  HAL_UART_MspInit
+
+ 
+ 354 bytes in section .text
+ 
+ 354 bytes of CODE memory
+
+Errors: none
+Warnings: none
