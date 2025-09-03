@@ -1,0 +1,641 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:46
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_pwr.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_pwr.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_pwr.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_pwr.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_pwr.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_pwr.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_pwr.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm32g0xx_hal_pwr.c
+      4            * @author  MCD Application Team
+      5            * @brief   PWR HAL module driver.
+      6            *          This file provides firmware functions to manage the following
+      7            *          functionalities of the Power Controller (PWR) peripheral:
+      8            *           + Initialization/de-initialization functions
+      9            *           + Peripheral Control functions
+     10            *
+     11            ******************************************************************************
+     12            * @attention
+     13            *
+     14            * Copyright (c) 2018 STMicroelectronics.
+     15            * All rights reserved.
+     16            *
+     17            * This software is licensed under terms that can be found in the LICENSE file
+     18            * in the root directory of this software component.
+     19            * If no LICENSE file comes with this software, it is provided AS-IS.
+     20            *
+     21            ******************************************************************************
+     22            */
+     23          
+     24          /* Includes ------------------------------------------------------------------*/
+     25          #include "stm32g0xx_hal.h"
+     26          
+     27          /** @addtogroup STM32G0xx_HAL_Driver
+     28            * @{
+     29            */
+     30          
+     31          /** @addtogroup PWR
+     32            * @{
+     33            */
+     34          
+     35          #ifdef HAL_PWR_MODULE_ENABLED
+     36          
+     37          /* Private typedef -----------------------------------------------------------*/
+     38          /* Private define ------------------------------------------------------------*/
+     39          /** @defgroup PWR_Private_Defines PWR Private Defines
+     40            * @{
+     41            */
+     42          
+     43          /**
+     44            * @}
+     45            */
+     46          
+     47          /* Private macro -------------------------------------------------------------*/
+     48          /* Private variables ---------------------------------------------------------*/
+     49          /* Private function prototypes -----------------------------------------------*/
+     50          /* Exported functions --------------------------------------------------------*/
+     51          /** @addtogroup PWR_Exported_Functions  PWR Exported Functions
+     52            * @{
+     53            */
+     54          
+     55          /** @addtogroup PWR_Exported_Functions_Group1  Initialization and de-initialization functions
+     56            * @brief  Initialization and de-initialization functions
+     57            *
+     58          @verbatim
+     59           ===============================================================================
+     60                        ##### Initialization and de-initialization functions #####
+     61           ===============================================================================
+     62              [..]
+     63          
+     64          @endverbatim
+     65            * @{
+     66            */
+     67          
+     68          /**
+     69            * @brief  Deinitialize the HAL PWR peripheral registers to their default reset
+     70                      values.
+     71            * @retval None
+     72            */
+     73          void HAL_PWR_DeInit(void)
+     74          {
+     75            __HAL_RCC_PWR_FORCE_RESET();
+     76            __HAL_RCC_PWR_RELEASE_RESET();
+     77          }
+     78          
+     79          /**
+     80            * @}
+     81            */
+     82          
+     83          /** @addtogroup PWR_Exported_Functions_Group2  Peripheral Control functions
+     84            *  @brief Low Power modes configuration functions
+     85            *
+     86          @verbatim
+     87          
+     88           ===============================================================================
+     89                           ##### Peripheral Control functions #####
+     90           ===============================================================================
+     91          
+     92              [..]
+     93              *** WakeUp pin configuration ***
+     94              ================================
+     95              [..]
+     96                (+) WakeUp pins are used to wakeup the system from Standby mode or
+     97                    Shutdown mode. WakeUp pins polarity can be set to configure event
+     98                    detection on high level (rising edge) or low level (falling edge).
+     99          
+    100              *** Low Power mode configuration ***
+    101              =====================================
+    102              [..]
+    103                The devices feature 7 low-power modes:
+    104                (+) Low-power run mode: core and peripherals are running at low frequency.
+    105                    Regulator is in low power mode.
+    106                (+) Sleep mode: Cortex-M0+ core stopped, peripherals kept running,
+    107                    regulator is main mode.
+    108                (+) Low-power Sleep mode: Cortex-M0+ core stopped, peripherals kept running
+    109                    and regulator in low power mode.
+    110                (+) Stop 0 mode: all clocks are stopped except LSI and LSE, regulator is
+    111                     main mode.
+    112                (+) Stop 1 mode: all clocks are stopped except LSI and LSE, main regulator
+    113                    off, low power regulator on.
+    114                (+) Standby mode: all clocks are stopped except LSI and LSE, regulator is
+    115                    disable.
+    116                (+) Shutdown mode: all clocks are stopped except LSE, regulator is
+    117                    disable.
+    118          
+    119             *** Low-power run mode ***
+    120             ==========================
+    121              [..]
+    122                (+) Entry: (from main run mode)
+    123                    (++) set LPR bit with HAL_PWREx_EnableLowPowerRunMode() API after
+    124                         having decreased the system clock below 2 MHz.
+    125                (+) Exit:
+    126                    (++) clear LPR bit then wait for REGLPF bit to be reset with
+    127                         HAL_PWREx_DisableLowPowerRunMode() API. Only then can the
+    128                         system clock frequency be increased above 2 MHz.
+    129          
+    130             *** Sleep mode / Low-power sleep mode ***
+    131             =========================================
+    132              [..]
+    133                (+) Entry:
+    134                    The Sleep & Low-power Sleep modes are entered through
+    135                    HAL_PWR_EnterSLEEPMode() API specifying whether or not the regulator
+    136                    is forced to low-power mode and if exit is interrupt or event
+    137                    triggered.
+    138                    (++) PWR_MAINREGULATOR_ON: Sleep mode (regulator in main mode).
+    139                    (++) PWR_LOWPOWERREGULATOR_ON: Low-power Sleep mode (regulator in low
+    140                         power mode). In this case, the system clock frequency must have
+    141                         been decreased below 2 MHz beforehand.
+    142                    (++) PWR_SLEEPENTRY_WFI: Core enters sleep mode with WFI instruction
+    143                    (++) PWR_SLEEPENTRY_WFE: Core enters sleep mode with WFE instruction
+    144                (+) WFI Exit:
+    145                  (++) Any interrupt enabled in nested vectored interrupt controller (NVIC)
+    146                (+) WFE Exit:
+    147                  (++) Any wakeup event if cortex is configured with SEVONPEND = 0
+    148                  (++) Interrupt even when disabled in NVIC if cortex is configured with
+    149                       SEVONPEND = 1
+    150              [..]  When exiting the Low-power Sleep mode by issuing an interrupt or a wakeup event,
+    151                    the MCU is in Low-power Run mode.
+    152          
+    153             *** Stop 0 & Stop 1 modes ***
+    154             =============================
+    155              [..]
+    156                (+) Entry:
+    157                    The Stop modes are entered through the following APIs:
+    158                    (++) HAL_PWR_EnterSTOPMode() with following settings:
+    159                        (+++) PWR_MAINREGULATOR_ON to enter STOP0 mode.
+    160                        (+++) PWR_LOWPOWERREGULATOR_ON to enter STOP1 mode.
+    161                (+) Exit (interrupt or event-triggered, specified when entering STOP mode):
+    162                    (++) PWR_STOPENTRY_WFI: enter Stop mode with WFI instruction
+    163                    (++) PWR_STOPENTRY_WFE: enter Stop mode with WFE instruction
+    164                (+) WFI Exit:
+    165                    (++) Any EXTI line (internal or external) configured in interrupt mode
+    166                         with corresponding interrupt enable in NVIC
+    167                (+) WFE Exit:
+    168                    (++) Any EXTI line (internal or external) configured in event mode if
+    169                         cortex is configured with SEVONPEND = 0
+    170                    (++) Any EXTI line configured in interrupt mode (even if the
+    171                         corresponding EXTI Interrupt vector is disabled in the NVIC) if
+    172                         cortex is configured with SEVONPEND = 0. The interrupt source can
+    173                         be external interrupts or peripherals with wakeup capability.
+    174              [..]  When exiting Stop, the MCU is either in Run mode or in Low-power Run mode
+    175                    depending on the LPR bit setting.
+    176          
+    177             *** Standby mode ***
+    178             ====================
+    179              [..] In Standby mode, it is possible to keep backup SRAM content (defined as
+    180                   full SRAM) keeping low power regulator on. This is achievable by setting
+    181                   Ram retention bit calling HAL_PWREx_EnableSRAMRetention API. This increases
+    182                   power consumption.
+    183                   Its also possible to define I/O states using APIs:
+    184                   HAL_PWREx_EnableGPIOPullUp, HAL_PWREx_EnableGPIOPullDown &
+    185                   HAL_PWREx_EnablePullUpPullDownConfig
+    186                (+) Entry:
+    187                    (++) The Standby mode is entered through HAL_PWR_EnterSTANDBYMode() API, by
+    188                         setting SLEEPDEEP in Cortex control register.
+    189                (+) Exit:
+    190                    (++) WKUP pin edge detection, RTC event (wakeup, alarm, timestamp),
+    191                         tamper event (internal & external), LSE CSS detection, reset on
+    192                         NRST pin, IWDG reset & BOR reset.
+    193              [..] Exiting Standby generates a power reset: Cortex is reset and execute
+    194                   Reset handler vector, all registers in the Vcore domain are set to
+    195                   their reset value. Registers outside the VCORE domain (RTC, WKUP, IWDG,
+    196                   and Standby/Shutdown modes control) are not impacted.
+    197          
+    198              *** Shutdown mode ***
+    199             ======================
+    200              [..]
+    201                In Shutdown mode,
+    202                  voltage regulator is disabled, all clocks are off except LSE, RRS bit is
+    203                  cleared. SRAM and registers contents are lost except for backup domain
+    204                  registers.
+    205                (+) Entry:
+    206                    (++) The Shutdown mode is entered through HAL_PWREx_EnterSHUTDOWNMode() API,
+    207                         by setting SLEEPDEEP in Cortex control register.
+    208                (+) Exit:
+    209                    (++) WKUP pin edge detection, RTC event (wakeup, alarm, timestamp),
+    210                         tamper event (internal & external), LSE CSS detection, reset on
+    211                         NRST pin.
+    212              [..] Exiting Shutdown generates a brown out reset: Cortex is reset and execute
+    213                   Reset handler vector, all registers are set to their reset value but ones
+    214                   in backup domain.
+    215          
+    216          @endverbatim
+    217            * @{
+    218            */
+    219          
+    220          /**
+    221            * @brief  Enable access to the backup domain
+    222            *         (RTC & TAMP registers, backup registers, RCC BDCR register).
+    223            * @note   After reset, the backup domain is protected against
+    224            *         possible unwanted write accesses. All RTC & TAMP registers (backup
+    225            *         registers included) and RCC BDCR register are concerned.
+    226            * @retval None
+    227            */
+    228          void HAL_PWR_EnableBkUpAccess(void)
+    229          {
+    230            SET_BIT(PWR->CR1, PWR_CR1_DBP);
+    231          }
+    232          
+    233          
+    234          /**
+    235            * @brief  Disable access to the backup domain
+    236            * @retval None
+    237            */
+    238          void HAL_PWR_DisableBkUpAccess(void)
+    239          {
+    240            CLEAR_BIT(PWR->CR1, PWR_CR1_DBP);
+    241          }
+    242          
+    243          /**
+    244            * @brief  Enable the WakeUp PINx functionality.
+    245            * @param  WakeUpPinPolarity Specifies which Wake-Up pin to enable.
+    246            *         This parameter can be one of the following legacy values which set
+    247            *         the default polarity i.e. detection on high level (rising edge):
+    248            *           @arg @ref PWR_WAKEUP_PIN1, PWR_WAKEUP_PIN2, PWR_WAKEUP_PIN3(*),
+    249            *                     PWR_WAKEUP_PIN4, PWR_WAKEUP_PIN5(*),PWR_WAKEUP_PIN6
+    250            *         or one of the following value where the user can explicitly specify
+    251            *         the enabled pin and the chosen polarity:
+    252            *           @arg @ref PWR_WAKEUP_PIN1_HIGH or PWR_WAKEUP_PIN1_LOW
+    253            *           @arg @ref PWR_WAKEUP_PIN2_HIGH or PWR_WAKEUP_PIN2_LOW
+    254            *           @arg @ref PWR_WAKEUP_PIN3_HIGH or PWR_WAKEUP_PIN3_LOW (*)
+    255            *           @arg @ref PWR_WAKEUP_PIN4_HIGH or PWR_WAKEUP_PIN4_LOW
+    256            *           @arg @ref PWR_WAKEUP_PIN5_HIGH or PWR_WAKEUP_PIN5_LOW (*)
+    257            *           @arg @ref PWR_WAKEUP_PIN6_HIGH or PWR_WAKEUP_PIN6_LOW
+    258            * @note  PWR_WAKEUP_PINx and PWR_WAKEUP_PINx_HIGH are equivalent.
+    259            * @note (*) availability depends on devices
+    260            * @retval None
+    261            */
+    262          void HAL_PWR_EnableWakeUpPin(uint32_t WakeUpPinPolarity)
+    263          {
+    264            assert_param(IS_PWR_WAKEUP_PIN(WakeUpPinPolarity));
+    265          
+    266            /* Specifies the Wake-Up pin polarity for the event detection
+    267              (rising or falling edge) */
+    268            MODIFY_REG(PWR->CR4, (PWR_CR4_WP & WakeUpPinPolarity), (WakeUpPinPolarity >> PWR_WUP_POLARITY_SHIFT));
+    269          
+    270            /* Enable wake-up pin */
+    271            SET_BIT(PWR->CR3, (PWR_CR3_EWUP & WakeUpPinPolarity));
+    272          }
+    273          
+    274          
+    275          /**
+    276            * @brief  Disable the WakeUp PINx functionality.
+    277            * @param  WakeUpPinx Specifies the Power Wake-Up pin to disable.
+    278            *         This parameter can be one of the following values:
+    279            *           @arg @ref PWR_WAKEUP_PIN1, PWR_WAKEUP_PIN2,PWR_WAKEUP_PIN3(*),
+    280            *                     PWR_WAKEUP_PIN4,PWR_WAKEUP_PIN5(*),PWR_WAKEUP_PIN6
+    281            * @note (*) availability depends on devices
+    282            * @retval None
+    283            */
+    284          void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx)
+    285          {
+    286            assert_param(IS_PWR_WAKEUP_PIN(WakeUpPinx));
+    287          
+    288            CLEAR_BIT(PWR->CR3, (PWR_CR3_EWUP & WakeUpPinx));
+    289          }
+    290          
+    291          
+    292          /**
+    293            * @brief  Enter Sleep or Low-power Sleep mode.
+    294            * @note   In Sleep/Low-power Sleep mode, all I/O pins keep the same state as
+    295            *         in Run mode.
+    296            * @param  Regulator Specifies the regulator state in Sleep/Low-power Sleep
+    297            *         mode. This parameter can be one of the following values:
+    298            *           @arg @ref PWR_MAINREGULATOR_ON Sleep mode (regulator in main mode)
+    299            *           @arg @ref PWR_LOWPOWERREGULATOR_ON Low-power Sleep mode (regulator
+    300            *                     in low-power mode)
+    301            * @note   Low-power Sleep mode is entered from Low-power Run mode only. In
+    302            *         case Regulator parameter is set to Low Power but MCU is in Run mode,
+    303            *         we will first enter in Low-power Run mode. Therefore, user should
+    304            *         take care that HCLK frequency is less than 2 MHz.
+    305            * @note   When exiting Low-power Sleep mode, the MCU is in Low-power Run mode.
+    306            *         To switch back to Run mode, user must call
+    307            *         HAL_PWREx_DisableLowPowerRunMode() API.
+    308            * @param  SLEEPEntry Specifies if Sleep mode is entered with WFI or WFE
+    309            *         instruction. This parameter can be one of the following values:
+    310            *           @arg @ref PWR_SLEEPENTRY_WFI enter Sleep or Low-power Sleep
+    311            *                     mode with WFI instruction
+    312            *           @arg @ref PWR_SLEEPENTRY_WFE enter Sleep or Low-power Sleep
+    313            *                     mode with WFE instruction
+    314            * @note   When WFI entry is used, tick interrupt have to be disabled if not
+    315            *         desired as the interrupt wake up source.
+    316            * @retval None
+    317            */
+    318          void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
+    319          {
+    320            /* Check the parameters */
+    321            assert_param(IS_PWR_REGULATOR(Regulator));
+    322            assert_param(IS_PWR_SLEEP_ENTRY(SLEEPEntry));
+    323          
+    324            /* Set Regulator parameter */
+    325            if (Regulator != PWR_MAINREGULATOR_ON)
+    326            {
+    327              /* If in run mode, first move to low-power run mode.
+    328                 The system clock frequency must be below 2 MHz at this point. */
+    329              if ((PWR->SR2 & PWR_SR2_REGLPF) == 0x00u)
+    330              {
+    331                HAL_PWREx_EnableLowPowerRunMode();
+    332              }
+    333            }
+    334            else
+    335            {
+    336              /* If in low-power run mode at this point, exit it */
+    337              if ((PWR->SR2 & PWR_SR2_REGLPF) != 0x00u)
+    338              {
+    339                if (HAL_PWREx_DisableLowPowerRunMode() != HAL_OK)
+    340                {
+    341                  return ;
+    342                }
+    343              }
+    344            }
+    345          
+    346            /* Clear SLEEPDEEP bit of Cortex System Control Register */
+    347            CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    348          
+    349            /* Select SLEEP mode entry -------------------------------------------------*/
+    350            if (SLEEPEntry == PWR_SLEEPENTRY_WFI)
+    351            {
+    352              /* Request Wait For Interrupt */
+    353              __WFI();
+    354            }
+    355            else
+    356            {
+    357              /* Request Wait For Event */
+    358              __SEV();
+    359              __WFE();
+    360              __WFE();
+    361            }
+    362          }
+    363          
+    364          
+    365          /**
+    366            * @brief  Enter Stop mode
+    367            * @note   This API is named HAL_PWR_EnterSTOPMode to ensure compatibility with
+    368            *         legacy code running on devices where only "Stop mode" is mentioned
+    369            *         with main or low power regulator ON.
+    370            * @note   In Stop mode, all I/O pins keep the same state as in Run mode.
+    371            * @note   All clocks in the VCORE domain are stopped; the PLL, the HSI and the
+    372            *         HSE oscillators are disabled. Some peripherals with the wakeup
+    373            *         capability can switch on the HSI to receive a frame, and switch off
+    374            *         the HSI after receiving the frame if it is not a wakeup frame.
+    375            *         SRAM and register contents are preserved.
+    376            *         The BOR is available.
+    377            *         The voltage regulator can be configured either in normal (Stop 0) or
+    378            *         low-power mode (Stop 1).
+    379            * @note   When exiting Stop 0 or Stop 1 mode by issuing an interrupt or a
+    380            *         wakeup event, the HSI RC oscillator is selected as system clock
+    381            * @note   When the voltage regulator operates in low power mode (Stop 1),
+    382            *         an additional startup delay is incurred when waking up. By keeping
+    383            *         the internal regulator ON during Stop mode (Stop 0), the consumption
+    384            *         is higher although the startup time is reduced.
+    385            * @param  Regulator Specifies the regulator state in Stop mode
+    386            *         This parameter can be one of the following values:
+    387            *            @arg @ref PWR_MAINREGULATOR_ON  Stop 0 mode (main regulator ON)
+    388            *            @arg @ref PWR_LOWPOWERREGULATOR_ON  Stop 1 mode (low power
+    389            *                                                regulator ON)
+    390            * @param  STOPEntry Specifies Stop 0 or Stop 1 mode is entered with WFI or
+    391            *         WFE instruction. This parameter can be one of the following values:
+    392            *            @arg @ref PWR_STOPENTRY_WFI  Enter Stop 0 or Stop 1 mode with WFI
+    393            *                                         instruction.
+    394            *            @arg @ref PWR_STOPENTRY_WFE  Enter Stop 0 or Stop 1 mode with WFE
+    395            *                                         instruction.
+    396            * @retval None
+    397            */
+    398          void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
+    399          {
+    400            /* Check the parameters */
+    401            assert_param(IS_PWR_REGULATOR(Regulator));
+    402            assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
+    403          
+    404            if (Regulator != PWR_MAINREGULATOR_ON)
+    405            {
+    406              /* Stop mode with Low-Power Regulator */
+    407              MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_LOWPOWERMODE_STOP1);
+    408            }
+    409            else
+    410            {
+    411              /* Stop mode with Main Regulator */
+    412              MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_LOWPOWERMODE_STOP0);
+    413            }
+    414          
+    415            /* Set SLEEPDEEP bit of Cortex System Control Register */
+    416            SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    417          
+    418            /* Select Stop mode entry --------------------------------------------------*/
+    419            if (STOPEntry == PWR_STOPENTRY_WFI)
+    420            {
+    421              /* Request Wait For Interrupt */
+    422              __WFI();
+    423            }
+    424            else
+    425            {
+    426              /* Request Wait For Event */
+    427              __SEV();
+    428              __WFE();
+    429              __WFE();
+    430            }
+    431          
+    432            /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    433            CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    434          }
+    435          
+    436          
+    437          /**
+    438            * @brief  Enter Standby mode.
+    439            * @note   In Standby mode, the PLL, the HSI and the HSE oscillators are
+    440            *         switched off. The voltage regulator is disabled. SRAM and register
+    441            *         contents are lost except for registers in the Backup domain and
+    442            *         Standby circuitry. BOR is available.
+    443            * @note   The I/Os can be configured either with a pull-up or pull-down or can
+    444            *         be kept in analog state.
+    445            *         HAL_PWREx_EnableGPIOPullUp() and HAL_PWREx_EnableGPIOPullDown()
+    446            *         respectively enable Pull Up and PullDown state.
+    447            *         HAL_PWREx_DisableGPIOPullUp() & HAL_PWREx_DisableGPIOPullDown()
+    448            *         disable the same. These states are effective in Standby mode only if
+    449            *         APC bit is set through HAL_PWREx_EnablePullUpPullDownConfig() API.
+    450            * @note   Sram content can be kept setting RRS through HAL_PWREx_EnableSRAMRetention()
+    451            * @retval None
+    452            */
+    453          void HAL_PWR_EnterSTANDBYMode(void)
+    454          {
+    455            /* Set Stand-by mode */
+    456            MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_LOWPOWERMODE_STANDBY);
+    457          
+    458            /* Set SLEEPDEEP bit of Cortex System Control Register */
+    459            SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    460          
+    461            /* This option is used to ensure that store operations are completed */
+    462          #if defined ( __CC_ARM)
+    463            __force_stores();
+    464          #endif /* __CC_ARM */
+    465          
+    466            /* Request Wait For Interrupt */
+    467            __WFI();
+    468          }
+    469          
+    470          
+    471          /**
+    472            * @brief  Enable Sleep-On-Exit Cortex feature
+    473            * @note   Set SLEEPONEXIT bit of SCR register. When this bit is set, the
+    474            *         processor enters SLEEP or DEEPSLEEP mode when an interruption
+    475            *         handling is over returning to thread mode. Setting this bit is
+    476            *         useful when the processor is expected to run only on interruptions
+    477            *         handling.
+    478            * @retval None
+    479            */
+    480          void HAL_PWR_EnableSleepOnExit(void)
+    481          {
+    482            /* Set SLEEPONEXIT bit of Cortex System Control Register */
+    483            SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
+    484          }
+    485          
+    486          
+    487          /**
+    488            * @brief  Disable Sleep-On-Exit Cortex feature
+    489            * @note   Clear SLEEPONEXIT bit of SCR register. When this bit is set, the
+    490            *         processor enters SLEEP or DEEPSLEEP mode when an interruption
+    491            *         handling is over.
+    492            * @retval None
+    493            */
+    494          void HAL_PWR_DisableSleepOnExit(void)
+    495          {
+    496            /* Clear SLEEPONEXIT bit of Cortex System Control Register */
+    497            CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
+    498          }
+    499          
+    500          
+    501          /**
+    502            * @brief  Enable Cortex Sev On Pending feature.
+    503            * @note   Set SEVONPEND bit of SCR register. When this bit is set, enabled
+    504            *         events and all interrupts, including disabled ones can wakeup
+    505            *         processor from WFE.
+    506            * @retval None
+    507            */
+    508          void HAL_PWR_EnableSEVOnPend(void)
+    509          {
+    510            /* Set SEVONPEND bit of Cortex System Control Register */
+    511            SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SEVONPEND_Msk));
+    512          }
+    513          
+    514          
+    515          /**
+    516            * @brief  Disable Cortex Sev On Pending feature.
+    517            * @note   Clear SEVONPEND bit of SCR register. When this bit is clear, only
+    518            *         enable interrupts or events can wakeup processor from WFE
+    519            * @retval None
+    520            */
+    521          void HAL_PWR_DisableSEVOnPend(void)
+    522          {
+    523            /* Clear SEVONPEND bit of Cortex System Control Register */
+    524            CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SEVONPEND_Msk));
+    525          }
+    526          
+    527          /**
+    528            * @}
+    529            */
+    530          
+    531          /**
+    532            * @}
+    533            */
+    534          
+    535          #endif /* HAL_PWR_MODULE_ENABLED */
+    536          /**
+    537            * @}
+    538            */
+    539          
+    540          /**
+    541            * @}
+    542            */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   HAL_PWR_DeInit
+       0   HAL_PWR_DisableBkUpAccess
+       0   HAL_PWR_DisableSEVOnPend
+       0   HAL_PWR_DisableSleepOnExit
+       0   HAL_PWR_DisableWakeUpPin
+       0   HAL_PWR_EnableBkUpAccess
+       0   HAL_PWR_EnableSEVOnPend
+       0   HAL_PWR_EnableSleepOnExit
+       0   HAL_PWR_EnableWakeUpPin
+       8   HAL_PWR_EnterSLEEPMode
+         8   -> HAL_PWREx_DisableLowPowerRunMode
+         8   -> HAL_PWREx_EnableLowPowerRunMode
+       0   HAL_PWR_EnterSTANDBYMode
+       0   HAL_PWR_EnterSTOPMode
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable11
+       4  ??DataTable11_1
+       4  ??DataTable11_2
+       4  ??DataTable11_3
+       4  ??DataTable11_4
+       4  ??DataTable11_5
+       4  ??DataTable11_6
+      22  HAL_PWR_DeInit
+      12  HAL_PWR_DisableBkUpAccess
+      12  HAL_PWR_DisableSEVOnPend
+      12  HAL_PWR_DisableSleepOnExit
+      14  HAL_PWR_DisableWakeUpPin
+      12  HAL_PWR_EnableBkUpAccess
+      12  HAL_PWR_EnableSEVOnPend
+      12  HAL_PWR_EnableSleepOnExit
+      24  HAL_PWR_EnableWakeUpPin
+      64  HAL_PWR_EnterSLEEPMode
+      28  HAL_PWR_EnterSTANDBYMode
+      60  HAL_PWR_EnterSTOPMode
+
+ 
+ 312 bytes in section .text
+ 
+ 312 bytes of CODE memory
+
+Errors: none
+Warnings: none

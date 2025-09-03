@@ -1,0 +1,595 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:48
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode                     =  thumb
+#    Endian                       =  little
+#    Source file                  =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\ST67W6X\Drivers\spi_iface.c
+#    Command line                 =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\ST67W6X\Drivers\spi_iface.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\ST67W6X\Drivers\spi_iface.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\ST67W6X\Drivers
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\ST67W6X\Drivers
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\ST67W6X\Drivers\spi_iface.o.d
+#    Locale                       =  C
+#    List file                    =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\ST67W6X\Drivers\spi_iface.lst
+#    Object file                  =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\ST67W6X\Drivers\spi_iface.o
+#    Runtime model:                  
+#      __CPP_Runtime              =  1
+#      __SystemLibrary            =  DLib
+#      __dlib_file_descriptor     =  1
+#      __dlib_full_locale_support =  1
+#      __dlib_version             =  6
+#      __iar_require _Printf         
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\ST67W6X\Drivers\spi_iface.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    spi_iface.c
+      4            * @brief   SPI bus interface implementation
+      5            ******************************************************************************
+      6            * @attention
+      7            *
+      8            * Copyright (c) 2024 STMicroelectronics.
+      9            * All rights reserved.
+     10            *
+     11            * This software is licensed under terms that can be found in the LICENSE file
+     12            * in the root directory of this software component.
+     13            * If no LICENSE file comes with this software, it is provided AS-IS.
+     14            *
+     15            ******************************************************************************
+     16            */
+     17          
+     18          /**
+     19            * This file is based on QCC74xSDK provided by Qualcomm.
+     20            * See https://git.codelinaro.org/clo/qcc7xx/QCCSDK-QCC74x for more information.
+     21            *
+     22            * Reference source: examples/stm32_spi_host/QCC743_SPI_HOST/Core/Src/spi_iface.c
+     23            */
+     24          
+     25          /* Includes ------------------------------------------------------------------*/
+     26          #include <inttypes.h>
+     27          #include <stdio.h>
+     28          #include <string.h>
+     29          #include <stdlib.h>
+     30          
+     31          #include "spi_iface.h"
+     32          #include "spi_port.h"
+     33          
+     34          #include "stm32g0xx_hal.h"
+     35          
+     36          #define SPI_HEADER_MAGIC_CODE 0x55AA
+     37          #define SPI_MIN_BUFFER_LEN 8
+     38          
+     39          /* private functions */
+     40          spi_iface_cmd_type_t spi_iface_get_cmd_type(const char *cmd);
+     41          int32_t wait_for_rdy(uint32_t timeout);
+     42          int32_t spi_iface_rx(uint16_t len);
+     43          int32_t spi_iface_txRx(const void *tx_data, uint16_t data_len, void **tx, void **rx, void **rx_requested);
+     44          void fill_buffer_header(void* buffer, uint16_t data_len);
+     45          void fill_buffer_data(void* buffer, const void* data, uint16_t data_len);
+     46          
+     47          /* Used to signalize ongoing communication.
+     48           * If 0, no communication ongoing, RDY high is treated as out-of-band report. */
+     49          volatile uint8_t spi_iface_lock = 1; //TODO: implement also from side of _send() - if report is incoming, cannot send
+     50          /* Used to signalize incoming report messages to the application layer.
+     51           * The application should then call spi_iface_receive_report() when convenient. */
+     52          wifi_iface_report_cb_t wifi_iface_report_cb = NULL;
+     53          
+     54          /* public functions */
+     55          
+     56          /* initialize the NCP, wait for RDY and verify first AT command
+     57           * return: 0 or (negative) error code
+     58           * */
+     59          int32_t spi_iface_init(wifi_iface_report_cb_t cb)
+     60          {
+     61              int32_t ret = 0;
+     62              void *tx = NULL, *rx = NULL, *rx_requested = NULL;
+     63          
+     64          	wifi_iface_report_cb = (wifi_iface_report_cb_t)cb;
+     65          	spi_iface_lock = 1;
+     66          
+     67          	spi_port_init();
+     68          
+     69          	/* wait for the state of the slave data ready pin
+     70          	 * expect to receive a request for RX 9 bytes
+     71          	 * receive 'ready'*/
+     72          	if(wait_for_rdy(SPI_IFACE_TIMEOUT_INIT_MS) < 0) {ret = -1; goto _err;}
+     73          
+     74          	ret = spi_iface_txRx(NULL, 0, &tx, &rx, &rx_requested);
+     75          	if (ret < 0)
+     76          	{
+     77          		printf("Err: spi_iface_txRx = %d\n", (int)ret);
+     78          		goto _err;
+     79          	}
+     80          
+     81          #if (SPI_IFACE_LOG_INCOMING > 0)
+     82                  printf("IN: ");
+     83                  printf("%.*s", (int)ret, (char *)rx_requested);
+     84          #endif
+     85          
+     86          	ret = strncmp((const char *)rx_requested, "\r\nready\r\n", 9);
+     87          	if (ret < 0)
+     88          	{
+     89          		printf("Err: unexpected return from NCP (ready)\n");
+     90          		goto _err;
+     91          	}
+     92          
+     93          	/* With delay, the response to 'AT' is incorrect but after that works ok.
+     94          	 * Without, it gets stuck after. */
+     95          	HAL_Delay(500);
+     96          
+     97          	/* send first 'AT' command */
+     98          	ret = spi_iface_txRx((const void *) "AT\r\n", 4, &tx, &rx, &rx_requested);
+     99          	if (ret < 0)
+    100          	{
+    101          		printf("Err: spi_iface_txRx = %d\n", (int)ret);
+    102          		goto _err;
+    103          	}
+    104          
+    105          #if (SPI_IFACE_LOG_OUTGOING > 0)
+    106              printf("OUT: AT\r\n");
+    107          #endif
+    108          
+    109          	/* wait for NCP to initialize response */
+    110              spi_iface_lock = 1;
+    111              if(wait_for_rdy(SPI_IFACE_TIMEOUT_DEF_MS) < 0) {ret = -1; goto _err;}
+    112          
+    113          	ret = spi_iface_txRx(NULL, 0, &tx, &rx, &rx_requested);
+    114          	if (ret < 0)
+    115          	{
+    116          		printf("Err: spi_iface_txRx = %d\n", (int)ret);
+    117          		goto _err;
+    118          	}
+    119          
+    120          #if (SPI_IFACE_LOG_INCOMING > 0)
+    121                  printf("IN: ");
+    122                  printf("%.*s", (int)ret, (char *)rx_requested);
+    123          #endif
+    124          
+    125          	ret = strncmp((const char *)rx_requested, "\r\nOK\r\n", 6);
+    126          	if (ret)
+    127          	{
+    128          		printf("Err: unexpected return from NCP (AT)\n");
+    129          		goto _err;
+    130          	}
+    131          
+    132          
+    133          _err:
+    134          	spi_iface_lock = 0;
+    135          
+    136          	free(tx);
+    137          	free(rx);
+    138          	free(rx_requested);
+    139          
+    140          	return ret;
+    141          }
+    142          
+    143          /*
+    144           * Response is allocated by function and freed by caller.
+    145           * Response is a combination of partial responses from NCP separated by "\r\n",
+    146           * with NULL termination.
+    147           *
+    148           * return: response length or (negative) error code
+    149           * */
+    150          int32_t spi_iface_send(const char *cmd, char **resp)
+    151          {
+    152              int32_t ret = -1;
+    153              void *tx = NULL, *rx = NULL, *rx_req = NULL, *cmd_ext = NULL;
+    154              int32_t rx_len = 0, total_resp_len = 0;
+    155              char *resp_buf = NULL;
+    156          
+    157              spi_iface_cmd_type_t cmd_type = spi_iface_get_cmd_type(cmd);
+    158              uint16_t cmd_len = strlen(cmd);
+    159          
+    160          #if (SPI_IFACE_ADD_TRAILING_RN > 0)
+    161              cmd_ext = calloc(cmd_len + 2, 1);
+    162          #else
+    163              cmd_ext = calloc(cmd_len, 1);
+    164          #endif
+    165              memcpy(cmd_ext, cmd, cmd_len);
+    166          #if (SPI_IFACE_ADD_TRAILING_RN > 0)
+    167              ((uint8_t*)cmd_ext)[cmd_len] = '\r';
+    168          	((uint8_t*)cmd_ext)[cmd_len + 1] = '\n';
+    169          	cmd_len = cmd_len + 2;
+    170          #endif
+    171          
+    172              if (cmd_type == CMD_QUERY)
+    173              {
+    174              	// append two bytes to the end
+    175          		// otherwise, it is ignored by ncp
+    176          		// value does not seem to matter, this based on u5 example
+    177          		cmd_ext = realloc(cmd_ext, cmd_len + 2);
+    178          		((uint8_t*)cmd_ext)[cmd_len] = 0x88;
+    179          		((uint8_t*)cmd_ext)[cmd_len + 1] = 0x88;
+    180          		cmd_len = cmd_len + 2;
+    181              }
+    182              else if (cmd_type == CMD_SET)
+    183              {
+    184              	// append two bytes to the end
+    185          		// otherwise, it is ignored by ncp
+    186          		// value does not seem to matter, this based on u5 example
+    187          		cmd_ext = realloc(cmd_ext, cmd_len + 3);
+    188          		((uint8_t*)cmd_ext)[cmd_len] = 0x88;
+    189          		((uint8_t*)cmd_ext)[cmd_len + 1] = 0x88;
+    190          		((uint8_t*)cmd_ext)[cmd_len + 2] = 0x88;
+    191          		cmd_len = cmd_len + 3;
+    192              }
+    193              else if (cmd_type == CMD_EXECUTE)
+    194              {
+    195              }
+    196              else return -1;
+    197          
+    198              spi_iface_lock = 1;
+    199          
+    200              // send command
+    201              ret = spi_iface_txRx(cmd_ext, cmd_len, &tx, &rx, &rx_req);
+    202              if (ret < 0) goto _err;
+    203          
+    204          #if (SPI_IFACE_LOG_OUTGOING > 0)
+    205              printf("OUT: ");
+    206              printf("%.*s", cmd_len, (char *)cmd_ext);
+    207          #endif
+    208          
+    209              // first response is usually "busy", skip all "busy" responses
+    210              while (1) {
+    211              	if(wait_for_rdy(SPI_IFACE_TIMEOUT_DEF_MS) < 0) {ret = -1; goto _err;}
+    212          
+    213                  rx_len = spi_iface_txRx(NULL, 0, &tx, &rx, &rx_req);
+    214          
+    215                  if (rx_len < 0) { ret = rx_len; goto _err; }
+    216                  if (rx_len >= 8 && memcmp(rx_req, "\r\nbusy p...\r\n", 8) == 0) {
+    217          #if (SPI_IFACE_LOG_INCOMING > 0)
+    218          			printf("IN: busy p...\n");
+    219          #endif
+    220                      continue;
+    221                  }
+    222                  break;
+    223              }
+    224          
+    225              // Collect responses until "OK" is received
+    226              // Usually, it's data in one msg, "OK" is second msg
+    227              while (1) {
+    228                  if ((rx_len >= 4 && memcmp((char*)rx_req + rx_len - 4, "OK\r\n", 4) == 0) ||
+    229                  	(rx_len == 9 && memcmp((char*)rx_req, "\r\nready\r\n", 5) == 0)) {
+    230                      resp_buf = realloc(resp_buf, total_resp_len + rx_len + 1);
+    231                      memcpy(resp_buf + total_resp_len, rx_req, rx_len);
+    232                      total_resp_len += rx_len;
+    233                      break;
+    234                  }
+    235          
+    236                  resp_buf = realloc(resp_buf, total_resp_len + rx_len + 1);
+    237                  memcpy(resp_buf + total_resp_len, rx_req, rx_len);
+    238                  total_resp_len += rx_len;
+    239          
+    240                  if(wait_for_rdy(SPI_IFACE_TIMEOUT_DEF_MS) < 0) {ret = -1; goto _err;}
+    241          
+    242                  rx_len = spi_iface_txRx(NULL, 0, &tx, &rx, &rx_req);
+    243                  if (rx_len < 0) { ret = rx_len; goto _err; }
+    244              }
+    245          
+    246              // Null-terminate and return response
+    247              if (total_resp_len > 0) {
+    248                  resp_buf[total_resp_len] = 0;
+    249                  *resp = resp_buf;
+    250              }
+    251          
+    252              ret = total_resp_len;
+    253          
+    254          #if (SPI_IFACE_LOG_INCOMING > 0)
+    255          	printf("IN: ");
+    256          	printf("%s", (char *)*resp);
+    257          #endif
+    258          
+    259          _err:
+    260          	spi_iface_lock = 0;
+    261          
+    262              free(tx);
+    263              free(rx);
+    264              free(rx_req);
+    265              free(cmd_ext);
+    266              if (ret < 0 && resp_buf) free(resp_buf);
+    267              return ret;
+    268          }
+    269          
+    270          /*
+    271           * Report is allocated by function and freed by caller.
+    272           * Response is the response from NCP, with NULL termination.
+    273           *
+    274           * return: response length or (negative) error code
+    275           * */
+    276          int32_t spi_iface_receive_report(char **report)
+    277          {
+    278              int32_t ret = -1, rx_len = 0;
+    279              void *tx = NULL, *rx = NULL, *rx_req = NULL;
+    280          
+    281              spi_iface_lock = 1;
+    282          
+    283              rx_len = spi_iface_txRx(NULL, 0, &tx, &rx, &rx_req);
+    284              if (rx_len < 0) { ret = rx_len; goto _err; }
+    285          
+    286              *report = calloc(rx_len + 1, 1);
+    287              memcpy(*report, rx_req, rx_len);
+    288              (*report)[rx_len] = 0;
+    289          
+    290              ret = rx_len + 1;
+    291          
+    292          #if (SPI_IFACE_LOG_INCOMING > 0)
+    293              printf("IN: ");
+    294              printf("%s", (char *)*report);
+    295          #endif
+    296          
+    297          _err:
+    298              spi_iface_lock = 0;
+    299          
+    300              free(tx);
+    301              free(rx);
+    302              free(rx_req);
+    303              return ret;
+    304          }
+    305          
+    306          void spi_iface_ncp_ready_high(void)
+    307          {
+    308          	if (spi_iface_lock == 0)
+    309          	{
+    310          		wifi_iface_report_cb();
+    311          	}
+    312          }
+    313          
+    314          void spi_iface_ncp_ready_low(void)
+    315          {
+    316          }
+    317          
+    318          /* private function definitions */
+    319          
+    320          int32_t wait_for_rdy(uint32_t timeout)
+    321          {
+    322          	uint32_t tickstart = HAL_GetTick();
+    323          	while (spi_port_is_ready() == 0)
+    324          	{
+    325          		if ((HAL_GetTick() - tickstart) > timeout)
+    326          		{
+    327          			return -1;
+    328          		}
+    329          	}
+    330          
+    331          	return 0;
+    332          }
+    333          /*
+    334           * tx_data - (char *) data to be sent
+    335           * data_len - length of the data
+    336           *
+    337           * If data_len is 0, fills the TX buffer only with mandatory flags.
+    338           * Otherwise, the buffer is extended and data added to the end.
+    339           *
+    340           * return: the length of received data or (negative) error code
+    341           * */
+    342          int32_t spi_iface_txRx(const void *tx_data, uint16_t data_len, void **tx, void **rx, void **rx_requested)
+    343          {
+    344              uint16_t buffer_len, rx_request_len;
+    345              int32_t ret;
+    346          
+    347              if (*tx != NULL) { free(*tx); *tx = NULL; }
+    348              if (*rx != NULL) { free(*rx); *rx = NULL; }
+    349              if (*rx_requested != NULL) { free(*rx_requested); *rx_requested = NULL; }
+    350          
+    351              if (data_len == 0) buffer_len = SPI_MIN_BUFFER_LEN;
+    352              else buffer_len = SPI_MIN_BUFFER_LEN + data_len;
+    353          
+    354              *tx = calloc(buffer_len, 1);
+    355              *rx = calloc(buffer_len, 1);
+    356          
+    357          
+    358              if (*tx == NULL)
+    359              {
+    360                  ret = -1;
+    361                  goto _err;
+    362              }
+    363              if (*rx == NULL)
+    364              {
+    365                  ret = -2;
+    366                  goto _err;
+    367              }
+    368          
+    369              fill_buffer_header(*tx, data_len);
+    370              if (data_len != 0) fill_buffer_data(*tx, tx_data, data_len);
+    371          
+    372              spi_port_set_cs(1);
+    373              while (spi_port_is_ready() == 0) {}
+    374          
+    375              ret = spi_port_transfer(*tx, *rx, buffer_len);
+    376          
+    377              if (ret != 0)
+    378              {
+    379                  ret = -3;
+    380                  goto _err;
+    381              }
+    382          
+    383              rx_request_len = ((uint8_t*)(*rx))[2];
+    384              if (rx_request_len > 0)
+    385              {
+    386                  *rx_requested = calloc(rx_request_len, 1);
+    387          
+    388                  if (*rx_requested == NULL)
+    389                  {
+    390                      ret = -4;
+    391                      goto _err;
+    392                  }
+    393          
+    394                  ret = spi_port_transfer(NULL, *rx_requested, rx_request_len);
+    395                  if (ret != 0)
+    396                  {
+    397                      ret = -5;
+    398                      goto _err;
+    399                  }
+    400              }
+    401          
+    402              ret = rx_request_len;
+    403          _err:
+    404          
+    405              spi_port_set_cs(0);
+    406              // Make sure that RDY is lowered before allowing other call of spi_iface_txRx.
+    407              // Otherwise, CS from the next call is raised while RDY
+    408              // is still high and NCP is not ready -> garbage.
+    409              // Cannot be at the beginning because it would not pass for init and interrupt.
+    410              // TODO move to another layer to not-block the application?
+    411          //    while (spi_port_is_ready() == 1) {}
+    412              return ret;
+    413          }
+    414          
+    415          spi_iface_cmd_type_t spi_iface_get_cmd_type(const char *cmd)
+    416          {
+    417          	spi_iface_cmd_type_t ret = CMD_EXECUTE;
+    418          
+    419          	const char *eq = strchr(cmd, '=');
+    420          	const char *q = strchr(cmd, '?');
+    421          
+    422          	if (eq) {
+    423          		// Found '='
+    424          		ret = CMD_SET;
+    425          	} else if (q) {
+    426          		// Found '?'
+    427          		ret = CMD_QUERY;
+    428          	} else {
+    429          		// Neither '=' nor '?' found, check for subset of SET without '=' and parameters
+    430          		if (strcmp(cmd, "AT+EFUSE-CFM") == 0) ret = CMD_SET;
+    431          		else if (strcmp(cmd, "AT+OTAFIN") == 0) ret = CMD_SET;
+    432          		else if (strcmp(cmd, "AT+IPERFSTOP") == 0) ret = CMD_SET;
+    433          		else if (strcmp(cmd, "AT+SLCLDTIM") == 0) ret = CMD_SET;
+    434          		else if (strcmp(cmd, "AT+TWT_SLEEP") == 0) ret = CMD_SET;
+    435          	}
+    436          
+    437          	return ret;
+    438          }
+    439          
+    440          void fill_buffer_header(void* buffer, uint16_t data_len)
+    441          {
+    442              unsigned char* buf = (unsigned char*)buffer;
+    443              buf[0] = SPI_HEADER_MAGIC_CODE & 0xFF;
+    444              buf[1] = (SPI_HEADER_MAGIC_CODE >> 8) & 0xFF;
+    445              buf[2] = (unsigned char)data_len;
+    446          }
+    447          
+    448          void fill_buffer_data(void* buffer, const void* data, uint16_t data_len)
+    449          {
+    450          	unsigned char* buf = (unsigned char*)buffer;
+    451          	memcpy(buf + SPI_MIN_BUFFER_LEN, data, data_len);
+    452          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   fill_buffer_data
+         8   -> spi_port_memcpy
+       0   fill_buffer_header
+      16   spi_iface_get_cmd_type
+        16   -> strchr
+        16   -> strcmp
+      40   spi_iface_init
+        40   -> HAL_Delay
+        40   -> free
+        40   -> printf
+        40   -> spi_iface_txRx
+        40   -> spi_port_init
+        40   -> strncmp
+        40   -> wait_for_rdy
+       8   spi_iface_ncp_ready_high
+         8   -- Indirect call
+       0   spi_iface_ncp_ready_low
+      40   spi_iface_receive_report
+        40   -> calloc
+        40   -> free
+        40   -> spi_iface_txRx
+        40   -> spi_port_memcpy
+      48   spi_iface_send
+        48   -> calloc
+        48   -> free
+        48   -> memcmp
+        48   -> realloc
+        48   -> spi_iface_get_cmd_type
+        48   -> spi_iface_txRx
+        48   -> spi_port_memcpy
+        48   -> strlen
+        48   -> wait_for_rdy
+      32   spi_iface_txRx
+        32   -> calloc
+        32   -> fill_buffer_data
+        32   -> fill_buffer_header
+        32   -> free
+        32   -> spi_port_is_ready
+        32   -> spi_port_set_cs
+        32   -> spi_port_transfer
+      16   wait_for_rdy
+        16   -> HAL_GetTick
+        16   -> spi_port_is_ready
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable14
+       4  ??DataTable14_1
+       4  ??DataTable14_2
+      84  ?_0
+      16  ?_10
+      12  ?_11
+      16  ?_12
+      28  ?_2
+      12  ?_3
+       8  ?_4
+       8  ?_5
+      16  ?_6
+       8  ?_7
+      16  ?_8
+      12  ?_9
+      10  fill_buffer_data
+      12  fill_buffer_header
+     102  spi_iface_get_cmd_type
+     208  spi_iface_init
+       8  spi_iface_lock
+          wifi_iface_report_cb
+      18  spi_iface_ncp_ready_high
+       2  spi_iface_ncp_ready_low
+      98  spi_iface_receive_report
+     412  spi_iface_send
+     228  spi_iface_txRx
+      38  wait_for_rdy
+
+ 
+     8 bytes in section .data
+    84 bytes in section .rodata
+ 1'292 bytes in section .text
+ 
+ 1'292 bytes of CODE  memory
+    84 bytes of CONST memory
+     8 bytes of DATA  memory
+
+Errors: none
+Warnings: none

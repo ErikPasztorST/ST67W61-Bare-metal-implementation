@@ -1,0 +1,1816 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:48
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rcc_ex.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_rcc_ex.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rcc_ex.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_rcc_ex.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_rcc_ex.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_rcc_ex.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rcc_ex.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm32g0xx_hal_rcc_ex.c
+      4            * @author  MCD Application Team
+      5            * @brief   Extended RCC HAL module driver.
+      6            *          This file provides firmware functions to manage the following
+      7            *          functionalities RCC extended peripheral:
+      8            *           + Extended Peripheral Control functions
+      9            *           + Extended Clock management functions
+     10            *           + Extended Clock Recovery System Control functions
+     11            *
+     12            ******************************************************************************
+     13            * @attention
+     14            *
+     15            * Copyright (c) 2018 STMicroelectronics.
+     16            * All rights reserved.
+     17            *
+     18            * This software is licensed under terms that can be found in the LICENSE file in
+     19            * the root directory of this software component.
+     20            * If no LICENSE file comes with this software, it is provided AS-IS.
+     21            ******************************************************************************
+     22            */
+     23          
+     24          /* Includes ------------------------------------------------------------------*/
+     25          #include "stm32g0xx_hal.h"
+     26          
+     27          /** @addtogroup STM32G0xx_HAL_Driver
+     28            * @{
+     29            */
+     30          
+     31          /** @defgroup RCCEx RCCEx
+     32            * @brief RCC Extended HAL module driver
+     33            * @{
+     34            */
+     35          
+     36          #ifdef HAL_RCC_MODULE_ENABLED
+     37          
+     38          /* Private typedef -----------------------------------------------------------*/
+     39          /* Private defines -----------------------------------------------------------*/
+     40          /** @defgroup RCCEx_Private_Constants RCCEx Private Constants
+     41            * @{
+     42            */
+     43          #define PLL_TIMEOUT_VALUE        100U /* 100 ms (minimum Tick + 1)  */
+     44          
+     45          #define LSCO_CLK_ENABLE()     __HAL_RCC_GPIOA_CLK_ENABLE()
+     46          #define LSCO_GPIO_PORT        GPIOA
+     47          #define LSCO_PIN              GPIO_PIN_2
+     48          /**
+     49            * @}
+     50            */
+     51          
+     52          /* Private macros ------------------------------------------------------------*/
+     53          /* Private variables ---------------------------------------------------------*/
+     54          /* Private function prototypes -----------------------------------------------*/
+     55          /* Exported functions --------------------------------------------------------*/
+     56          
+     57          /** @defgroup RCCEx_Exported_Functions RCCEx Exported Functions
+     58            * @{
+     59            */
+     60          
+     61          /** @defgroup RCCEx_Exported_Functions_Group1 Extended Peripheral Control functions
+     62            * @brief  Extended Peripheral Control functions
+     63            *
+     64          @verbatim
+     65           ===============================================================================
+     66                          ##### Extended Peripheral Control functions  #####
+     67           ===============================================================================
+     68              [..]
+     69              This subsection provides a set of functions allowing to control the RCC Clocks
+     70              frequencies.
+     71              [..]
+     72              (@) Important note: Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to
+     73                  select the RTC clock source; in this case the Backup domain will be reset in
+     74                  order to modify the RTC Clock source, as consequence RTC registers (including
+     75                  the backup registers) and RCC_BDCR register are set to their reset values.
+     76          
+     77          @endverbatim
+     78            * @{
+     79            */
+     80          /**
+     81            * @brief  Initialize the RCC extended peripherals clocks according to the specified
+     82            *         parameters in the @ref RCC_PeriphCLKInitTypeDef.
+     83            * @param  PeriphClkInit  pointer to a @ref RCC_PeriphCLKInitTypeDef structure that
+     84            *         contains a field PeriphClockSelection which can be a combination of the following values:
+     85            *            @arg @ref RCC_PERIPHCLK_RTC     RTC peripheral clock
+     86            *            @arg @ref RCC_PERIPHCLK_ADC     ADC peripheral clock
+     87            *            @arg @ref RCC_PERIPHCLK_I2C1    I2C1 peripheral clock
+     88            *            @arg @ref RCC_PERIPHCLK_I2C2    I2C2 peripheral clock (2)
+     89            *            @arg @ref RCC_PERIPHCLK_I2S1    I2S1 peripheral clock
+     90            *            @arg @ref RCC_PERIPHCLK_I2S2    I2S2 peripheral clock (1)
+     91            *            @arg @ref RCC_PERIPHCLK_USART1  USART1 peripheral clock
+     92            *            @arg @ref RCC_PERIPHCLK_CEC     CEC peripheral clock     (1)
+     93            *            @arg @ref RCC_PERIPHCLK_LPTIM1  LPTIM1 peripheral clock  (1)
+     94            *            @arg @ref RCC_PERIPHCLK_LPTIM2  LPTIM2 peripheral clock  (1)
+     95            *            @arg @ref RCC_PERIPHCLK_LPUART1 LPUART1 peripheral clock (1)
+     96            *            @arg @ref RCC_PERIPHCLK_LPUART2 LPUART2 peripheral clock (1)
+     97            *            @arg @ref RCC_PERIPHCLK_RNG     RNG peripheral clock     (1)
+     98            *            @arg @ref RCC_PERIPHCLK_TIM1    TIM1 peripheral clock    (1)(2)
+     99            *            @arg @ref RCC_PERIPHCLK_TIM15   TIM15 peripheral clock   (1)(2)
+    100            *            @arg @ref RCC_PERIPHCLK_USART2  USART2 peripheral clock     (2)
+    101            *            @arg @ref RCC_PERIPHCLK_USART3  USART3 peripheral clock     (2)
+    102            *            @arg @ref RCC_PERIPHCLK_FDCAN   FDCAN peripheral clock   (1)
+    103            *            @arg @ref RCC_PERIPHCLK_USB     USB peripheral clock     (1)
+    104            *
+    105            * @note   (1) Peripherals are not available on all devices
+    106            * @note   (2) Peripherals clock selection is not available on all devices
+    107            * @note   Care must be taken when @ref HAL_RCCEx_PeriphCLKConfig() is used to select
+    108            *         the RTC clock source: in this case the access to Backup domain is enabled.
+    109            *
+    110            * @retval HAL status
+    111            */
+    112          HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
+    113          {
+    114            uint32_t tmpregister;
+    115            uint32_t tickstart;
+    116            HAL_StatusTypeDef ret    = HAL_OK;   /* Intermediate status */
+    117            HAL_StatusTypeDef status = HAL_OK;   /* Final status */
+    118          
+    119            /* Check the parameters */
+    120            assert_param(IS_RCC_PERIPHCLOCK(PeriphClkInit->PeriphClockSelection));
+    121          
+    122            /*-------------------------- RTC clock source configuration ----------------------*/
+    123            if ((PeriphClkInit->PeriphClockSelection & RCC_PERIPHCLK_RTC) == RCC_PERIPHCLK_RTC)
+    124            {
+    125              FlagStatus       pwrclkchanged = RESET;
+    126          
+    127              /* Check for RTC Parameters used to output RTCCLK */
+    128              assert_param(IS_RCC_RTCCLKSOURCE(PeriphClkInit->RTCClockSelection));
+    129          
+    130              /* Enable Power Clock */
+    131              if (__HAL_RCC_PWR_IS_CLK_DISABLED())
+    132              {
+    133                __HAL_RCC_PWR_CLK_ENABLE();
+    134                pwrclkchanged = SET;
+    135              }
+    136          
+    137              /* Enable write access to Backup domain */
+    138              SET_BIT(PWR->CR1, PWR_CR1_DBP);
+    139          
+    140              /* Wait for Backup domain Write protection disable */
+    141              tickstart = HAL_GetTick();
+    142          
+    143              while ((PWR->CR1 & PWR_CR1_DBP) == 0U)
+    144              {
+    145                if ((HAL_GetTick() - tickstart) > RCC_DBP_TIMEOUT_VALUE)
+    146                {
+    147                  ret = HAL_TIMEOUT;
+    148                  break;
+    149                }
+    150              }
+    151          
+    152              if (ret == HAL_OK)
+    153              {
+    154                /* Reset the Backup domain only if the RTC Clock source selection is modified from default */
+    155                tmpregister = READ_BIT(RCC->BDCR, RCC_BDCR_RTCSEL);
+    156          
+    157                /* Reset the Backup domain only if the RTC Clock source selection is modified */
+    158                if ((tmpregister != RCC_RTCCLKSOURCE_NONE) && (tmpregister != PeriphClkInit->RTCClockSelection))
+    159                {
+    160                  /* Store the content of BDCR register before the reset of Backup Domain */
+    161                  tmpregister = READ_BIT(RCC->BDCR, ~(RCC_BDCR_RTCSEL));
+    162                  /* RTC Clock selection can be changed only if the Backup Domain is reset */
+    163                  __HAL_RCC_BACKUPRESET_FORCE();
+    164                  __HAL_RCC_BACKUPRESET_RELEASE();
+    165                  /* Restore the Content of BDCR register */
+    166                  RCC->BDCR = tmpregister;
+    167                }
+    168          
+    169                /* Wait for LSE reactivation if LSE was enable prior to Backup Domain reset */
+    170                if (HAL_IS_BIT_SET(tmpregister, RCC_BDCR_LSEON))
+    171                {
+    172                  /* Get Start Tick*/
+    173                  tickstart = HAL_GetTick();
+    174          
+    175                  /* Wait till LSE is ready */
+    176                  while (READ_BIT(RCC->BDCR, RCC_BDCR_LSERDY) == 0U)
+    177                  {
+    178                    if ((HAL_GetTick() - tickstart) > RCC_LSE_TIMEOUT_VALUE)
+    179                    {
+    180                      ret = HAL_TIMEOUT;
+    181                      break;
+    182                    }
+    183                  }
+    184                }
+    185          
+    186                if (ret == HAL_OK)
+    187                {
+    188                  /* Apply new RTC clock source selection */
+    189                  __HAL_RCC_RTC_CONFIG(PeriphClkInit->RTCClockSelection);
+    190                }
+    191                else
+    192                {
+    193                  /* set overall return value */
+    194                  status = ret;
+    195                }
+    196              }
+    197              else
+    198              {
+    199                /* set overall return value */
+    200                status = ret;
+    201              }
+    202          
+    203              /* Restore clock configuration if changed */
+    204              if (pwrclkchanged == SET)
+    205              {
+    206                __HAL_RCC_PWR_CLK_DISABLE();
+    207              }
+    208            }
+    209          
+    210            /*-------------------------- USART1 clock source configuration -------------------*/
+    211            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_USART1) == RCC_PERIPHCLK_USART1)
+    212            {
+    213              /* Check the parameters */
+    214              assert_param(IS_RCC_USART1CLKSOURCE(PeriphClkInit->Usart1ClockSelection));
+    215          
+    216              /* Configure the USART1 clock source */
+    217              __HAL_RCC_USART1_CONFIG(PeriphClkInit->Usart1ClockSelection);
+    218            }
+    219          
+    220          #if defined(RCC_CCIPR_USART2SEL)
+    221            /*-------------------------- USART2 clock source configuration -------------------*/
+    222            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_USART2) == RCC_PERIPHCLK_USART2)
+    223            {
+    224              /* Check the parameters */
+    225              assert_param(IS_RCC_USART2CLKSOURCE(PeriphClkInit->Usart2ClockSelection));
+    226          
+    227              /* Configure the USART2 clock source */
+    228              __HAL_RCC_USART2_CONFIG(PeriphClkInit->Usart2ClockSelection);
+    229            }
+    230          #endif /* RCC_CCIPR_USART2SEL */
+    231          
+    232          #if defined(RCC_CCIPR_USART3SEL)
+    233            /*-------------------------- USART3 clock source configuration -------------------*/
+    234            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_USART3) == RCC_PERIPHCLK_USART3)
+    235            {
+    236              /* Check the parameters */
+    237              assert_param(IS_RCC_USART3CLKSOURCE(PeriphClkInit->Usart3ClockSelection));
+    238          
+    239              /* Configure the USART3 clock source */
+    240              __HAL_RCC_USART3_CONFIG(PeriphClkInit->Usart3ClockSelection);
+    241            }
+    242          #endif /* RCC_CCIPR_USART3SEL */
+    243          
+    244          #if defined(LPUART1)
+    245            /*-------------------------- LPUART1 clock source configuration ------------------*/
+    246            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LPUART1) == RCC_PERIPHCLK_LPUART1)
+    247            {
+    248              /* Check the parameters */
+    249              assert_param(IS_RCC_LPUART1CLKSOURCE(PeriphClkInit->Lpuart1ClockSelection));
+    250          
+    251              /* Configure the LPUART1 clock source */
+    252              __HAL_RCC_LPUART1_CONFIG(PeriphClkInit->Lpuart1ClockSelection);
+    253            }
+    254          #endif /* LPUART1 */
+    255          
+    256          #if defined(LPUART2)
+    257            /*-------------------------- LPUART2 clock source configuration ------------------*/
+    258            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LPUART2) == RCC_PERIPHCLK_LPUART2)
+    259            {
+    260              /* Check the parameters */
+    261              assert_param(IS_RCC_LPUART2CLKSOURCE(PeriphClkInit->Lpuart2ClockSelection));
+    262          
+    263              /* Configure the LPUART clock source */
+    264              __HAL_RCC_LPUART2_CONFIG(PeriphClkInit->Lpuart2ClockSelection);
+    265            }
+    266          #endif /* LPUART2 */
+    267          
+    268          #if defined(RCC_CCIPR_LPTIM1SEL)
+    269            /*-------------------------- LPTIM1 clock source configuration -------------------*/
+    270            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LPTIM1) == (RCC_PERIPHCLK_LPTIM1))
+    271            {
+    272              assert_param(IS_RCC_LPTIM1CLKSOURCE(PeriphClkInit->Lptim1ClockSelection));
+    273              __HAL_RCC_LPTIM1_CONFIG(PeriphClkInit->Lptim1ClockSelection);
+    274            }
+    275          #endif /* RCC_CCIPR_LPTIM1SEL */
+    276          
+    277          #if defined(RCC_CCIPR_LPTIM2SEL)
+    278            /*-------------------------- LPTIM2 clock source configuration -------------------*/
+    279            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LPTIM2) == (RCC_PERIPHCLK_LPTIM2))
+    280            {
+    281              assert_param(IS_RCC_LPTIM2CLKSOURCE(PeriphClkInit->Lptim2ClockSelection));
+    282              __HAL_RCC_LPTIM2_CONFIG(PeriphClkInit->Lptim2ClockSelection);
+    283            }
+    284          #endif /* RCC_CCIPR_LPTIM2SEL */
+    285          
+    286            /*-------------------------- I2C1 clock source configuration ---------------------*/
+    287            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2C1) == RCC_PERIPHCLK_I2C1)
+    288            {
+    289              /* Check the parameters */
+    290              assert_param(IS_RCC_I2C1CLKSOURCE(PeriphClkInit->I2c1ClockSelection));
+    291          
+    292              /* Configure the I2C1 clock source */
+    293              __HAL_RCC_I2C1_CONFIG(PeriphClkInit->I2c1ClockSelection);
+    294            }
+    295          
+    296          #if defined(RCC_CCIPR_I2C2SEL)
+    297            /*-------------------------- I2C2 clock source configuration ---------------------*/
+    298            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2C2) == RCC_PERIPHCLK_I2C2)
+    299            {
+    300              /* Check the parameters */
+    301              assert_param(IS_RCC_I2C2CLKSOURCE(PeriphClkInit->I2c2ClockSelection));
+    302          
+    303              /* Configure the I2C2 clock source */
+    304              __HAL_RCC_I2C2_CONFIG(PeriphClkInit->I2c2ClockSelection);
+    305            }
+    306          #endif /* (RCC_CCIPR_I2C2SEL */
+    307          
+    308          #if defined(RNG)
+    309            /*-------------------------- RNG clock source configuration ----------------------*/
+    310            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_RNG) == (RCC_PERIPHCLK_RNG))
+    311            {
+    312              assert_param(IS_RCC_RNGCLKSOURCE(PeriphClkInit->RngClockSelection));
+    313              __HAL_RCC_RNG_CONFIG(PeriphClkInit->RngClockSelection);
+    314          
+    315              if (PeriphClkInit->RngClockSelection == RCC_RNGCLKSOURCE_PLL)
+    316              {
+    317                /* Enable PLLQCLK output */
+    318                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLQCLK);
+    319              }
+    320            }
+    321          #endif /* RNG */
+    322            /*-------------------------- ADC clock source configuration ----------------------*/
+    323            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_ADC) == RCC_PERIPHCLK_ADC)
+    324            {
+    325              /* Check the parameters */
+    326              assert_param(IS_RCC_ADCCLKSOURCE(PeriphClkInit->AdcClockSelection));
+    327          
+    328              /* Configure the ADC interface clock source */
+    329              __HAL_RCC_ADC_CONFIG(PeriphClkInit->AdcClockSelection);
+    330          
+    331              if (PeriphClkInit->AdcClockSelection == RCC_ADCCLKSOURCE_PLLADC)
+    332              {
+    333                /* Enable PLLPCLK output */
+    334                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLPCLK);
+    335              }
+    336            }
+    337          
+    338          #if defined(CEC)
+    339            /*-------------------------- CEC clock source configuration ---------------------*/
+    340            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_CEC) == RCC_PERIPHCLK_CEC)
+    341            {
+    342              /* Check the parameters */
+    343              assert_param(IS_RCC_CECCLKSOURCE(PeriphClkInit->CecClockSelection));
+    344          
+    345              /* Configure the CEC clock source */
+    346              __HAL_RCC_CEC_CONFIG(PeriphClkInit->CecClockSelection);
+    347            }
+    348          #endif /* CEC */
+    349          
+    350          #if defined(RCC_CCIPR_TIM1SEL)
+    351            /*-------------------------- TIM1 clock source configuration ---------------------*/
+    352            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_TIM1) == RCC_PERIPHCLK_TIM1)
+    353            {
+    354              /* Check the parameters */
+    355              assert_param(IS_RCC_TIM1CLKSOURCE(PeriphClkInit->Tim1ClockSelection));
+    356          
+    357              /* Configure the TIM1 clock source */
+    358              __HAL_RCC_TIM1_CONFIG(PeriphClkInit->Tim1ClockSelection);
+    359          
+    360              if (PeriphClkInit->Tim1ClockSelection == RCC_TIM1CLKSOURCE_PLL)
+    361              {
+    362                /* Enable PLLQCLK output */
+    363                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLQCLK);
+    364              }
+    365            }
+    366          #endif /* RCC_CCIPR_TIM1SEL */
+    367          
+    368          #if defined(RCC_CCIPR_TIM15SEL)
+    369            /*-------------------------- TIM15 clock source configuration ---------------------*/
+    370            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_TIM15) == RCC_PERIPHCLK_TIM15)
+    371            {
+    372              /* Check the parameters */
+    373              assert_param(IS_RCC_TIM15CLKSOURCE(PeriphClkInit->Tim15ClockSelection));
+    374          
+    375              /* Configure the TIM15 clock source */
+    376              __HAL_RCC_TIM15_CONFIG(PeriphClkInit->Tim15ClockSelection);
+    377          
+    378              if (PeriphClkInit->Tim15ClockSelection == RCC_TIM15CLKSOURCE_PLL)
+    379              {
+    380                /* Enable PLLQCLK output */
+    381                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLQCLK);
+    382              }
+    383            }
+    384          #endif /* RCC_CCIPR_TIM15SEL */
+    385          
+    386            /*-------------------------- I2S1 clock source configuration ---------------------*/
+    387            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S1) == RCC_PERIPHCLK_I2S1)
+    388            {
+    389              /* Check the parameters */
+    390              assert_param(IS_RCC_I2S1CLKSOURCE(PeriphClkInit->I2s1ClockSelection));
+    391          
+    392              /* Configure the I2S1 clock source */
+    393              __HAL_RCC_I2S1_CONFIG(PeriphClkInit->I2s1ClockSelection);
+    394          
+    395              if (PeriphClkInit->I2s1ClockSelection == RCC_I2S1CLKSOURCE_PLL)
+    396              {
+    397                /* Enable PLLPCLK output */
+    398                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLPCLK);
+    399              }
+    400            }
+    401          
+    402          #if defined(RCC_CCIPR2_I2S2SEL)
+    403            /*-------------------------- I2S2 clock source configuration ---------------------*/
+    404            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S2) == RCC_PERIPHCLK_I2S2)
+    405            {
+    406              /* Check the parameters */
+    407              assert_param(IS_RCC_I2S2CLKSOURCE(PeriphClkInit->I2s2ClockSelection));
+    408          
+    409              /* Configure the I2S2 clock source */
+    410              __HAL_RCC_I2S2_CONFIG(PeriphClkInit->I2s2ClockSelection);
+    411          
+    412              if (PeriphClkInit->I2s2ClockSelection == RCC_I2S2CLKSOURCE_PLL)
+    413              {
+    414                /* Enable PLLPCLK output */
+    415                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLPCLK);
+    416              }
+    417            }
+    418          #endif /* RCC_CCIPR2_I2S2SEL */
+    419          
+    420          #if defined(STM32G0C1xx) || defined(STM32G0B1xx)  || defined(STM32G0B0xx)
+    421            /*-------------------------- USB clock source configuration ---------------------*/
+    422            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_USB) == RCC_PERIPHCLK_USB)
+    423            {
+    424              /* Check the parameters */
+    425              assert_param(IS_RCC_USBCLKSOURCE(PeriphClkInit->UsbClockSelection));
+    426          
+    427              /* Configure the USB clock source */
+    428              __HAL_RCC_USB_CONFIG(PeriphClkInit->UsbClockSelection);
+    429          
+    430              if (PeriphClkInit->UsbClockSelection == RCC_USBCLKSOURCE_PLL)
+    431              {
+    432                /* Enable PLLQCLK output */
+    433                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLQCLK);
+    434              }
+    435            }
+    436          #endif /* STM32G0C1xx || STM32G0B1xx || STM32G0B0xx */
+    437          
+    438          #if defined(FDCAN1) || defined(FDCAN2)
+    439            /*-------------------------- FDCAN clock source configuration ---------------------*/
+    440            if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_FDCAN) == RCC_PERIPHCLK_FDCAN)
+    441            {
+    442              /* Check the parameters */
+    443              assert_param(IS_RCC_FDCANCLKSOURCE(PeriphClkInit->FdcanClockSelection));
+    444          
+    445              /* Configure the FDCAN clock source */
+    446              __HAL_RCC_FDCAN_CONFIG(PeriphClkInit->FdcanClockSelection);
+    447          
+    448              if (PeriphClkInit->FdcanClockSelection == RCC_FDCANCLKSOURCE_PLL)
+    449              {
+    450                /* Enable PLLQCLK output */
+    451                __HAL_RCC_PLLCLKOUT_ENABLE(RCC_PLLQCLK);
+    452              }
+    453            }
+    454          #endif /* FDCAN1 || FDCAN2 */
+    455          
+    456            return status;
+    457          }
+    458          
+    459          /**
+    460            * @brief  Get the RCC_ClkInitStruct according to the internal RCC configuration registers.
+    461            * @param  PeriphClkInit pointer to an RCC_PeriphCLKInitTypeDef structure that
+    462            *         returns the configuration information for the Extended Peripherals
+    463            *         clocks: I2C1, I2S1, USART1, RTC, ADC,
+    464            *         LPTIM1 (1), LPTIM2 (1), TIM1 (2), TIM15 (1)(2), USART2 (2), LPUART1 (1), CEC (1) and RNG (1)
+    465            * @note (1) Peripheral is not available on all devices
+    466            * @note (2) Peripheral clock selection is not available on all devices
+    467            * @retval None
+    468            */
+    469          void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
+    470          {
+    471            /* Set all possible values for the extended clock type parameter------------*/
+    472            PeriphClkInit->PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_I2S1 | \
+    473                                                  RCC_PERIPHCLK_ADC     | RCC_PERIPHCLK_RTC ;
+    474          
+    475          #if defined(RCC_CCIPR_LPTIM1SEL) && defined(RCC_CCIPR_LPTIM2SEL)
+    476            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_LPTIM2  | RCC_PERIPHCLK_LPTIM1;
+    477          #endif /* RCC_CCIPR_LPTIM1SEL && RCC_CCIPR_LPTIM2SEL */
+    478          #if defined(RCC_CCIPR_RNGSEL)
+    479            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_RNG;
+    480          #endif /* RCC_CCIPR_RNGSEL */
+    481          #if defined(RCC_CCIPR_LPUART1SEL)
+    482            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_LPUART1;
+    483          #endif /* RCC_CCIPR_LPUART1SEL */
+    484          #if defined(RCC_CCIPR_LPUART2SEL)
+    485            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_LPUART2;
+    486          #endif /* RCC_CCIPR_LPUART2SEL */
+    487          #if defined(RCC_CCIPR_CECSEL)
+    488            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_CEC;
+    489          #endif /* RCC_CCIPR_CECSEL */
+    490          #if defined(RCC_CCIPR_TIM1SEL)
+    491            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_TIM1;
+    492          #endif /* RCC_CCIPR_TIM1SEL */
+    493          #if defined(RCC_CCIPR_TIM15SEL)
+    494            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_TIM15;
+    495          #endif /* RCC_CCIPR_TIM15SEL */
+    496          #if defined(RCC_CCIPR_USART2SEL)
+    497            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_USART2;
+    498          #endif /* RCC_CCIPR_USART2SEL */
+    499          #if defined(RCC_CCIPR_USART3SEL)
+    500            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_USART3;
+    501          #endif /* RCC_CCIPR_USART3SEL */
+    502          #if defined(RCC_CCIPR_I2C2SEL)
+    503            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_I2C2;
+    504          #endif /* RCC_CCIPR_I2C2SEL */
+    505          #if defined(RCC_CCIPR2_I2S2SEL)
+    506            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_I2S2;
+    507          #endif /* RCC_CCIPR2_I2S2SEL */
+    508          #if defined(RCC_CCIPR2_USBSEL)
+    509            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_USB;
+    510          #endif /* RCC_CCIPR2_USBSEL */
+    511          #if defined(RCC_CCIPR2_FDCANSEL)
+    512            PeriphClkInit->PeriphClockSelection |=  RCC_PERIPHCLK_FDCAN;
+    513          #endif /* RCC_CCIPR_FDCANSEL */
+    514            /* Get the USART1 clock source ---------------------------------------------*/
+    515            PeriphClkInit->Usart1ClockSelection  = __HAL_RCC_GET_USART1_SOURCE();
+    516          #if defined(RCC_CCIPR_USART2SEL)
+    517            /* Get the USART2 clock source ---------------------------------------------*/
+    518            PeriphClkInit->Usart2ClockSelection  = __HAL_RCC_GET_USART2_SOURCE();
+    519          #endif /* RCC_CCIPR_USART2SEL */
+    520          #if defined(RCC_CCIPR_USART3SEL)
+    521            /* Get the USART3 clock source ---------------------------------------------*/
+    522            PeriphClkInit->Usart3ClockSelection  = __HAL_RCC_GET_USART3_SOURCE();
+    523          #endif /* RCC_CCIPR_USART3SEL */
+    524          #if defined(RCC_CCIPR_LPUART1SEL)
+    525            /* Get the LPUART1 clock source --------------------------------------------*/
+    526            PeriphClkInit->Lpuart1ClockSelection = __HAL_RCC_GET_LPUART1_SOURCE();
+    527          #endif /* RCC_CCIPR_LPUART1SEL */
+    528          #if defined(RCC_CCIPR_LPUART2SEL)
+    529            /* Get the LPUART2 clock source --------------------------------------------*/
+    530            PeriphClkInit->Lpuart2ClockSelection = __HAL_RCC_GET_LPUART2_SOURCE();
+    531          #endif /* RCC_CCIPR_LPUART2SEL */
+    532            /* Get the I2C1 clock source -----------------------------------------------*/
+    533            PeriphClkInit->I2c1ClockSelection    = __HAL_RCC_GET_I2C1_SOURCE();
+    534          #if defined(RCC_CCIPR_I2C2SEL)
+    535            /* Get the I2C2 clock source -----------------------------------------------*/
+    536            PeriphClkInit->I2c2ClockSelection    = __HAL_RCC_GET_I2C2_SOURCE();
+    537          #endif /* RCC_CCIPR_I2C2SEL */
+    538          #if defined(RCC_CCIPR_LPTIM1SEL)
+    539            /* Get the LPTIM1 clock source ---------------------------------------------*/
+    540            PeriphClkInit->Lptim1ClockSelection  = __HAL_RCC_GET_LPTIM1_SOURCE();
+    541          #endif /* RCC_CCIPR_LPTIM1SEL */
+    542          #if defined(RCC_CCIPR_LPTIM2SEL)
+    543            /* Get the LPTIM2 clock source ---------------------------------------------*/
+    544            PeriphClkInit->Lptim2ClockSelection  = __HAL_RCC_GET_LPTIM2_SOURCE();
+    545          #endif /* RCC_CCIPR_LPTIM2SEL */
+    546          #if defined(RCC_CCIPR_TIM1SEL)
+    547            /* Get the TIM1 clock source ---------------------------------------------*/
+    548            PeriphClkInit->Tim1ClockSelection  = __HAL_RCC_GET_TIM1_SOURCE();
+    549          #endif /* RCC_CCIPR_TIM1SEL */
+    550          #if defined(RCC_CCIPR_TIM15SEL)
+    551            /* Get the TIM15 clock source ---------------------------------------------*/
+    552            PeriphClkInit->Tim15ClockSelection  = __HAL_RCC_GET_TIM15_SOURCE();
+    553          #endif /* RCC_CCIPR_TIM15SEL */
+    554            /* Get the RTC clock source ------------------------------------------------*/
+    555            PeriphClkInit->RTCClockSelection     = __HAL_RCC_GET_RTC_SOURCE();
+    556          #if defined(RCC_CCIPR_RNGSEL)
+    557            /* Get the RNG clock source ------------------------------------------------*/
+    558            PeriphClkInit->RngClockSelection     = __HAL_RCC_GET_RNG_SOURCE();
+    559          #endif  /* RCC_CCIPR_RNGSEL */
+    560            /* Get the ADC clock source -----------------------------------------------*/
+    561            PeriphClkInit->AdcClockSelection     = __HAL_RCC_GET_ADC_SOURCE();
+    562          #if defined(RCC_CCIPR_CECSEL)
+    563            /* Get the CEC clock source -----------------------------------------------*/
+    564            PeriphClkInit->CecClockSelection     = __HAL_RCC_GET_CEC_SOURCE();
+    565          #endif  /* RCC_CCIPR_CECSEL */
+    566          #if defined(RCC_CCIPR2_USBSEL)
+    567            /* Get the USB clock source -----------------------------------------------*/
+    568            PeriphClkInit->UsbClockSelection     = __HAL_RCC_GET_USB_SOURCE();
+    569          #endif  /* RCC_CCIPR2_USBSEL */
+    570          #if defined(RCC_CCIPR2_FDCANSEL)
+    571            /* Get the FDCAN clock source -----------------------------------------------*/
+    572            PeriphClkInit->FdcanClockSelection     = __HAL_RCC_GET_FDCAN_SOURCE();
+    573          #endif  /* RCC_CCIPR2_FDCANSEL */
+    574            /* Get the I2S1 clock source -----------------------------------------------*/
+    575            PeriphClkInit->I2s1ClockSelection    = __HAL_RCC_GET_I2S1_SOURCE();
+    576          #if defined(RCC_CCIPR2_I2S2SEL)
+    577            /* Get the I2S2 clock source -----------------------------------------------*/
+    578            PeriphClkInit->I2s2ClockSelection    = __HAL_RCC_GET_I2S2_SOURCE();
+    579          #endif /* RCC_CCIPR2_I2S2SEL */
+    580          }
+    581          
+    582          /**
+    583            * @brief  Return the peripheral clock frequency for peripherals with clock source from PLL
+    584            * @note   Return 0 if peripheral clock identifier not managed by this API
+    585            * @param  PeriphClk  Peripheral clock identifier
+    586            *         This parameter can be one of the following values:
+    587            *            @arg @ref RCC_PERIPHCLK_RTC     RTC peripheral clock
+    588            *            @arg @ref RCC_PERIPHCLK_ADC     ADC peripheral clock
+    589            *            @arg @ref RCC_PERIPHCLK_I2C1    I2C1 peripheral clock
+    590            *            @arg @ref RCC_PERIPHCLK_I2C2    I2C2 peripheral clock (1)
+    591            *            @arg @ref RCC_PERIPHCLK_I2S1    I2S1 peripheral clock
+    592            *            @arg @ref RCC_PERIPHCLK_I2S2    I2S2 peripheral clock (1)
+    593            *            @arg @ref RCC_PERIPHCLK_USART1  USART1 peripheral clock
+    594            *            @arg @ref RCC_PERIPHCLK_USART2  USART2 peripheral clock (1)(2)
+    595            *            @arg @ref RCC_PERIPHCLK_USART3  USART3 peripheral clock (1)
+    596            *            @arg @ref RCC_PERIPHCLK_RNG     RNG peripheral clock    (1)
+    597            *            @arg @ref RCC_PERIPHCLK_TIM15   TIM15 peripheral clock  (1)(2)
+    598            *            @arg @ref RCC_PERIPHCLK_TIM1    TIM1 peripheral clock   (1)(2)
+    599            *            @arg @ref RCC_PERIPHCLK_LPTIM1  LPTIM1 peripheral clock (1)
+    600            *            @arg @ref RCC_PERIPHCLK_LPTIM2  LPTIM2 peripheral clock (1)
+    601            *            @arg @ref RCC_PERIPHCLK_LPUART1 LPUART1 peripheral clock(1)
+    602            *            @arg @ref RCC_PERIPHCLK_LPUART2 LPUART2 peripheral clock(1)
+    603            *            @arg @ref RCC_PERIPHCLK_CEC     CEC peripheral clock    (1)
+    604            *            @arg @ref RCC_PERIPHCLK_FDCAN    FDCAN peripheral clock (1)
+    605            *            @arg @ref RCC_PERIPHCLK_USB      USB peripheral clock   (1)
+    606            * @note   (1) Peripheral not available on all devices
+    607            * @note   (2) Peripheral Clock configuration not available on all devices
+    608            * @retval Frequency in Hz
+    609            */
+    610          uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
+    611          {
+    612            uint32_t frequency = 0U;
+    613            uint32_t srcclk;
+    614            uint32_t pllvco;
+    615            uint32_t plln;
+    616          #if defined(RCC_CCIPR_RNGSEL)
+    617            uint32_t rngclk;
+    618            uint32_t rngdiv;
+    619          #endif /* RCC_CCIPR_RNGSEL */
+    620            /* Check the parameters */
+    621            assert_param(IS_RCC_PERIPHCLOCK(PeriphClk));
+    622          
+    623            if (PeriphClk == RCC_PERIPHCLK_RTC)
+    624            {
+    625              /* Get the current RTC source */
+    626              srcclk = __HAL_RCC_GET_RTC_SOURCE();
+    627          
+    628              /* Check if LSE is ready and if RTC clock selection is LSE */
+    629              if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_RTCCLKSOURCE_LSE))
+    630              {
+    631                frequency = LSE_VALUE;
+    632              }
+    633              /* Check if LSI is ready and if RTC clock selection is LSI */
+    634              else if ((HAL_IS_BIT_SET(RCC->CSR, RCC_CSR_LSIRDY)) && (srcclk == RCC_RTCCLKSOURCE_LSI))
+    635              {
+    636                frequency = LSI_VALUE;
+    637              }
+    638              /* Check if HSE is ready  and if RTC clock selection is HSI_DIV32*/
+    639              else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSERDY)) && (srcclk == RCC_RTCCLKSOURCE_HSE_DIV32))
+    640              {
+    641                frequency = HSE_VALUE / 32U;
+    642              }
+    643              /* Clock not enabled for RTC*/
+    644              else
+    645              {
+    646                /* Nothing to do as frequency already initialized to 0U */
+    647              }
+    648            }
+    649            else
+    650            {
+    651              /* Other external peripheral clock source than RTC */
+    652          
+    653              /* Compute PLL clock input */
+    654              if (__HAL_RCC_GET_PLL_OSCSOURCE() == RCC_PLLSOURCE_HSI)  /* HSI ? */
+    655              {
+    656                pllvco = HSI_VALUE;
+    657              }
+    658              else if (__HAL_RCC_GET_PLL_OSCSOURCE() == RCC_PLLSOURCE_HSE)  /* HSE ? */
+    659              {
+    660                pllvco = HSE_VALUE;
+    661              }
+    662              else /* No source */
+    663              {
+    664                pllvco = 0U;
+    665              }
+    666          
+    667              /* f(PLL Source) / PLLM */
+    668              pllvco = (pllvco / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM) >> RCC_PLLCFGR_PLLM_Pos) + 1U));
+    669          
+    670              switch (PeriphClk)
+    671              {
+    672          #if defined(RCC_CCIPR_RNGSEL)
+    673                case RCC_PERIPHCLK_RNG:
+    674          
+    675                  srcclk = READ_BIT(RCC->CCIPR, RCC_CCIPR_RNGSEL);
+    676                  if (srcclk == RCC_RNGCLKSOURCE_HSI_DIV8)  /* HSI_DIV8 ? */
+    677                  {
+    678                    rngclk = HSI_VALUE / 8U;
+    679                  }
+    680                  else if (srcclk == RCC_RNGCLKSOURCE_PLL) /* PLL ? */
+    681                  {
+    682                    /* f(PLLQ) = f(VCO input) * PLLN / PLLQ */
+    683                    plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+    684                    rngclk = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ) >> RCC_PLLCFGR_PLLQ_Pos) + 1U);
+    685                  }
+    686                  else if (srcclk == RCC_RNGCLKSOURCE_SYSCLK) /* SYSCLK ? */
+    687                  {
+    688                    rngclk = HAL_RCC_GetSysClockFreq();
+    689                  }
+    690                  else /* No clock source */
+    691                  {
+    692                    rngclk = 0U;
+    693                  }
+    694          
+    695                  rngdiv = (1UL << ((READ_BIT(RCC->CCIPR, RCC_CCIPR_RNGDIV)) >> RCC_CCIPR_RNGDIV_Pos));
+    696                  frequency = (rngclk / rngdiv);
+    697          
+    698                  break;
+    699          #endif  /* RCC_CCIPR_RNGSEL */
+    700                case RCC_PERIPHCLK_USART1:
+    701                  /* Get the current USART1 source */
+    702                  srcclk = __HAL_RCC_GET_USART1_SOURCE();
+    703          
+    704                  if (srcclk == RCC_USART1CLKSOURCE_PCLK1)            /* PCLK1 ? */
+    705                  {
+    706                    frequency = HAL_RCC_GetPCLK1Freq();
+    707                  }
+    708                  else if (srcclk == RCC_USART1CLKSOURCE_SYSCLK)     /* SYSCLK ? */
+    709                  {
+    710                    frequency = HAL_RCC_GetSysClockFreq();
+    711                  }
+    712                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_USART1CLKSOURCE_HSI))
+    713                  {
+    714                    frequency = HSI_VALUE;
+    715                  }
+    716                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_USART1CLKSOURCE_LSE))
+    717                  {
+    718                    frequency = LSE_VALUE;
+    719                  }
+    720                  /* Clock not enabled for USART1 */
+    721                  else
+    722                  {
+    723                    /* Nothing to do as frequency already initialized to 0U */
+    724                  }
+    725                  break;
+    726          #if defined(RCC_CCIPR_USART2SEL)
+    727                case RCC_PERIPHCLK_USART2:
+    728                  /* Get the current USART2 source */
+    729                  srcclk = __HAL_RCC_GET_USART2_SOURCE();
+    730          
+    731                  if (srcclk == RCC_USART2CLKSOURCE_PCLK1)
+    732                  {
+    733                    frequency = HAL_RCC_GetPCLK1Freq();
+    734                  }
+    735                  else if (srcclk == RCC_USART2CLKSOURCE_SYSCLK)
+    736                  {
+    737                    frequency = HAL_RCC_GetSysClockFreq();
+    738                  }
+    739                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_USART2CLKSOURCE_HSI))
+    740                  {
+    741                    frequency = HSI_VALUE;
+    742                  }
+    743                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_USART2CLKSOURCE_LSE))
+    744                  {
+    745                    frequency = LSE_VALUE;
+    746                  }
+    747                  /* Clock not enabled for USART2 */
+    748                  else
+    749                  {
+    750                    /* Nothing to do as frequency already initialized to 0U */
+    751                  }
+    752                  break;
+    753          #endif /* RCC_CCIPR_USART2SEL */
+    754          
+    755          #if defined(RCC_CCIPR_USART3SEL)
+    756                case RCC_PERIPHCLK_USART3:
+    757                  /* Get the current USART3 source */
+    758                  srcclk = __HAL_RCC_GET_USART3_SOURCE();
+    759          
+    760                  if (srcclk == RCC_USART3CLKSOURCE_PCLK1)
+    761                  {
+    762                    frequency = HAL_RCC_GetPCLK1Freq();
+    763                  }
+    764                  else if (srcclk == RCC_USART3CLKSOURCE_SYSCLK)
+    765                  {
+    766                    frequency = HAL_RCC_GetSysClockFreq();
+    767                  }
+    768                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_USART3CLKSOURCE_HSI))
+    769                  {
+    770                    frequency = HSI_VALUE;
+    771                  }
+    772                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_USART3CLKSOURCE_LSE))
+    773                  {
+    774                    frequency = LSE_VALUE;
+    775                  }
+    776                  /* Clock not enabled for USART3 */
+    777                  else
+    778                  {
+    779                    /* Nothing to do as frequency already initialized to 0U */
+    780                  }
+    781                  break;
+    782          #endif /* RCC_CCIPR_USART3SEL */
+    783          
+    784          #if defined(RCC_CCIPR_CECSEL)
+    785                case RCC_PERIPHCLK_CEC:
+    786                  /* Get the current CEC source */
+    787                  srcclk = __HAL_RCC_GET_CEC_SOURCE();
+    788          
+    789                  if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_CECCLKSOURCE_HSI_DIV488))
+    790                  {
+    791                    frequency = (HSI_VALUE / 488U);
+    792                  }
+    793                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_CECCLKSOURCE_LSE))
+    794                  {
+    795                    frequency = LSE_VALUE;
+    796                  }
+    797                  /* Clock not enabled for CEC */
+    798                  else
+    799                  {
+    800                    /* Nothing to do as frequency already initialized to 0U */
+    801                  }
+    802                  break;
+    803          #endif /* RCC_CCIPR_CECSEL */
+    804          
+    805          #if defined(RCC_CCIPR_LPUART1SEL)
+    806                case RCC_PERIPHCLK_LPUART1:
+    807                  /* Get the current LPUART1 source */
+    808                  srcclk = __HAL_RCC_GET_LPUART1_SOURCE();
+    809          
+    810                  if (srcclk == RCC_LPUART1CLKSOURCE_PCLK1)
+    811                  {
+    812                    frequency = HAL_RCC_GetPCLK1Freq();
+    813                  }
+    814                  else if (srcclk == RCC_LPUART1CLKSOURCE_SYSCLK)
+    815                  {
+    816                    frequency = HAL_RCC_GetSysClockFreq();
+    817                  }
+    818                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_LPUART1CLKSOURCE_HSI))
+    819                  {
+    820                    frequency = HSI_VALUE;
+    821                  }
+    822                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_LPUART1CLKSOURCE_LSE))
+    823                  {
+    824                    frequency = LSE_VALUE;
+    825                  }
+    826                  /* Clock not enabled for LPUART1 */
+    827                  else
+    828                  {
+    829                    /* Nothing to do as frequency already initialized to 0U */
+    830                  }
+    831                  break;
+    832          #endif /* RCC_CCIPR_LPUART1SEL */
+    833          
+    834          #if defined(RCC_CCIPR_LPUART2SEL)
+    835                case RCC_PERIPHCLK_LPUART2:
+    836                  /* Get the current LPUART2 source */
+    837                  srcclk = __HAL_RCC_GET_LPUART2_SOURCE();
+    838          
+    839                  if (srcclk == RCC_LPUART2CLKSOURCE_PCLK1)
+    840                  {
+    841                    frequency = HAL_RCC_GetPCLK1Freq();
+    842                  }
+    843                  else if (srcclk == RCC_LPUART2CLKSOURCE_SYSCLK)
+    844                  {
+    845                    frequency = HAL_RCC_GetSysClockFreq();
+    846                  }
+    847                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_LPUART2CLKSOURCE_HSI))
+    848                  {
+    849                    frequency = HSI_VALUE;
+    850                  }
+    851                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_LPUART2CLKSOURCE_LSE))
+    852                  {
+    853                    frequency = LSE_VALUE;
+    854                  }
+    855                  /* Clock not enabled for LPUART2 */
+    856                  else
+    857                  {
+    858                    /* Nothing to do as frequency already initialized to 0U */
+    859                  }
+    860                  break;
+    861          #endif /* RCC_CCIPR_LPUART2SEL */
+    862          
+    863                case RCC_PERIPHCLK_ADC:
+    864          
+    865                  srcclk = __HAL_RCC_GET_ADC_SOURCE();
+    866          
+    867                  if (srcclk == RCC_ADCCLKSOURCE_SYSCLK)
+    868                  {
+    869                    frequency = HAL_RCC_GetSysClockFreq();
+    870                  }
+    871                  else if (srcclk == RCC_ADCCLKSOURCE_HSI)
+    872                  {
+    873                    frequency = HSI_VALUE;
+    874                  }
+    875                  else if (srcclk == RCC_ADCCLKSOURCE_PLLADC)
+    876                  {
+    877                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLPCLK) != 0U)
+    878                    {
+    879                      /* f(PLLP) = f(VCO input) * PLLN / PLLP */
+    880                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+    881                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP) >> RCC_PLLCFGR_PLLP_Pos) + 1U);
+    882                    }
+    883                  }
+    884                  /* Clock not enabled for ADC */
+    885                  else
+    886                  {
+    887                    /* Nothing to do as frequency already initialized to 0U */
+    888                  }
+    889                  break;
+    890          
+    891                case RCC_PERIPHCLK_I2C1:
+    892                  /* Get the current I2C1 source */
+    893                  srcclk = __HAL_RCC_GET_I2C1_SOURCE();
+    894          
+    895                  if (srcclk == RCC_I2C1CLKSOURCE_PCLK1)
+    896                  {
+    897                    frequency = HAL_RCC_GetPCLK1Freq();
+    898                  }
+    899                  else if (srcclk == RCC_I2C1CLKSOURCE_SYSCLK)
+    900                  {
+    901                    frequency = HAL_RCC_GetSysClockFreq();
+    902                  }
+    903                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_I2C1CLKSOURCE_HSI))
+    904                  {
+    905                    frequency = HSI_VALUE;
+    906                  }
+    907                  /* Clock not enabled for I2C1 */
+    908                  else
+    909                  {
+    910                    /* Nothing to do as frequency already initialized to 0U */
+    911                  }
+    912                  break;
+    913          
+    914          #if defined(RCC_CCIPR_I2C2SEL)
+    915                case RCC_PERIPHCLK_I2C2:
+    916                  /* Get the current I2C2 source */
+    917                  srcclk = __HAL_RCC_GET_I2C2_SOURCE();
+    918          
+    919                  if (srcclk == RCC_I2C2CLKSOURCE_PCLK1)
+    920                  {
+    921                    frequency = HAL_RCC_GetPCLK1Freq();
+    922                  }
+    923                  else if (srcclk == RCC_I2C2CLKSOURCE_SYSCLK)
+    924                  {
+    925                    frequency = HAL_RCC_GetSysClockFreq();
+    926                  }
+    927                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_I2C2CLKSOURCE_HSI))
+    928                  {
+    929                    frequency = HSI_VALUE;
+    930                  }
+    931                  /* Clock not enabled for I2C2 */
+    932                  else
+    933                  {
+    934                    /* Nothing to do as frequency already initialized to 0U */
+    935                  }
+    936                  break;
+    937          #endif /* RCC_CCIPR_I2C2SEL */
+    938          
+    939                case RCC_PERIPHCLK_I2S1:
+    940                  /* Get the current I2S1 source */
+    941                  srcclk = __HAL_RCC_GET_I2S1_SOURCE();
+    942          
+    943                  if (srcclk == RCC_I2S1CLKSOURCE_PLL)
+    944                  {
+    945                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLPCLK) != 0U)
+    946                    {
+    947                      /* f(PLLP) = f(VCO input) * PLLN / PLLP */
+    948                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+    949                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP) >> RCC_PLLCFGR_PLLP_Pos) + 1U);
+    950                    }
+    951                  }
+    952                  else if (srcclk == RCC_I2S1CLKSOURCE_SYSCLK)
+    953                  {
+    954                    frequency = HAL_RCC_GetSysClockFreq();
+    955                  }
+    956                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_I2S1CLKSOURCE_HSI))
+    957                  {
+    958                    frequency = HSI_VALUE;
+    959                  }
+    960                  else if (srcclk == RCC_I2S1CLKSOURCE_EXT)
+    961                  {
+    962                    /* External clock used.*/
+    963                    frequency = EXTERNAL_I2S1_CLOCK_VALUE;
+    964                  }
+    965                  /* Clock not enabled for I2S1 */
+    966                  else
+    967                  {
+    968                    /* Nothing to do as frequency already initialized to 0U */
+    969                  }
+    970                  break;
+    971          
+    972          #if defined(RCC_CCIPR2_I2S2SEL)
+    973                case RCC_PERIPHCLK_I2S2:
+    974                  /* Get the current I2S2 source */
+    975                  srcclk = __HAL_RCC_GET_I2S2_SOURCE();
+    976          
+    977                  if (srcclk == RCC_I2S2CLKSOURCE_PLL)
+    978                  {
+    979                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLPCLK) != 0U)
+    980                    {
+    981                      /* f(PLLP) = f(VCO input) * PLLN / PLLP */
+    982                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+    983                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP) >> RCC_PLLCFGR_PLLP_Pos) + 1U);
+    984                    }
+    985                  }
+    986                  else if (srcclk == RCC_I2S2CLKSOURCE_SYSCLK)
+    987                  {
+    988                    frequency = HAL_RCC_GetSysClockFreq();
+    989                  }
+    990                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_I2S2CLKSOURCE_HSI))
+    991                  {
+    992                    frequency = HSI_VALUE;
+    993                  }
+    994                  else if (srcclk == RCC_I2S2CLKSOURCE_EXT)
+    995                  {
+    996                    /* External clock used.*/
+    997                    frequency = EXTERNAL_I2S2_CLOCK_VALUE;
+    998                  }
+    999                  /* Clock not enabled for I2S2 */
+   1000                  else
+   1001                  {
+   1002                    /* Nothing to do as frequency already initialized to 0U */
+   1003                  }
+   1004                  break;
+   1005          #endif /* RCC_CCIPR2_I2S2SEL */
+   1006          
+   1007          #if defined(RCC_CCIPR_LPTIM1SEL)
+   1008                case RCC_PERIPHCLK_LPTIM1:
+   1009                  /* Get the current LPTIM1 source */
+   1010                  srcclk = __HAL_RCC_GET_LPTIM1_SOURCE();
+   1011          
+   1012                  if (srcclk == RCC_LPTIM1CLKSOURCE_PCLK1)
+   1013                  {
+   1014                    frequency = HAL_RCC_GetPCLK1Freq();
+   1015                  }
+   1016                  else if ((HAL_IS_BIT_SET(RCC->CSR, RCC_CSR_LSIRDY)) && (srcclk == RCC_LPTIM1CLKSOURCE_LSI))
+   1017                  {
+   1018                    frequency = LSI_VALUE;
+   1019                  }
+   1020                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_LPTIM1CLKSOURCE_HSI))
+   1021                  {
+   1022                    frequency = HSI_VALUE;
+   1023                  }
+   1024                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_LPTIM1CLKSOURCE_LSE))
+   1025                  {
+   1026                    frequency = LSE_VALUE;
+   1027                  }
+   1028                  /* Clock not enabled for LPTIM1 */
+   1029                  else
+   1030                  {
+   1031                    /* Nothing to do as frequency already initialized to 0U */
+   1032                  }
+   1033                  break;
+   1034          #endif /* RCC_CCIPR_LPTIM1SEL */
+   1035          
+   1036          #if defined(RCC_CCIPR_LPTIM2SEL)
+   1037                case RCC_PERIPHCLK_LPTIM2:
+   1038                  /* Get the current LPTIM2 source */
+   1039                  srcclk = __HAL_RCC_GET_LPTIM2_SOURCE();
+   1040          
+   1041                  if (srcclk == RCC_LPTIM2CLKSOURCE_PCLK1)
+   1042                  {
+   1043                    frequency = HAL_RCC_GetPCLK1Freq();
+   1044                  }
+   1045                  else if ((HAL_IS_BIT_SET(RCC->CSR, RCC_CSR_LSIRDY)) && (srcclk == RCC_LPTIM2CLKSOURCE_LSI))
+   1046                  {
+   1047                    frequency = LSI_VALUE;
+   1048                  }
+   1049                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSIRDY)) && (srcclk == RCC_LPTIM2CLKSOURCE_HSI))
+   1050                  {
+   1051                    frequency = HSI_VALUE;
+   1052                  }
+   1053                  else if ((HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSERDY)) && (srcclk == RCC_LPTIM2CLKSOURCE_LSE))
+   1054                  {
+   1055                    frequency = LSE_VALUE;
+   1056                  }
+   1057                  /* Clock not enabled for LPTIM2 */
+   1058                  else
+   1059                  {
+   1060                    /* Nothing to do as frequency already initialized to 0U */
+   1061                  }
+   1062                  break;
+   1063          #endif /* RCC_CCIPR_LPTIM2SEL */
+   1064          
+   1065          #if defined(RCC_CCIPR_TIM1SEL)
+   1066                case RCC_PERIPHCLK_TIM1:
+   1067          
+   1068                  srcclk = READ_BIT(RCC->CCIPR, RCC_CCIPR_TIM1SEL);
+   1069          
+   1070                  if (srcclk == RCC_TIM1CLKSOURCE_PLL) /* PLL ? */
+   1071                  {
+   1072                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLQCLK) != 0U)
+   1073                    {
+   1074                      /* f(PLLQ) = f(VCO input) * PLLN / PLLQ */
+   1075                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+   1076                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ) >> RCC_PLLCFGR_PLLQ_Pos) + 1U);
+   1077                    }
+   1078                  }
+   1079                  else if (srcclk == RCC_TIM1CLKSOURCE_PCLK1) /* PCLK1 ? */
+   1080                  {
+   1081                    frequency = HAL_RCC_GetPCLK1Freq();
+   1082                  }
+   1083                  else /* No clock source */
+   1084                  {
+   1085                    /* Nothing to do as frequency already initialized to 0U */
+   1086                  }
+   1087                  break;
+   1088          #endif /* RCC_CCIPR_TIM1SEL */
+   1089          
+   1090          #if defined(RCC_CCIPR_TIM15SEL)
+   1091                case RCC_PERIPHCLK_TIM15:
+   1092          
+   1093                  srcclk = READ_BIT(RCC->CCIPR, RCC_CCIPR_TIM15SEL);
+   1094          
+   1095                  if (srcclk == RCC_TIM15CLKSOURCE_PLL) /* PLL ? */
+   1096                  {
+   1097                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLQCLK) != 0U)
+   1098                    {
+   1099                      /* f(PLLQ) = f(VCO input) * PLLN / PLLQ */
+   1100                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+   1101                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ) >> RCC_PLLCFGR_PLLQ_Pos) + 1U);
+   1102                    }
+   1103                  }
+   1104                  else if (srcclk == RCC_TIM15CLKSOURCE_PCLK1) /* PCLK1 ? */
+   1105                  {
+   1106                    frequency = HAL_RCC_GetPCLK1Freq();
+   1107                  }
+   1108                  else /* No clock source */
+   1109                  {
+   1110                    /* Nothing to do as frequency already initialized to 0U */
+   1111                  }
+   1112                  break;
+   1113          #endif /* RCC_CCIPR_TIM15SEL */
+   1114          
+   1115          #if defined(RCC_CCIPR2_USBSEL)
+   1116                case RCC_PERIPHCLK_USB:
+   1117          
+   1118                  srcclk = READ_BIT(RCC->CCIPR2, RCC_CCIPR2_USBSEL);
+   1119          
+   1120                  if (srcclk == RCC_USBCLKSOURCE_PLL) /* PLL ? */
+   1121                  {
+   1122                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLQCLK) != 0U)
+   1123                    {
+   1124                      /* f(PLLQ) = f(VCO input) * PLLN / PLLQ */
+   1125                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+   1126                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ) >> RCC_PLLCFGR_PLLQ_Pos) + 1U);
+   1127                    }
+   1128                  }
+   1129          #if defined(RCC_HSI48_SUPPORT)
+   1130                  else if (srcclk == RCC_USBCLKSOURCE_HSI48) /* HSI48 ? */
+   1131                  {
+   1132                    if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSI48RDY)) && (srcclk == RCC_USBCLKSOURCE_HSI48))
+   1133                    {
+   1134                      frequency = HSI48_VALUE;
+   1135                    }
+   1136                  }
+   1137          #endif /* RCC_HSI48_SUPPORT */
+   1138                  else if (srcclk == RCC_USBCLKSOURCE_HSE)
+   1139                  {
+   1140                    if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSERDY)) && (srcclk == RCC_USBCLKSOURCE_HSE))
+   1141                    {
+   1142                      frequency = HSE_VALUE;
+   1143                    }
+   1144                  }
+   1145                  else /* No clock source */
+   1146                  {
+   1147                    /* Nothing to do as frequency already initialized to 0U */
+   1148                  }
+   1149                  break;
+   1150          #endif /* RCC_CCIPR2_USBSEL */
+   1151          
+   1152          #if defined(RCC_CCIPR2_FDCANSEL)
+   1153                case RCC_PERIPHCLK_FDCAN:
+   1154          
+   1155                  srcclk = READ_BIT(RCC->CCIPR2, RCC_CCIPR2_FDCANSEL);
+   1156          
+   1157                  if (srcclk == RCC_FDCANCLKSOURCE_PLL) /* PLL ? */
+   1158                  {
+   1159                    if (__HAL_RCC_GET_PLLCLKOUT_CONFIG(RCC_PLLQCLK) != 0U)
+   1160                    {
+   1161                      /* f(PLLQ) = f(VCO input) * PLLN / PLLQ */
+   1162                      plln = READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN) >> RCC_PLLCFGR_PLLN_Pos;
+   1163                      frequency = (pllvco * plln) / ((READ_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ) >> RCC_PLLCFGR_PLLQ_Pos) + 1U);
+   1164                    }
+   1165                  }
+   1166                  else if (srcclk == RCC_FDCANCLKSOURCE_PCLK1) /* PCLK1 ? */
+   1167                  {
+   1168                    frequency = HAL_RCC_GetPCLK1Freq();
+   1169                  }
+   1170                  else if ((HAL_IS_BIT_SET(RCC->CR, RCC_CR_HSERDY)) && (srcclk == RCC_FDCANCLKSOURCE_HSE))
+   1171                  {
+   1172                    frequency = HSE_VALUE;
+   1173                  }
+   1174                  else /* No clock source */
+   1175                  {
+   1176                    /* Nothing to do as frequency already initialized to 0U */
+   1177                  }
+   1178                  break;
+   1179          #endif /* RCC_CCIPR2_FDCANSEL */
+   1180          
+   1181                default:
+   1182                  break;
+   1183              }
+   1184            }
+   1185          
+   1186            return (frequency);
+   1187          }
+   1188          
+   1189          /**
+   1190            * @}
+   1191            */
+   1192          
+   1193          /** @defgroup RCCEx_Exported_Functions_Group2 Extended Clock management functions
+   1194            *  @brief  Extended Clock management functions
+   1195            *
+   1196          @verbatim
+   1197           ===============================================================================
+   1198                          ##### Extended clock management functions  #####
+   1199           ===============================================================================
+   1200              [..]
+   1201              This subsection provides a set of functions allowing to control the
+   1202              activation or deactivation of LSE CSS, Low speed clock output and
+   1203              clock after wake-up from STOP mode.
+   1204          @endverbatim
+   1205            * @{
+   1206            */
+   1207          
+   1208          /**
+   1209            * @brief  Select the Low Speed clock source to output on LSCO pin (PA2).
+   1210            * @param  LSCOSource  specifies the Low Speed clock source to output.
+   1211            *          This parameter can be one of the following values:
+   1212            *            @arg @ref RCC_LSCOSOURCE_LSI  LSI clock selected as LSCO source
+   1213            *            @arg @ref RCC_LSCOSOURCE_LSE  LSE clock selected as LSCO source
+   1214            * @retval None
+   1215            */
+   1216          void HAL_RCCEx_EnableLSCO(uint32_t LSCOSource)
+   1217          {
+   1218            GPIO_InitTypeDef GPIO_InitStruct;
+   1219            FlagStatus       pwrclkchanged = RESET;
+   1220            FlagStatus       backupchanged = RESET;
+   1221          
+   1222            /* Check the parameters */
+   1223            assert_param(IS_RCC_LSCOSOURCE(LSCOSource));
+   1224          
+   1225            /* LSCO Pin Clock Enable */
+   1226            LSCO_CLK_ENABLE();
+   1227          
+   1228            /* Configure the LSCO pin in analog mode */
+   1229            GPIO_InitStruct.Pin = LSCO_PIN;
+   1230            GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+   1231            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+   1232            GPIO_InitStruct.Pull = GPIO_NOPULL;
+   1233            HAL_GPIO_Init(LSCO_GPIO_PORT, &GPIO_InitStruct);
+   1234          
+   1235            /* Update LSCOSEL clock source in Backup Domain control register */
+   1236            if (__HAL_RCC_PWR_IS_CLK_DISABLED())
+   1237            {
+   1238              __HAL_RCC_PWR_CLK_ENABLE();
+   1239              pwrclkchanged = SET;
+   1240            }
+   1241            if (HAL_IS_BIT_CLR(PWR->CR1, PWR_CR1_DBP))
+   1242            {
+   1243              HAL_PWR_EnableBkUpAccess();
+   1244              backupchanged = SET;
+   1245            }
+   1246          
+   1247            MODIFY_REG(RCC->BDCR, RCC_BDCR_LSCOSEL | RCC_BDCR_LSCOEN, LSCOSource | RCC_BDCR_LSCOEN);
+   1248          
+   1249            if (backupchanged == SET)
+   1250            {
+   1251              HAL_PWR_DisableBkUpAccess();
+   1252            }
+   1253            if (pwrclkchanged == SET)
+   1254            {
+   1255              __HAL_RCC_PWR_CLK_DISABLE();
+   1256            }
+   1257          }
+   1258          
+   1259          /**
+   1260            * @brief  Disable the Low Speed clock output.
+   1261            * @retval None
+   1262            */
+   1263          void HAL_RCCEx_DisableLSCO(void)
+   1264          {
+   1265            FlagStatus       pwrclkchanged = RESET;
+   1266            FlagStatus       backupchanged = RESET;
+   1267          
+   1268            /* Update LSCOEN bit in Backup Domain control register */
+   1269            if (__HAL_RCC_PWR_IS_CLK_DISABLED())
+   1270            {
+   1271              __HAL_RCC_PWR_CLK_ENABLE();
+   1272              pwrclkchanged = SET;
+   1273            }
+   1274            if (HAL_IS_BIT_CLR(PWR->CR1, PWR_CR1_DBP))
+   1275            {
+   1276              /* Enable access to the backup domain */
+   1277              HAL_PWR_EnableBkUpAccess();
+   1278              backupchanged = SET;
+   1279            }
+   1280          
+   1281            CLEAR_BIT(RCC->BDCR, RCC_BDCR_LSCOEN);
+   1282          
+   1283            /* Restore previous configuration */
+   1284            if (backupchanged == SET)
+   1285            {
+   1286              /* Disable access to the backup domain */
+   1287              HAL_PWR_DisableBkUpAccess();
+   1288            }
+   1289            if (pwrclkchanged == SET)
+   1290            {
+   1291              __HAL_RCC_PWR_CLK_DISABLE();
+   1292            }
+   1293          }
+   1294          
+   1295          /**
+   1296            * @}
+   1297            */
+   1298          
+   1299          #if defined(CRS)
+   1300          
+   1301          /** @defgroup RCCEx_Exported_Functions_Group3 Extended Clock Recovery System Control functions
+   1302            * @brief  Extended Clock Recovery System Control functions
+   1303            *
+   1304          @verbatim
+   1305           ===============================================================================
+   1306                          ##### Extended Clock Recovery System Control functions  #####
+   1307           ===============================================================================
+   1308              [..]
+   1309                For devices with Clock Recovery System feature (CRS), RCC Extension HAL driver can be used as follows:
+   1310          
+   1311                (#) In System clock config, HSI48 needs to be enabled
+   1312          
+   1313                (#) Enable CRS clock in IP MSP init which will use CRS functions
+   1314          
+   1315                (#) Call CRS functions as follows:
+   1316                    (##) Prepare synchronization configuration necessary for HSI48 calibration
+   1317                        (+++) Default values can be set for frequency Error Measurement (reload and error limit)
+   1318                                  and also HSI48 oscillator smooth trimming.
+   1319                        (+++) Macro __HAL_RCC_CRS_RELOADVALUE_CALCULATE can be also used to calculate
+   1320                                  directly reload value with target and synchronization frequencies values
+   1321                    (##) Call function HAL_RCCEx_CRSConfig which
+   1322                        (+++) Resets CRS registers to their default values.
+   1323                        (+++) Configures CRS registers with synchronization configuration
+   1324                        (+++) Enables automatic calibration and frequency error counter feature
+   1325                     Note: When using USB LPM (Link Power Management) and the device is in Sleep mode, the
+   1326                     periodic USB SOF will not be generated by the host. No SYNC signal will therefore be
+   1327                     provided to the CRS to calibrate the HSI48 on the run. To guarantee the required clock
+   1328                     precision after waking up from Sleep mode, the LSE or reference clock on the GPIOs
+   1329                     should be used as SYNC signal.
+   1330          
+   1331                    (##) A polling function is provided to wait for complete synchronization
+   1332                        (+++) Call function HAL_RCCEx_CRSWaitSynchronization()
+   1333                        (+++) According to CRS status, user can decide to adjust again the calibration or continue
+   1334                                  application if synchronization is OK
+   1335          
+   1336                (#) User can retrieve information related to synchronization in calling function
+   1337                      HAL_RCCEx_CRSGetSynchronizationInfo()
+   1338          
+   1339                (#) Regarding synchronization status and synchronization information, user can try a new calibration
+   1340                     in changing synchronization configuration and call again HAL_RCCEx_CRSConfig.
+   1341                     Note: When the SYNC event is detected during the downcounting phase (before reaching the zero value),
+   1342                     it means that the actual frequency is lower than the target (and so, that the TRIM value should be
+   1343                     incremented), while when it is detected during the upcounting phase it means that the actual frequency
+   1344                     is higher (and that the TRIM value should be decremented).
+   1345          
+   1346                (#) In interrupt mode, user can resort to the available macros (__HAL_RCC_CRS_XXX_IT). Interrupts will go
+   1347                    through CRS Handler (CRS_IRQn/CRS_IRQHandler)
+   1348                        (++) Call function HAL_RCCEx_CRSConfig()
+   1349                        (++) Enable CRS_IRQn (thanks to NVIC functions)
+   1350                        (++) Enable CRS interrupt (__HAL_RCC_CRS_ENABLE_IT)
+   1351                        (++) Implement CRS status management in the following user callbacks called from
+   1352                             HAL_RCCEx_CRS_IRQHandler():
+   1353                             (+++) HAL_RCCEx_CRS_SyncOkCallback()
+   1354                             (+++) HAL_RCCEx_CRS_SyncWarnCallback()
+   1355                             (+++) HAL_RCCEx_CRS_ExpectedSyncCallback()
+   1356                             (+++) HAL_RCCEx_CRS_ErrorCallback()
+   1357          
+   1358                (#) To force a SYNC EVENT, user can use the function HAL_RCCEx_CRSSoftwareSynchronizationGenerate().
+   1359                    This function can be called before calling HAL_RCCEx_CRSConfig (for instance in Systick handler)
+   1360          
+   1361          @endverbatim
+   1362            * @{
+   1363            */
+   1364          
+   1365          /**
+   1366            * @brief  Start automatic synchronization for polling mode
+   1367            * @param  pInit Pointer on RCC_CRSInitTypeDef structure
+   1368            * @retval None
+   1369            */
+   1370          void HAL_RCCEx_CRSConfig(RCC_CRSInitTypeDef *pInit)
+   1371          {
+   1372            uint32_t value;  /* no init needed */
+   1373          
+   1374            /* Check the parameters */
+   1375            assert_param(IS_RCC_CRS_SYNC_DIV(pInit->Prescaler));
+   1376            assert_param(IS_RCC_CRS_SYNC_SOURCE(pInit->Source));
+   1377            assert_param(IS_RCC_CRS_SYNC_POLARITY(pInit->Polarity));
+   1378            assert_param(IS_RCC_CRS_RELOADVALUE(pInit->ReloadValue));
+   1379            assert_param(IS_RCC_CRS_ERRORLIMIT(pInit->ErrorLimitValue));
+   1380            assert_param(IS_RCC_CRS_HSI48CALIBRATION(pInit->HSI48CalibrationValue));
+   1381          
+   1382            /* CONFIGURATION */
+   1383          
+   1384            /* Before configuration, reset CRS registers to their default values*/
+   1385            __HAL_RCC_CRS_FORCE_RESET();
+   1386            __HAL_RCC_CRS_RELEASE_RESET();
+   1387          
+   1388            /* Set the SYNCDIV[2:0] bits according to Prescaler value */
+   1389            /* Set the SYNCSRC[1:0] bits according to Source value */
+   1390            /* Set the SYNCSPOL bit according to Polarity value */
+   1391            value = (pInit->Prescaler | pInit->Source | pInit->Polarity);
+   1392            /* Set the RELOAD[15:0] bits according to ReloadValue value */
+   1393            value |= pInit->ReloadValue;
+   1394            /* Set the FELIM[7:0] bits according to ErrorLimitValue value */
+   1395            value |= (pInit->ErrorLimitValue << CRS_CFGR_FELIM_Pos);
+   1396            WRITE_REG(CRS->CFGR, value);
+   1397          
+   1398            /* Adjust HSI48 oscillator smooth trimming */
+   1399            /* Set the TRIM[6:0] bits according to RCC_CRS_HSI48CalibrationValue value */
+   1400            MODIFY_REG(CRS->CR, CRS_CR_TRIM, (pInit->HSI48CalibrationValue << CRS_CR_TRIM_Pos));
+   1401          
+   1402            /* START AUTOMATIC SYNCHRONIZATION*/
+   1403          
+   1404            /* Enable Automatic trimming & Frequency error counter */
+   1405            SET_BIT(CRS->CR, CRS_CR_AUTOTRIMEN | CRS_CR_CEN);
+   1406          }
+   1407          
+   1408          /**
+   1409            * @brief  Generate the software synchronization event
+   1410            * @retval None
+   1411            */
+   1412          void HAL_RCCEx_CRSSoftwareSynchronizationGenerate(void)
+   1413          {
+   1414            SET_BIT(CRS->CR, CRS_CR_SWSYNC);
+   1415          }
+   1416          
+   1417          /**
+   1418            * @brief  Return synchronization info
+   1419            * @param  pSynchroInfo Pointer on RCC_CRSSynchroInfoTypeDef structure
+   1420            * @retval None
+   1421            */
+   1422          void HAL_RCCEx_CRSGetSynchronizationInfo(RCC_CRSSynchroInfoTypeDef *pSynchroInfo)
+   1423          {
+   1424            /* Check the parameter */
+   1425            assert_param(pSynchroInfo != (void *)NULL);
+   1426          
+   1427            /* Get the reload value */
+   1428            pSynchroInfo->ReloadValue = (READ_BIT(CRS->CFGR, CRS_CFGR_RELOAD));
+   1429          
+   1430            /* Get HSI48 oscillator smooth trimming */
+   1431            pSynchroInfo->HSI48CalibrationValue = (READ_BIT(CRS->CR, CRS_CR_TRIM) >> CRS_CR_TRIM_Pos);
+   1432          
+   1433            /* Get Frequency error capture */
+   1434            pSynchroInfo->FreqErrorCapture = (READ_BIT(CRS->ISR, CRS_ISR_FECAP) >> CRS_ISR_FECAP_Pos);
+   1435          
+   1436            /* Get Frequency error direction */
+   1437            pSynchroInfo->FreqErrorDirection = (READ_BIT(CRS->ISR, CRS_ISR_FEDIR));
+   1438          }
+   1439          
+   1440          /**
+   1441            * @brief Wait for CRS Synchronization status.
+   1442            * @param Timeout  Duration of the timeout
+   1443            * @note  Timeout is based on the maximum time to receive a SYNC event based on synchronization
+   1444            *        frequency.
+   1445            * @note    If Timeout set to HAL_MAX_DELAY, HAL_TIMEOUT will be never returned.
+   1446            * @retval Combination of Synchronization status
+   1447            *          This parameter can be a combination of the following values:
+   1448            *            @arg @ref RCC_CRS_TIMEOUT
+   1449            *            @arg @ref RCC_CRS_SYNCOK
+   1450            *            @arg @ref RCC_CRS_SYNCWARN
+   1451            *            @arg @ref RCC_CRS_SYNCERR
+   1452            *            @arg @ref RCC_CRS_SYNCMISS
+   1453            *            @arg @ref RCC_CRS_TRIMOVF
+   1454            */
+   1455          uint32_t HAL_RCCEx_CRSWaitSynchronization(uint32_t Timeout)
+   1456          {
+   1457            uint32_t crsstatus = RCC_CRS_NONE;
+   1458            uint32_t tickstart;
+   1459          
+   1460            /* Get timeout */
+   1461            tickstart = HAL_GetTick();
+   1462          
+   1463            /* Wait for CRS flag or timeout detection */
+   1464            do
+   1465            {
+   1466              if (Timeout != HAL_MAX_DELAY)
+   1467              {
+   1468                if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
+   1469                {
+   1470                  crsstatus = RCC_CRS_TIMEOUT;
+   1471                }
+   1472              }
+   1473              /* Check CRS SYNCOK flag  */
+   1474              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_SYNCOK))
+   1475              {
+   1476                /* CRS SYNC event OK */
+   1477                crsstatus |= RCC_CRS_SYNCOK;
+   1478          
+   1479                /* Clear CRS SYNC event OK bit */
+   1480                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_SYNCOK);
+   1481              }
+   1482          
+   1483              /* Check CRS SYNCWARN flag  */
+   1484              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_SYNCWARN))
+   1485              {
+   1486                /* CRS SYNC warning */
+   1487                crsstatus |= RCC_CRS_SYNCWARN;
+   1488          
+   1489                /* Clear CRS SYNCWARN bit */
+   1490                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_SYNCWARN);
+   1491              }
+   1492          
+   1493              /* Check CRS TRIM overflow flag  */
+   1494              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_TRIMOVF))
+   1495              {
+   1496                /* CRS SYNC Error */
+   1497                crsstatus |= RCC_CRS_TRIMOVF;
+   1498          
+   1499                /* Clear CRS Error bit */
+   1500                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_TRIMOVF);
+   1501              }
+   1502          
+   1503              /* Check CRS Error flag  */
+   1504              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_SYNCERR))
+   1505              {
+   1506                /* CRS SYNC Error */
+   1507                crsstatus |= RCC_CRS_SYNCERR;
+   1508          
+   1509                /* Clear CRS Error bit */
+   1510                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_SYNCERR);
+   1511              }
+   1512          
+   1513              /* Check CRS SYNC Missed flag  */
+   1514              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_SYNCMISS))
+   1515              {
+   1516                /* CRS SYNC Missed */
+   1517                crsstatus |= RCC_CRS_SYNCMISS;
+   1518          
+   1519                /* Clear CRS SYNC Missed bit */
+   1520                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_SYNCMISS);
+   1521              }
+   1522          
+   1523              /* Check CRS Expected SYNC flag  */
+   1524              if (__HAL_RCC_CRS_GET_FLAG(RCC_CRS_FLAG_ESYNC))
+   1525              {
+   1526                /* frequency error counter reached a zero value */
+   1527                __HAL_RCC_CRS_CLEAR_FLAG(RCC_CRS_FLAG_ESYNC);
+   1528              }
+   1529            } while (RCC_CRS_NONE == crsstatus);
+   1530          
+   1531            return crsstatus;
+   1532          }
+   1533          
+   1534          /**
+   1535            * @brief Handle the Clock Recovery System interrupt request.
+   1536            * @retval None
+   1537            */
+   1538          void HAL_RCCEx_CRS_IRQHandler(void)
+   1539          {
+   1540            uint32_t crserror = RCC_CRS_NONE;
+   1541            /* Get current IT flags and IT sources values */
+   1542            uint32_t itflags = READ_REG(CRS->ISR);
+   1543            uint32_t itsources = READ_REG(CRS->CR);
+   1544          
+   1545            /* Check CRS SYNCOK flag  */
+   1546            if (((itflags & RCC_CRS_FLAG_SYNCOK) != 0U) && ((itsources & RCC_CRS_IT_SYNCOK) != 0U))
+   1547            {
+   1548              /* Clear CRS SYNC event OK flag */
+   1549              WRITE_REG(CRS->ICR, CRS_ICR_SYNCOKC);
+   1550          
+   1551              /* user callback */
+   1552              HAL_RCCEx_CRS_SyncOkCallback();
+   1553            }
+   1554            /* Check CRS SYNCWARN flag  */
+   1555            else if (((itflags & RCC_CRS_FLAG_SYNCWARN) != 0U) && ((itsources & RCC_CRS_IT_SYNCWARN) != 0U))
+   1556            {
+   1557              /* Clear CRS SYNCWARN flag */
+   1558              WRITE_REG(CRS->ICR, CRS_ICR_SYNCWARNC);
+   1559          
+   1560              /* user callback */
+   1561              HAL_RCCEx_CRS_SyncWarnCallback();
+   1562            }
+   1563            /* Check CRS Expected SYNC flag  */
+   1564            else if (((itflags & RCC_CRS_FLAG_ESYNC) != 0U) && ((itsources & RCC_CRS_IT_ESYNC) != 0U))
+   1565            {
+   1566              /* frequency error counter reached a zero value */
+   1567              WRITE_REG(CRS->ICR, CRS_ICR_ESYNCC);
+   1568          
+   1569              /* user callback */
+   1570              HAL_RCCEx_CRS_ExpectedSyncCallback();
+   1571            }
+   1572            /* Check CRS Error flags  */
+   1573            else
+   1574            {
+   1575              if (((itflags & RCC_CRS_FLAG_ERR) != 0U) && ((itsources & RCC_CRS_IT_ERR) != 0U))
+   1576              {
+   1577                if ((itflags & RCC_CRS_FLAG_SYNCERR) != 0U)
+   1578                {
+   1579                  crserror |= RCC_CRS_SYNCERR;
+   1580                }
+   1581                if ((itflags & RCC_CRS_FLAG_SYNCMISS) != 0U)
+   1582                {
+   1583                  crserror |= RCC_CRS_SYNCMISS;
+   1584                }
+   1585                if ((itflags & RCC_CRS_FLAG_TRIMOVF) != 0U)
+   1586                {
+   1587                  crserror |= RCC_CRS_TRIMOVF;
+   1588                }
+   1589          
+   1590                /* Clear CRS Error flags */
+   1591                WRITE_REG(CRS->ICR, CRS_ICR_ERRC);
+   1592          
+   1593                /* user error callback */
+   1594                HAL_RCCEx_CRS_ErrorCallback(crserror);
+   1595              }
+   1596            }
+   1597          }
+   1598          
+   1599          /**
+   1600            * @brief  RCCEx Clock Recovery System SYNCOK interrupt callback.
+   1601            * @retval none
+   1602            */
+   1603          __weak void HAL_RCCEx_CRS_SyncOkCallback(void)
+   1604          {
+   1605            /* NOTE : This function should not be modified, when the callback is needed,
+   1606                      the @ref HAL_RCCEx_CRS_SyncOkCallback should be implemented in the user file
+   1607             */
+   1608          }
+   1609          
+   1610          /**
+   1611            * @brief  RCCEx Clock Recovery System SYNCWARN interrupt callback.
+   1612            * @retval none
+   1613            */
+   1614          __weak void HAL_RCCEx_CRS_SyncWarnCallback(void)
+   1615          {
+   1616            /* NOTE : This function should not be modified, when the callback is needed,
+   1617                      the @ref HAL_RCCEx_CRS_SyncWarnCallback should be implemented in the user file
+   1618             */
+   1619          }
+   1620          
+   1621          /**
+   1622            * @brief  RCCEx Clock Recovery System Expected SYNC interrupt callback.
+   1623            * @retval none
+   1624            */
+   1625          __weak void HAL_RCCEx_CRS_ExpectedSyncCallback(void)
+   1626          {
+   1627            /* NOTE : This function should not be modified, when the callback is needed,
+   1628                      the @ref HAL_RCCEx_CRS_ExpectedSyncCallback should be implemented in the user file
+   1629             */
+   1630          }
+   1631          
+   1632          /**
+   1633            * @brief  RCCEx Clock Recovery System Error interrupt callback.
+   1634            * @param  Error Combination of Error status.
+   1635            *         This parameter can be a combination of the following values:
+   1636            *           @arg @ref RCC_CRS_SYNCERR
+   1637            *           @arg @ref RCC_CRS_SYNCMISS
+   1638            *           @arg @ref RCC_CRS_TRIMOVF
+   1639            * @retval none
+   1640            */
+   1641          __weak void HAL_RCCEx_CRS_ErrorCallback(uint32_t Error)
+   1642          {
+   1643            /* Prevent unused argument(s) compilation warning */
+   1644            UNUSED(Error);
+   1645          
+   1646            /* NOTE : This function should not be modified, when the callback is needed,
+   1647                      the @ref HAL_RCCEx_CRS_ErrorCallback should be implemented in the user file
+   1648             */
+   1649          }
+   1650          
+   1651          /**
+   1652            * @}
+   1653            */
+   1654          
+   1655          #endif /* CRS */
+   1656          
+   1657          /**
+   1658            * @}
+   1659            */
+   1660          
+   1661          
+   1662          /**
+   1663            * @}
+   1664            */
+   1665          
+   1666          /**
+   1667            * @}
+   1668            */
+   1669          
+   1670          #endif /* HAL_RCC_MODULE_ENABLED */
+   1671          /**
+   1672            * @}
+   1673            */
+   1674          
+   1675          /**
+   1676            * @}
+   1677            */
+   1678          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   HAL_RCCEx_CRSConfig
+       0   HAL_RCCEx_CRSGetSynchronizationInfo
+       0   HAL_RCCEx_CRSSoftwareSynchronizationGenerate
+      32   HAL_RCCEx_CRSWaitSynchronization
+        32   -> HAL_GetTick
+       0   HAL_RCCEx_CRS_ErrorCallback
+       0   HAL_RCCEx_CRS_ExpectedSyncCallback
+      16   HAL_RCCEx_CRS_IRQHandler
+        16   -> HAL_RCCEx_CRS_ErrorCallback
+        16   -> HAL_RCCEx_CRS_ExpectedSyncCallback
+        16   -> HAL_RCCEx_CRS_SyncOkCallback
+        16   -> HAL_RCCEx_CRS_SyncWarnCallback
+       0   HAL_RCCEx_CRS_SyncOkCallback
+       0   HAL_RCCEx_CRS_SyncWarnCallback
+      16   HAL_RCCEx_DisableLSCO
+        16   -> HAL_PWR_DisableBkUpAccess
+        16   -> HAL_PWR_EnableBkUpAccess
+      48   HAL_RCCEx_EnableLSCO
+        48   -> HAL_GPIO_Init
+        48   -> HAL_PWR_DisableBkUpAccess
+        48   -> HAL_PWR_EnableBkUpAccess
+      20   HAL_RCCEx_GetPeriphCLKConfig
+      24   HAL_RCCEx_GetPeriphCLKFreq
+        24   -> HAL_RCC_GetPCLK1Freq
+        24   -> HAL_RCC_GetSysClockFreq
+        24 __aeabi_uidiv
+      40   HAL_RCCEx_PeriphCLKConfig
+        40   -> HAL_GetTick
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable0
+       4  ??DataTable1
+       4  ??DataTable1_1
+       4  ??DataTable1_10
+       4  ??DataTable1_11
+       4  ??DataTable1_12
+       4  ??DataTable1_13
+       4  ??DataTable1_2
+       4  ??DataTable1_3
+       4  ??DataTable1_4
+       4  ??DataTable1_5
+       4  ??DataTable1_6
+       4  ??DataTable1_7
+       4  ??DataTable1_8
+       4  ??DataTable1_9
+       4  ??DataTable2
+       4  ??DataTable7
+       4  ??DataTable9
+       4  ??DataTable9_1
+       4  ??DataTable9_10
+       4  ??DataTable9_11
+       4  ??DataTable9_12
+       4  ??DataTable9_2
+       4  ??DataTable9_3
+       4  ??DataTable9_4
+       4  ??DataTable9_5
+       4  ??DataTable9_6
+       4  ??DataTable9_7
+       4  ??DataTable9_8
+       4  ??DataTable9_9
+      68  HAL_RCCEx_CRSConfig
+      34  HAL_RCCEx_CRSGetSynchronizationInfo
+      12  HAL_RCCEx_CRSSoftwareSynchronizationGenerate
+     140  HAL_RCCEx_CRSWaitSynchronization
+       2  HAL_RCCEx_CRS_ErrorCallback
+       2  HAL_RCCEx_CRS_ExpectedSyncCallback
+     112  HAL_RCCEx_CRS_IRQHandler
+       2  HAL_RCCEx_CRS_SyncOkCallback
+       2  HAL_RCCEx_CRS_SyncWarnCallback
+      78  HAL_RCCEx_DisableLSCO
+     128  HAL_RCCEx_EnableLSCO
+     146  HAL_RCCEx_GetPeriphCLKConfig
+     894  HAL_RCCEx_GetPeriphCLKFreq
+     622  HAL_RCCEx_PeriphCLKConfig
+
+ 
+ 2'362 bytes in section .text
+ 
+ 2'354 bytes of CODE memory (+ 8 bytes shared)
+
+Errors: none
+Warnings: none

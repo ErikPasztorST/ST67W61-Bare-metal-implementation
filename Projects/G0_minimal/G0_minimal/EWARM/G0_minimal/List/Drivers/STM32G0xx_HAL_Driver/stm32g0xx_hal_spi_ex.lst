@@ -1,0 +1,180 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:47
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_spi_ex.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_spi_ex.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_spi_ex.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_spi_ex.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_spi_ex.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Drivers\STM32G0xx_HAL_Driver\stm32g0xx_hal_spi_ex.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_spi_ex.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm32g0xx_hal_spi_ex.c
+      4            * @author  MCD Application Team
+      5            * @brief   Extended SPI HAL module driver.
+      6            *          This file provides firmware functions to manage the following
+      7            *          SPI peripheral extended functionalities :
+      8            *           + IO operation functions
+      9            *
+     10            ******************************************************************************
+     11            * @attention
+     12            *
+     13            * Copyright (c) 2018 STMicroelectronics.
+     14            * All rights reserved.
+     15            *
+     16            * This software is licensed under terms that can be found in the LICENSE file
+     17            * in the root directory of this software component.
+     18            * If no LICENSE file comes with this software, it is provided AS-IS.
+     19            *
+     20            ******************************************************************************
+     21            */
+     22          
+     23          /* Includes ------------------------------------------------------------------*/
+     24          #include "stm32g0xx_hal.h"
+     25          
+     26          /** @addtogroup STM32G0xx_HAL_Driver
+     27            * @{
+     28            */
+     29          
+     30          /** @defgroup SPIEx SPIEx
+     31            * @brief SPI Extended HAL module driver
+     32            * @{
+     33            */
+     34          #ifdef HAL_SPI_MODULE_ENABLED
+     35          
+     36          /* Private typedef -----------------------------------------------------------*/
+     37          /* Private defines -----------------------------------------------------------*/
+     38          /** @defgroup SPIEx_Private_Constants SPIEx Private Constants
+     39            * @{
+     40            */
+     41          #define SPI_FIFO_SIZE       4UL
+     42          /**
+     43            * @}
+     44            */
+     45          
+     46          /* Private macros ------------------------------------------------------------*/
+     47          /* Private variables ---------------------------------------------------------*/
+     48          /* Private function prototypes -----------------------------------------------*/
+     49          /* Exported functions --------------------------------------------------------*/
+     50          
+     51          /** @defgroup SPIEx_Exported_Functions SPIEx Exported Functions
+     52            * @{
+     53            */
+     54          
+     55          /** @defgroup SPIEx_Exported_Functions_Group1 IO operation functions
+     56            *  @brief   Data transfers functions
+     57            *
+     58          @verbatim
+     59            ==============================================================================
+     60                                ##### IO operation functions #####
+     61           ===============================================================================
+     62           [..]
+     63              This subsection provides a set of extended functions to manage the SPI
+     64              data transfers.
+     65          
+     66              (#) Rx data flush function:
+     67                  (++) HAL_SPIEx_FlushRxFifo()
+     68          
+     69          @endverbatim
+     70            * @{
+     71            */
+     72          
+     73          /**
+     74            * @brief  Flush the RX fifo.
+     75            * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
+     76            *               the configuration information for the specified SPI module.
+     77            * @retval HAL status
+     78            */
+     79          HAL_StatusTypeDef HAL_SPIEx_FlushRxFifo(const SPI_HandleTypeDef *hspi)
+     80          {
+     81            __IO uint32_t tmpreg;
+     82            uint8_t  count = 0U;
+     83            while ((hspi->Instance->SR & SPI_FLAG_FRLVL) !=  SPI_FRLVL_EMPTY)
+     84            {
+     85              count++;
+     86              tmpreg = hspi->Instance->DR;
+     87              UNUSED(tmpreg); /* To avoid GCC warning */
+     88              if (count == SPI_FIFO_SIZE)
+     89              {
+     90                return HAL_TIMEOUT;
+     91              }
+     92            }
+     93            return HAL_OK;
+     94          }
+     95          
+     96          /**
+     97            * @}
+     98            */
+     99          
+    100          /**
+    101            * @}
+    102            */
+    103          
+    104          #endif /* HAL_SPI_MODULE_ENABLED */
+    105          
+    106          /**
+    107            * @}
+    108            */
+    109          
+    110          /**
+    111            * @}
+    112            */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       4   HAL_SPIEx_FlushRxFifo
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      36  HAL_SPIEx_FlushRxFifo
+
+ 
+ 36 bytes in section .text
+ 
+ 36 bytes of CODE memory
+
+Errors: none
+Warnings: none

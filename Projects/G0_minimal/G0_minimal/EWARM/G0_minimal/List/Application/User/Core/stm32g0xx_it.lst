@@ -1,0 +1,226 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V9.20.1.318/W64 for ARM         20/Aug/2025  15:41:45
+# Copyright 1999-2021 IAR Systems AB.
+#
+#    Cpu mode          =  thumb
+#    Endian            =  little
+#    Source file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_it.c
+#    Command line      =
+#        -f
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_it.o.rsp
+#        (C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_it.c
+#        -D USE_HAL_DRIVER -D STM32G0B1xx -lcN
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core
+#        -o
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core
+#        --debug --endian=little --cpu=Cortex-M0+ -e --fpu=None --dlib_config
+#        "C:\Program Files\IAR Systems\Embedded Workbench
+#        9.0\arm\inc\c\DLib_Config_Full.h" -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Core/Inc\ -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Target\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../ST67W6X/Drivers\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Device/ST/STM32G0xx/Include\
+#        -I
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM/../Drivers/CMSIS/Include\
+#        -Ohz) --dependencies=n
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_it.o.d
+#    Locale            =  C
+#    List file         =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\List\Application\User\Core\stm32g0xx_it.lst
+#    Object file       =
+#        C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\EWARM\G0_minimal\Obj\Application\User\Core\stm32g0xx_it.o
+#    Runtime model:       
+#      __CPP_Runtime   =  1
+#      __SystemLibrary =  DLib
+#      __dlib_version  =  6
+#
+###############################################################################
+
+C:\X-CUBE-ST67\Projects\G0_minimal\G0_minimal\Core\Src\stm32g0xx_it.c
+      1          /* USER CODE BEGIN Header */
+      2          /**
+      3            ******************************************************************************
+      4            * @file    stm32g0xx_it.c
+      5            * @brief   Interrupt Service Routines.
+      6            ******************************************************************************
+      7            * @attention
+      8            *
+      9            * Copyright (c) 2025 STMicroelectronics.
+     10            * All rights reserved.
+     11            *
+     12            * This software is licensed under terms that can be found in the LICENSE file
+     13            * in the root directory of this software component.
+     14            * If no LICENSE file comes with this software, it is provided AS-IS.
+     15            *
+     16            ******************************************************************************
+     17            */
+     18          /* USER CODE END Header */
+     19          
+     20          /* Includes ------------------------------------------------------------------*/
+     21          #include "main.h"
+     22          #include "stm32g0xx_it.h"
+     23          /* Private includes ----------------------------------------------------------*/
+     24          /* USER CODE BEGIN Includes */
+     25          /* USER CODE END Includes */
+     26          
+     27          /* Private typedef -----------------------------------------------------------*/
+     28          /* USER CODE BEGIN TD */
+     29          
+     30          /* USER CODE END TD */
+     31          
+     32          /* Private define ------------------------------------------------------------*/
+     33          /* USER CODE BEGIN PD */
+     34          
+     35          /* USER CODE END PD */
+     36          
+     37          /* Private macro -------------------------------------------------------------*/
+     38          /* USER CODE BEGIN PM */
+     39          
+     40          /* USER CODE END PM */
+     41          
+     42          /* Private variables ---------------------------------------------------------*/
+     43          /* USER CODE BEGIN PV */
+     44          
+     45          /* USER CODE END PV */
+     46          
+     47          /* Private function prototypes -----------------------------------------------*/
+     48          /* USER CODE BEGIN PFP */
+     49          
+     50          /* USER CODE END PFP */
+     51          
+     52          /* Private user code ---------------------------------------------------------*/
+     53          /* USER CODE BEGIN 0 */
+     54          
+     55          /* USER CODE END 0 */
+     56          
+     57          /* External variables --------------------------------------------------------*/
+     58          
+     59          /* USER CODE BEGIN EV */
+     60          
+     61          /* USER CODE END EV */
+     62          
+     63          /******************************************************************************/
+     64          /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
+     65          /******************************************************************************/
+     66          /**
+     67            * @brief This function handles Non maskable interrupt.
+     68            */
+     69          void NMI_Handler(void)
+     70          {
+     71            /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+     72          
+     73            /* USER CODE END NonMaskableInt_IRQn 0 */
+     74            /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
+     75             while (1)
+     76            {
+     77            }
+     78            /* USER CODE END NonMaskableInt_IRQn 1 */
+     79          }
+     80          
+     81          /**
+     82            * @brief This function handles Hard fault interrupt.
+     83            */
+     84          void HardFault_Handler(void)
+     85          {
+     86            /* USER CODE BEGIN HardFault_IRQn 0 */
+     87          
+     88            /* USER CODE END HardFault_IRQn 0 */
+     89            while (1)
+     90            {
+     91              /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+     92              /* USER CODE END W1_HardFault_IRQn 0 */
+     93            }
+     94          }
+     95          
+     96          /******************************************************************************/
+     97          /* STM32G0xx Peripheral Interrupt Handlers                                    */
+     98          /* Add here the Interrupt Handlers for the used peripherals.                  */
+     99          /* For the available peripheral interrupt handler names,                      */
+    100          /* please refer to the startup file (startup_stm32g0xx.s).                    */
+    101          /******************************************************************************/
+    102          
+    103          /**
+    104            * @brief This function handles EXTI line 2 and line 3 interrupts.
+    105            */
+    106          void EXTI2_3_IRQHandler(void)
+    107          {
+    108            /* USER CODE BEGIN EXTI2_3_IRQn 0 */
+    109          
+    110            /* USER CODE END EXTI2_3_IRQn 0 */
+    111            HAL_GPIO_EXTI_IRQHandler(SPI_RDY_Pin);
+    112            /* USER CODE BEGIN EXTI2_3_IRQn 1 */
+    113          
+    114            /* USER CODE END EXTI2_3_IRQn 1 */
+    115          }
+    116          
+    117          /**
+    118            * @brief This function handles EXTI line 4 to 15 interrupts.
+    119            */
+    120          void EXTI4_15_IRQHandler(void)
+    121          {
+    122            /* USER CODE BEGIN EXTI4_15_IRQn 0 */
+    123          
+    124            /* USER CODE END EXTI4_15_IRQn 0 */
+    125            HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_Pin);
+    126            HAL_GPIO_EXTI_IRQHandler(B1_Pin);
+    127            /* USER CODE BEGIN EXTI4_15_IRQn 1 */
+    128          
+    129            /* USER CODE END EXTI4_15_IRQn 1 */
+    130          }
+    131          
+    132          /* USER CODE BEGIN 1 */
+    133          /**
+    134            * @brief This function handles System tick timer.
+    135            */
+    136          void SysTick_Handler(void)
+    137          {
+    138            /* USER CODE BEGIN SysTick_IRQn 0 */
+    139          
+    140            /* USER CODE END SysTick_IRQn 0 */
+    141            HAL_IncTick();
+    142            /* USER CODE BEGIN SysTick_IRQn 1 */
+    143          
+    144            /* USER CODE END SysTick_IRQn 1 */
+    145          }
+    146          
+    147          /* USER CODE END 1 */
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   EXTI2_3_IRQHandler
+         8   -> HAL_GPIO_EXTI_IRQHandler
+       8   EXTI4_15_IRQHandler
+         8   -> HAL_GPIO_EXTI_IRQHandler
+       0   HardFault_Handler
+       0   NMI_Handler
+       8   SysTick_Handler
+         8   -> HAL_IncTick
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      10  EXTI2_3_IRQHandler
+      20  EXTI4_15_IRQHandler
+       2  HardFault_Handler
+       2  NMI_Handler
+       8  SysTick_Handler
+
+ 
+ 42 bytes in section .text
+ 
+ 42 bytes of CODE memory
+
+Errors: none
+Warnings: none
