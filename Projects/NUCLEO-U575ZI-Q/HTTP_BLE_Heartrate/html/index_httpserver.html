@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HTTP Server example with STM32</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --dark-blue: #03234b;
+            --yellow: #ffd200;
+            --light-blue: #3cb4e6;
+            --background-margin: 6vw;
+            --spin-border: 0.25em;
+        }
+
+        body {
+            color: var(--dark-blue);
+            font-family: arial, helvetica, sans-serif;
+            font-size: 2vw;
+            background: #ffffff linear-gradient(var(--yellow), var(--yellow)) repeat-y left top;
+            background-size: var(--background-margin);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        div {
+            margin-left: calc(var(--background-margin) + 2vw);
+        }
+
+        header,
+        footer {
+            background: var(--dark-blue);
+            color: #ffffff;
+            margin: 0;
+        }
+
+        header {
+            height: 8vh;
+            white-space: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        #header_logo {
+            height: 8vh;
+        }
+
+        footer {
+            height: 4vh;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            padding: 1vh;
+        }
+
+        a:link {
+            color: var(--light-blue);
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: var(--pink);
+        }
+
+        a:hover,
+        a:focus {
+            text-decoration: underline;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .button {
+            background-color: #3cb4e6;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            border-radius: 10px;
+        }
+
+        .button-on-green {
+            background-color: #49b171;
+            color: black;
+        }
+
+        .button-on-red {
+            background-color: #e3381b;
+            color: black;
+        }
+
+        .button-off {
+            background-color: #d1d1d1;
+            color: black;
+        }
+
+        .console {
+            background-color: black;
+            color: white;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 10px;
+            max-height: 200px;
+            overflow: auto;
+            margin-right: calc(var(--background-margin) + 2vw);
+        }
+
+        #chart-container {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header><img src="ST_logo_2020_white_no_tagline_rgb.svg" id="header_logo"></header>
+    <div>
+        <h1>Wi-Fi heartrate monitoring</h1>
+        <p>Current Heartrate: <span id="heartrate">0</span> BPM</p>
+        <p>Energy Expended: <span id="energyExpended">0</span> kJ</p>
+        <p>Body Sensor Location: <span id="bodySensorLocation">Unknown</span></p>
+        <div id="chart-container">
+            <canvas id="heartrateChart" width="600" height="400"></canvas>
+            <canvas id="energyExpendedChart" width="600" height="400"></canvas>
+        </div>
+        <h2>Console</h2>
+        <div>
+            <p class="console" id="console"></p>
+        </div>
+    </div>
+    <footer>
+    </footer>
+</body>
+<script>
+    let heartrateData = [];
+    let energyExpendedData = [];
+    const maxDataPoints = 20;
+
+    hrmRequestCount = 0;
+
+    function sendPeriodicHrmReq(val) {
+        const bslMap = {
+            0: "Other",
+            1: "Chest",
+            2: "Wrist",
+            3: "Finger",
+            4: "Hand",
+            5: "Ear Lobe",
+            6: "Foot"
+          };
+
+        hrmRequestCount = hrmRequestCount + 1;
+        if (hrmRequestCount < 5) {
+            setTimeout(sendPeriodicHrmReq, 200);
+        } else {
+            hrmRequestCount = 0;
+        
+            var xhr = new XMLHttpRequest();
+            xhr.timeout = 13000;
+            xhr.open("GET", "/Heartrate_measure", true);
+            xhr.ontimeout = function () {
+                setTimeout(sendPeriodicHrmReq, 200);
+            }
+            xhr.onerror = function () {
+                setTimeout(sendPeriodicHrmReq, 200);
+            }
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+
+                    const resp = JSON.parse(xhr.responseText);
+                    var hrm = resp.HRM;
+                    var ee = resp.EE;
+                    var bsl = bslMap[resp.BSL];
+
+                    document.getElementById('heartrate').innerText = hrm.toString();
+                    document.getElementById('energyExpended').innerText = ee.toString();
+                    document.getElementById('bodySensorLocation').innerText = bsl.toString();
+
+                    // Update data arrays
+                    heartrateData.push(hrm);
+                    energyExpendedData.push(ee);
+
+                    // Limit the number of data points
+                    if (heartrateData.length > maxDataPoints) {
+                        heartrateData.shift();
+                    }
+                    if (energyExpendedData.length > maxDataPoints) {
+                        energyExpendedData.shift();
+                    }
+
+                    // Draw the chart
+                    drawLineChart();
+
+                    setTimeout(sendPeriodicHrmReq, 200);
+                }
+                else if (xhr.readyState === 4 && xhr.status == 404) {
+                    setTimeout(sendPeriodicHrmReq, 200);
+                }
+            };
+            xhr.send();
+        }
+    }
+    sendPeriodicHrmReq();
+
+    function goToPage(val) {
+        window.location.href = "/" + val;
+    }
+
+    function drawLineChart() {
+        drawChart('heartrateChart', heartrateData, 'red', 'Heartrate (BPM)', true);
+        drawChart('energyExpendedChart', energyExpendedData, 'blue', 'Energy Expended (kJ)', false);
+    }
+
+    function drawChart(canvasId, data, color, yAxisLabel, limitYAxis) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Set chart properties
+        const padding = 50;
+        const chartWidth = canvas.width - 2 * padding;
+        const chartHeight = canvas.height - 2 * padding;
+        const maxX = maxDataPoints - 1;
+        let maxY = Math.max(...data);
+        let minY = Math.min(...data);
+
+        if (limitYAxis) {
+            maxY += 5;
+            minY -= 5;
+        }
+
+        // Draw axes
+        ctx.beginPath();
+        ctx.moveTo(padding, padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.lineTo(canvas.width - padding, canvas.height - padding);
+        ctx.stroke();
+
+        // Draw axis legends
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // X-axis legends (time points)
+        for (let i = 0; i <= maxX; i++) {
+            const x = padding + (i / maxX) * chartWidth;
+            ctx.fillText(i, x, canvas.height - padding + 20);
+        }
+
+        // Y-axis legends (values)
+        const numYLabels = 5;
+        for (let i = 0; i <= numYLabels; i++) {
+            const yValue = Math.round(minY + (i / numYLabels) * (maxY - minY));
+            const y = canvas.height - padding - ((yValue - minY) / (maxY - minY)) * chartHeight;
+            ctx.fillText(yValue, padding - 30, y);
+        }
+
+        // Draw the line
+        ctx.beginPath();
+        ctx.moveTo(padding, canvas.height - padding - ((data[0] - minY) / (maxY - minY)) * chartHeight);
+        for (let i = 1; i < data.length; i++) {
+            ctx.lineTo(padding + (i / maxX) * chartWidth, canvas.height - padding - ((data[i] - minY) / (maxY - minY)) * chartHeight);
+        }
+        ctx.strokeStyle = color;
+        ctx.stroke();
+
+        // Draw data points
+        ctx.fillStyle = color;
+        for (let i = 0; i < data.length; i++) {
+            const x = padding + (i / maxX) * chartWidth;
+            const y = canvas.height - padding - ((data[i] - minY) / (maxY - minY)) * chartHeight;
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Draw y-axis label
+        ctx.save();
+        ctx.translate(padding - 40, canvas.height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center';
+        ctx.fillText(yAxisLabel, 0, 0);
+        ctx.restore();
+    }
+</script>
+
+</html>
